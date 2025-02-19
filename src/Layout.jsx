@@ -6,7 +6,7 @@ function Layout() {
   return (
     <div className="flex">
       {/* Sidebar (Fixed) */}
-      <Sidebar />
+      <Sidebar  />
 
       {/* Main Content (Push Content Right) */}
       <div className="flex-1 ml-64">
