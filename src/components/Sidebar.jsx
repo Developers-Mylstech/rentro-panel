@@ -9,7 +9,7 @@ function CustomSidebar() {
   };
 
   return (
-    <div className="w-64 h-screen bg-primary shadow-md fixed p-5 overflow-y-auto ">
+    <div className="w-64 h-screen bg-primary shadow-md fixed p-5 overflow-y-auto z-20 ">
       <h2 className="text-xl font-bold  text-secondary">Admin Panel</h2>
       
       <ul className="space-y-5 mt-10">
