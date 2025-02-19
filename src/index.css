@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* 
 @layer base {
   body {
@@ -9,12 +10,12 @@
 } */
 
 @layer components {
-  .primary {
+  /* .primary {
     @apply bg-blue-600 text-white hover:bg-blue-700;
   }
   .secondary {
     @apply bg-purple-600 text-white hover:bg-purple-700;
-  }
+  } */
   .heading {
     @apply text-2xl font-bold text-black;
   }
