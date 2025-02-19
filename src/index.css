@@ -16,9 +16,12 @@
     @apply bg-purple-600 text-white hover:bg-purple-700;
   }
   .heading {
-    @apply text-2xl font-bold text-blue-700;
+    @apply text-2xl font-bold text-black;
   }
   .subheading {
-    @apply text-xl font-semibold text-purple-700;
+    @apply text-xl font-semibold text-secondary;
+  }
+  .text{
+    @apply text-base font-normal text-gray-500;
   }
 }
