@@ -1,38 +1,45 @@
-import { useState } from 'react'
-
-import 'primeicons/primeicons.css';  // Icons
-import './index.css'; // Tailwind CSS
-import CustomButton from './systemdesign/CustomeButton';
-import { MultiSelect } from 'primereact/multiselect';
-import 'primereact/resources/themes/lara-light-blue/theme.css'; 
-import 'primereact/resources/primereact.min.css';             
-import 'primeicons/primeicons.css';
-import { Calendar } from 'primereact/calendar';
-import { Checkbox } from 'primereact/checkbox';
-
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import AddProduct from "./components/form/AddProduct";
+import Categories from "./pages/Category";
+import AddCategory from "./components/form/AddCategory";
+import Brands from "./pages/Brand";
+import AddBrand from "./components/form/AddBrand";
+import Orders from "./pages/Orders";
+import Clients from "./pages/Clients";
+import AddClient from "./components/form/AddClient";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [date, setDate] = useState(null);
-  const [checked, setChecked] = useState(false);
-
-
-
-
-  const handleClick = () => {
-    setCount(prevCount => prevCount + 1)
-  }
   return (
-    <div className='bg-red-300'>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
 
-      <div className="card flex justify-content-center">
-        <Calendar />
-        <Checkbox onChange={e => setChecked(e.checked)} checked={checked}></Checkbox>
+          {/* Product Routes */}
+          <Route path="products" element={<Products />} />
+          <Route path="products/add" element={<AddProduct />} />
 
-      </div>
-    </div>
-  )
+          {/* Category Routes */}
+          <Route path="categories" element={<Categories />} />
+          <Route path="categories/add" element={<AddCategory />} />
+
+          {/* Brand Routes */}
+          <Route path="brands" element={<Brands />} />
+          <Route path="brands/add" element={<AddBrand />} />
+
+          {/* Order Routes */}
+          <Route path="orders" element={<Orders />} />
+
+          {/* Client Routes */}
+          <Route path="clients" element={<Clients />} />
+          <Route path="clients/add" element={<AddClient />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
