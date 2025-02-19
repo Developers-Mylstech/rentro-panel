@@ -11,7 +11,7 @@ function Layout() {
 
       <div className="flex-1 ml-64">
         <Header />
-        <div className="p-4">
+        <div className="p-6">
           <Outlet />
         </div>
       </div>

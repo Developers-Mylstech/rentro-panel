@@ -30,22 +30,17 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
 
-          {/* Product Routes */}
           <Route path="products" element={<Products />} />
           <Route path="products/add" element={<AddProduct />} />
 
-          {/* Category Routes */}
           <Route path="categories" element={<Categories />} />
           <Route path="categories/add" element={<AddCategory />} />
 
-          {/* Brand Routes */}
           <Route path="brands" element={<Brands />} />
           <Route path="brands/add" element={<AddBrand />} />
 
-          {/* Order Routes */}
           <Route path="orders" element={<Orders />} />
 
-          {/* Client Routes */}
           <Route path="clients" element={<Clients />} />
           <Route path="clients/add" element={<AddClient />} />
 

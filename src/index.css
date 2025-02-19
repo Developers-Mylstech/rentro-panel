@@ -17,12 +17,12 @@
     @apply bg-purple-600 text-white hover:bg-purple-700;
   } */
   .heading {
-    @apply text-2xl font-bold text-black;
+    @apply text-2xl font-semibold text-black;
   }
   .subheading {
-    @apply text-xl font-semibold text-secondary;
+    @apply text-base font-semibold text-gray-600;
   }
   .text{
-    @apply text-base font-normal text-gray-500;
+    @apply text-sm font-normal text-gray-500;
   }
 }
