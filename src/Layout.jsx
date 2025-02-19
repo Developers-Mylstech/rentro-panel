@@ -5,16 +5,13 @@ import Header from "./components/Header";
 function Layout() {
   return (
     <div className="flex">
-      {/* Sidebar (Fixed) */}
-      <Sidebar  />
 
-      {/* Main Content (Push Content Right) */}
+      <Sidebar />
+
+
       <div className="flex-1 ml-64">
-        {/* Sticky Header */}
         <Header />
-
-        {/* Page Content (Prevent Overlapping with Header) */}
-        <div className="p-4 mt-16">
+        <div className="p-6">
           <Outlet />
         </div>
       </div>
