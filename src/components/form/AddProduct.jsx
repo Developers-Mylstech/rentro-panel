@@ -68,7 +68,7 @@ export default function AddProduct() {
 
   return (
     <>
-      <h2 className="heading my-10">Add New Product</h2>
+      <h2 className="heading mb-6">Add New Product</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="p-4 px-8 w-full mx-auto border rounded-md">
         <h3 className='subheading my-6'>Product Information</h3>
         <div className="mb-3 flex justify-between items-center">
