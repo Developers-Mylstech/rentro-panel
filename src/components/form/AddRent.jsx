@@ -41,8 +41,8 @@ export default function AddRent() {
   };
 
   return (
-    <div className="p-6 w-full">
-      <h3 className="text-2xl heading heading mb-6">Add New Rental Detail</h3>
+    <div className=" w-full">
+      <h3 className=" heading mb-6">Add New Rental Detail</h3>
 
       {/* Rental Information Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
@@ -114,7 +114,7 @@ export default function AddRent() {
 
      {/* Submit Button */}
            <div className="flex justify-center mt-6">
-                 <CustomButton title={'submit'} />
+                 <CustomButton title={'submit'} icon={'pi pi-save'}/>
                </div>
     </div>
   );

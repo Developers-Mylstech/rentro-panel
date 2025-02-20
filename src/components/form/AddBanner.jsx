@@ -15,8 +15,8 @@ export default function AddBanner() {
   };
 
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold text-left mb-6">Add New Banner</h1>
+    <div className="">
+      <h1 className="heading mb-6">Add New Banner</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Offer Information */}
@@ -116,7 +116,7 @@ export default function AddBanner() {
 
         {/* Submit Button */}
         <div className="flex justify-center items-center w-full">
-          <CustomButton title="Submit"  />
+          <CustomButton title="Submit" icon={'pi pi-save'} />
         </div>
       </form>
     </div>

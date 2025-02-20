@@ -33,7 +33,7 @@ export default function AddAboutUs() {
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <h3 className="heading mb-6">Add New About Us Detail</h3>
       
       {/* Sale Information Section */}
@@ -72,7 +72,7 @@ export default function AddAboutUs() {
 
       {/* Submit Button */}
        <div className="flex justify-center mt-6">
-             <CustomButton title={'submit'} />
+             <CustomButton title={'submit'} icon={'pi pi-save'} />
            </div>
     </div>
   );

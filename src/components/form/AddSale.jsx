@@ -107,7 +107,7 @@ export default function AddSale() {
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <h3 className="heading mb-6">Add New Sale Detail</h3>
 
       {/* Sale Information Section */}
@@ -170,7 +170,7 @@ export default function AddSale() {
       </div>
 
       <div className="flex justify-center mt-6">
-        <CustomButton title={'Submit'} onClick={handleSubmit} />
+        <CustomButton title={'Submit'} onClick={handleSubmit} icon={'pi pi-save'}/>
       </div>
     </div>
   );

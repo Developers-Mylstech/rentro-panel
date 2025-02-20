@@ -70,7 +70,7 @@ export default function AddCategory() {
 
       {/* Submit Button */}
       <div className="flex justify-center mt-6">
-        <CustomButton title={'submit'} />
+        <CustomButton title={'submit'} icon={'pi pi-save'}/>
       </div>
     </div>
   );

@@ -26,8 +26,8 @@ export default function AddBrand() {
   };
 
   return (
-    <div className="p-6">
-      <h3 className="text-2xl font-bold mb-6">Add New Brand</h3>
+    <div className="">
+      <h3 className="heading mb-6">Add New Brand</h3>
       
       {/* Category Information Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
@@ -52,7 +52,7 @@ export default function AddBrand() {
       
       {/* Submit Button */}
      <div className='w-full flex justify-center items-center'>
-            <CustomButton  title="Submit" onClick={handleSubmit} />
+            <CustomButton  title="Submit" onClick={handleSubmit} icon={'pi pi-save'}/>
             </div>
     </div>
   );

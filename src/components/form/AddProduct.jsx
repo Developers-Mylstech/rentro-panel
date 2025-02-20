@@ -245,7 +245,7 @@ export default function AddProduct() {
      
         
         <div className='w-full flex justify-center items-center'>
-        <CustomButton  title="Submit" onClick={handleSubmit} />
+        <CustomButton  title="Submit" onClick={handleSubmit} icon={'pi pi-save'}/>
         </div>
       </form>
     </>
