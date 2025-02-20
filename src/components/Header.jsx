@@ -24,7 +24,7 @@ export default function Header() {
     ];
 
     return (
-        <div className="flex justify-end py-5 bg-primary border-b px-10 gap-5 top-0">
+        <div className="flex justify-end py-5 bg-primary border-b sticky z-50 px-10 gap-5 top-0">
             <Menu model={items} popup ref={menuRef} id="popup_menu_left" />
             <i 
             className="pi pi-moon text-lg cursor-pointer" />

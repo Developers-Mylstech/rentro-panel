@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
-import { Editor } from "primereact/editor"; // Import PrimeReact Editor
+import { Editor } from "primereact/editor"; 
 import CustomButton from "../../systemdesign/CustomeButton";
 
 export default function AddService() {
@@ -48,7 +48,7 @@ export default function AddService() {
           />
         </div>
 
-        {/* PrimeReact Editor for Service Short Description */}
+      
         <div className="mb-4 flex justify-between">
           <label className="text mb-2">Service Short Description</label>
           <div className="w-[70%]">
@@ -71,7 +71,7 @@ export default function AddService() {
         </div>
       </div>
 
-      {/* Service Detail Information */}
+
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
         <h2 className="subheading mb-4">Service Detail Information</h2>
 
