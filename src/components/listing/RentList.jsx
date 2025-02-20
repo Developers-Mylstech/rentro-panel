@@ -40,7 +40,7 @@ export default function RentList() {
 
   return (
     <div className=" ">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start mb-4">
         <h5 className="text-xl font-bold">Rental Details List</h5>
         <div className="flex items-center gap-3">
           <IconField iconPosition="right" className='border p-2 rounded'>
