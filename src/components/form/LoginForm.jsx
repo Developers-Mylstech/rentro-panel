@@ -4,13 +4,16 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import CustomButton from '../../systemdesign/CustomeButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm({isTokenValid}) {
-   
+   const navigate=useNavigate()
   
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = (data) => {
+        isTokenValid(true)
+        navigate('/')
         console.log('Form Data:', data);
     };
 
@@ -42,7 +45,7 @@ export default function LoginForm({isTokenValid}) {
                 <div className='flex justify-between items-center my-5'>
 
                     <h6 className='text '>Forget Password ?</h6>
-                    <CustomButton title={'Login'} icon={'pi pi-lock'} onClick={()=>isTokenValid(true)}/>
+                    <CustomButton title={'Login'} icon={'pi pi-lock'} onClick={onSubmit}/>
                 </div>
             </div>
 

@@ -14,12 +14,12 @@ function CustomSidebar() {
   return (<>
     <button
       onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      className={`fixed top-4 left-4 z-30 text-secondary text-lg p-2 rounded lg:hidden ${isSidebarOpen ? "hidden" : ''}  `}
+      className={`fixed top-4 left-4 z-[51] text-secondary bg-primary text-lg rounded lg:hidden ${isSidebarOpen ? "hidden" : ''}  `}
     >
       <i className="pi pi-align-left"></i>
     </button>
     <div
-      className={`fixed top-0 left-0 h-screen bg-primary shadow-md p-5 overflow-y-auto z-20 w-1/2 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      className={`fixed top-0 left-0 h-screen bg-primary shadow-md p-5 overflow-y-auto z-[55] w-1/2 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:w-1/6 lg:block`}
     >
       <div className="flex justify-between">
