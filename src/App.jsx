@@ -22,6 +22,7 @@ import AddSale from "./components/form/AddSale";
 import ServiceList from "./components/listing/ServiceList";
 import AddService from "./components/form/AddService";
 import AboutusListing from "./components/listing/AboutusListing";
+import AddAboutUs from "./components/form/AddAboutUs"
 
 function App() {
   return (
@@ -57,7 +58,7 @@ function App() {
           <Route path="service/add" element={<AddService />} />
 
           <Route path="about" element={<AboutusListing />} />
-          <Route path="about/add" element={<AddService />} />
+          <Route path="about/add" element={<AddAboutUs />} />
 
         </Route>
       </Routes>

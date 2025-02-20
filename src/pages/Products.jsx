@@ -57,7 +57,7 @@ export default function Products() {
   return (
     <div className="p-4">
    <div className='flex justify-between p-4'>
-   <h2 className="text-2xl font-bold mb-4">Products List</h2>
+   <h2 className="heading">Products List</h2>
    <CustomButton title="Add"  onClick={handleNavigate} />
    </div>
     <div className="flex justify-between mb-4">
