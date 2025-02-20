@@ -6,7 +6,7 @@ import { Card } from 'primereact/card';
 import CustomButton from '../../systemdesign/CustomeButton';
 
 
-export default function AddCategory() {
+export default function AddBanner() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     mainCategory: '',
