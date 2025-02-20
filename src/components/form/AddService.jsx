@@ -34,7 +34,7 @@ export default function AddService() {
 
   return (
     <>
-      <div className="p-6 w-full">
+      <div className=" w-full">
         <h3 className="text-2xl heading font-bold mb-6">Add New Services</h3>
 
         {/* Service Information Section */}
