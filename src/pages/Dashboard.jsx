@@ -26,7 +26,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-wrap justify-center">
       {items.map((item, index) => (
-        <div key={index} className="md:w-[24%] sm:w-[45%] w-full m-1">
+        <div key={index} className="md:w-[32%] lg:w-[24%] w-full m-1">
           <Card className={`shadow-md rounded-lg border-b-4 ${item.color}`}>
             <div className="flex justify-between items-center p-4">
               <div className='flex flex-col gap-2'>

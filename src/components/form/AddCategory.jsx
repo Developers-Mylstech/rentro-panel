@@ -44,7 +44,6 @@ export default function AddCategory() {
         </form>
       </div>
 
-      {/* Category Image Section */}
       <div className="bg-white p-10 rounded-lg shadow-md">
         <h2 className="subheading mb-4">Category Image</h2>
 
@@ -53,7 +52,7 @@ export default function AddCategory() {
           <FileUpload
             mode="basic"
             name="categoryImage"
-            
+            chooseOptions={{ className: 'bg-secondary' }}
             url="/api/upload"
             className="w-full text"
             contentStyle='bg-red-300'
