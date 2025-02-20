@@ -9,7 +9,7 @@ function Layout() {
       <Sidebar />
 
 
-      <div className="flex-1 ml-64">
+      <div className="flex-1 lg:ml-[17%]">
         <Header />
         <div className="p-6">
           <Outlet />

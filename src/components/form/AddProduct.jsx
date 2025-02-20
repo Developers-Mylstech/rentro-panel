@@ -8,7 +8,7 @@ import 'primeicons/primeicons.css';
 
 export default function AddProduct() {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  
+  const [fields, setFields] = useState([]);
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [selectedStockStatus, setSelectedStockStatus] = useState(null);
@@ -45,9 +45,17 @@ export default function AddProduct() {
     
   ];
 
+  const fieldOptions = [
+    { key: "title", label: "Title" },
+    { key: "brand", label: "Brand" },
+    { key: "description", label: "Description" },
+  ];
 
-
- 
+  const toggleField = (fieldKey) => {
+    setFields((prev) =>
+      prev.includes(fieldKey) ? prev.filter((f) => f !== fieldKey) : [...prev, fieldKey]
+    );
+  };
 
   const stockStatusOptions = [
     { label: "In Stock", value: "In Stock" },
@@ -104,23 +112,54 @@ export default function AddProduct() {
         />
       </div>
 
-      {/* Specifications */}
+
+      <div>
+      {/* Tabs Section */}
       <div className="mb-3 flex justify-between items-center">
-        <label className="text mb-1">Specifications</label>
-        <input
-          {...register("specifications")}
-          className="w-[70%] p-2 border rounded"
-        />
+        <h3 className="subheading my-6">Specifications</h3>
+        <div className="w-[70%] gap-4 flex">
+          {fieldOptions.map((option) => (
+            <h3
+              key={option.key}
+              onClick={() => toggleField(option.key)}
+              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${
+                fields.includes(option.key) ? "bg-secondary text-white" : ""
+              }`}
+            >
+              {option.label}
+            </h3>
+          ))}
+        </div>
       </div>
 
-      {/* Manufacturer */}
+      {/* Manufacturer Field */}
       <div className="mb-3 flex justify-between items-center">
         <label className="text mb-1">Manufacturer</label>
-        <input
-          {...register("manufacturer")}
-          className="w-[70%] p-2 border rounded"
-        />
+        <input {...register("manufacturer")} className="w-[70%] p-2 border rounded" />
       </div>
+
+      {/* Dynamic Fields Based on User Selection */}
+      {fields.includes("title") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Title</label>
+          <input {...register("title")} className="w-[70%] p-2 border rounded" />
+        </div>
+      )}
+
+      {fields.includes("brand") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Brand</label>
+          <input {...register("brand")} className="w-[70%] p-2 border rounded" />
+        </div>
+      )}
+
+      {fields.includes("description") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Description</label>
+          <textarea {...register("description")} className="w-[70%] p-2 border rounded" />
+        </div>
+      )}
+    </div>
 
       <h3 className="subheading my-6 mt-4">Product Images</h3>
 

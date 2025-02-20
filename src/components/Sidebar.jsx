@@ -4,14 +4,35 @@ import { Link, useLocation } from "react-router-dom";
 function CustomSidebar() {
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
 
-  return (
-    <div className="w-64 h-screen bg-primary shadow-md fixed p-5 overflow-y-auto z-20">
-      <h2 className="text-xl font-bold text-secondary">Admin Panel</h2>
+  return (<>
+    <button
+      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      className={`fixed top-4 left-4 z-30 text-secondary text-lg p-2 rounded lg:hidden ${isSidebarOpen ? "hidden" : ''}  `}
+    >
+      <i className="pi pi-align-left"></i>
+    </button>
+    <div
+      className={`fixed top-0 left-0 h-screen bg-primary shadow-md p-5 overflow-y-auto z-20 w-1/2 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 lg:w-1/6 lg:block`}
+    >
+      <div className="flex justify-between">
+
+        <h2 className="text-xl font-bold text-secondary">Admin Panel</h2>
+        <button
+          onClick={() => setIsSidebarOpen(false)}
+          className="text-black text-xl lg:hidden"
+        >
+          <i className="pi pi-times  text-secondary "></i>
+
+        </button>
+      </div>
 
       <ul className="space-y-5 mt-10">
         <li className="pb-2 px-2 border-b">
@@ -23,16 +44,14 @@ function CustomSidebar() {
         <li>
           <Link
             to="/"
-            className={`flex items-center gap-3 p-2 rounded ${
-              location.pathname === "/" ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
-            }`}
+            className={`flex items-center gap-3 p-2 rounded ${location.pathname === "/" ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
+              }`}
           >
             <i className="pi pi-home text-lg"></i>
             <span>Dashboard</span>
           </Link>
         </li>
 
-        {/* Sidebar Menu Items */}
         {[
           { name: "products", icon: "pi pi-box" },
           { name: "categories", icon: "pi pi-tags" },
@@ -45,9 +64,8 @@ function CustomSidebar() {
             <li key={menu.name}>
               <button
                 onClick={() => toggleMenu(menu.name)}
-                className={`flex items-center justify-between w-full p-2 rounded ${
-                  activeMenu === menu.name || isActive ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
-                }`}
+                className={`flex items-center justify-between w-full p-2 rounded ${activeMenu === menu.name || isActive ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <i className={`${menu.icon} text-lg`}></i>
@@ -61,9 +79,8 @@ function CustomSidebar() {
                   <li>
                     <Link
                       to={`/${menu.name}`}
-                      className={`block p-2 rounded ${
-                        location.pathname === `/${menu.name}` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
-                      }`}
+                      className={`block p-2 rounded ${location.pathname === `/${menu.name}` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
+                        }`}
                     >
                       - All {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
                     </Link>
@@ -72,9 +89,8 @@ function CustomSidebar() {
                     <li>
                       <Link
                         to={`/${menu.name}/add`}
-                        className={`block p-2 rounded ${
-                          location.pathname === `/${menu.name}/add` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
-                        }`}
+                        className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
+                          }`}
                       >
                         - Add New {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
                       </Link>
@@ -93,7 +109,6 @@ function CustomSidebar() {
           <p className="text text-sm">Pages Options</p>
         </li>
 
-        {/* Website Pages Menu Items */}
         {[
           { name: "banner", icon: "pi pi-home" },
           { name: "rent", icon: "pi pi-shopping-cart" },
@@ -106,9 +121,8 @@ function CustomSidebar() {
             <li key={menu.name}>
               <button
                 onClick={() => toggleMenu(menu.name)}
-                className={`flex items-center justify-between w-full p-2 rounded ${
-                  activeMenu === menu.name || isActive ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
-                }`}
+                className={`flex items-center justify-between w-full p-2 rounded ${activeMenu === menu.name || isActive ? "bg-secondary text-primary" : "text-secondary bg-primary hover:bg-secondary hover:text-primary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <i className={`${menu.icon} text-lg`}></i>
@@ -122,9 +136,8 @@ function CustomSidebar() {
                   <li>
                     <Link
                       to={`/${menu.name}`}
-                      className={`block p-2 rounded ${
-                        location.pathname === `/${menu.name}` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
-                      }`}
+                      className={`block p-2 rounded ${location.pathname === `/${menu.name}` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
+                        }`}
                     >
                       - All {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
                     </Link>
@@ -133,9 +146,8 @@ function CustomSidebar() {
                     <li>
                       <Link
                         to={`/${menu.name}/add`}
-                        className={`block p-2 rounded ${
-                          location.pathname === `/${menu.name}/add` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
-                        }`}
+                        className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
+                          }`}
                       >
                         - Add New {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
                       </Link>
@@ -148,6 +160,9 @@ function CustomSidebar() {
         })}
       </ul>
     </div>
+
+  </>
+
   );
 }
 
