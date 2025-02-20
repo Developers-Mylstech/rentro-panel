@@ -43,20 +43,38 @@ export default function BrandListing({ brands }) {
   return (
     <div>
       {/* Search and Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="heading">Brand List</h1>
-        <div className="flex items-center gap-3">
-          <IconField iconPosition="right" className="border p-2 rounded">
-            <InputIcon className="pi pi-search"> </InputIcon>
-            <InputText
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent"
-            />
-          </IconField>
-          <CustomButton title="Add Brand" icon="pi pi-plus" onClick={() => navigate("add")} />
-        </div>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+        {/* Brand List Heading */}
+        <h1 className="heading text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-0">
+          Brand List
+        </h1>
+
+      {/* Search Bar + Add Brand Button */}
+<div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+  {/* Search Bar */}
+  <IconField
+    iconPosition="right"
+    className="border p-2 rounded w-full sm:w-60"
+  >
+    <InputIcon className="pi pi-search"></InputIcon>
+    <InputText
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Search..."
+      className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent w-full p-2 rounded-full"
+    />
+  </IconField>
+
+  {/* Add Brand Button (Side-by-Side on Mobile) */}
+  <CustomButton
+    title="Add Brand"
+    icon="pi pi-plus"
+    onClick={() => navigate("add")}
+    className="w-full sm:w-auto sm:ml-3"
+  />
+</div>
+
+      
       </div>
 
       {/* Table */}
