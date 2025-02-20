@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 
+@layer base {
+  body {
+    @apply max-w-screen-2xl mx-auto;
+  }
+} */
+
+@layer components {
+  /* .primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+  .secondary {
+    @apply bg-purple-600 text-white hover:bg-purple-700;
+  } */
+  .heading {
+    @apply text-2xl font-semibold text-black;
+  }
+  .subheading {
+    @apply text-base font-semibold text-gray-600;
+  }
+  .text{
+    @apply text-sm font-normal text-gray-500;
+  }
+}
