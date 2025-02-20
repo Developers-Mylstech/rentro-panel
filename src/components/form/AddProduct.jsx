@@ -144,7 +144,6 @@ export default function AddProduct() {
         <input {...register("sku")} className="w-[70%] p-2 border rounded" />
       </div>
 
-      {/* Quantity */}
       <div className="mb-3 flex justify-between items-center">
         <label className="text mb-1">Quantity</label>
         <input
@@ -154,7 +153,6 @@ export default function AddProduct() {
         />
       </div>
 
-      {/* Stock Status */}
       <div className="mb-3 flex justify-between items-center">
           <label className="text">Stock Status</label>
           <Dropdown  value={selectedStockStatus} onChange={(e) => setSelectedStockStatus(e.value)} 
@@ -163,7 +161,6 @@ export default function AddProduct() {
 
       <h3 className="subheading my-6 mt-4">Prices</h3>
 
-      {/* Pricing Fields */}
       {[
         "Regular Rent Price",
         "Offer Rent Price",

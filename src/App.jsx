@@ -11,8 +11,8 @@ import Orders from "./pages/Orders";
 import Clients from "./pages/Clients";
 import AddClient from "./components/form/AddClient";
 import 'primereact/resources/themes/lara-light-blue/theme.css';
-import 'primereact/resources/primereact.min.css';              
-import 'primeicons/primeicons.css';                        
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 import BannerList from "./components/listing/BannerList";
 import AddBanner from "./components/form/AddBanner";
 import RentList from "./components/listing/RentList";
@@ -22,45 +22,57 @@ import AddSale from "./components/form/AddSale";
 import ServiceList from "./components/listing/ServiceList";
 import AddService from "./components/form/AddService";
 import AboutusListing from "./components/listing/AboutusListing";
+import Login from "./pages/Login";
+import { useState } from "react";
+import AddAboutUs from "./components/form/AddAboutUs";
 
 function App() {
+  const [isTokenValid, setIsTokenValid] = useState(false)
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+      {
+        isTokenValid ? (<>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
 
-          <Route path="products" element={<Products />} />
-          <Route path="products/add" element={<AddProduct />} />
+              <Route path="products" element={<Products />} />
+              <Route path="products/add" element={<AddProduct />} />
 
-          <Route path="categories" element={<Categories />} />
-          <Route path="categories/add" element={<AddCategory />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="categories/add" element={<AddCategory />} />
 
-          <Route path="brands" element={<Brands />} />
-          <Route path="brands/add" element={<AddBrand />} />
+              <Route path="brands" element={<Brands />} />
+              <Route path="brands/add" element={<AddBrand />} />
 
-          <Route path="orders" element={<Orders />} />
+              <Route path="orders" element={<Orders />} />
 
-          <Route path="clients" element={<Clients />} />
-          <Route path="clients/add" element={<AddClient />} />
+              <Route path="clients" element={<Clients />} />
+              <Route path="clients/add" element={<AddClient />} />
 
-          <Route path="banner" element={<BannerList />} />
-          <Route path="banner/add" element={<AddBanner />} />
+              <Route path="banner" element={<BannerList />} />
+              <Route path="banner/add" element={<AddBanner />} />
 
-          <Route path="rent" element={<RentList />} />
-          <Route path="rent/add" element={<AddRent />} />
+              <Route path="rent" element={<RentList />} />
+              <Route path="rent/add" element={<AddRent />} />
 
-          <Route path="sale" element={<SaleList />} />
-          <Route path="sale/add" element={<AddSale />} />
+              <Route path="sale" element={<SaleList />} />
+              <Route path="sale/add" element={<AddSale />} />
 
-          <Route path="service" element={<ServiceList />} />
-          <Route path="service/add" element={<AddService />} />
+              <Route path="service" element={<ServiceList />} />
+              <Route path="service/add" element={<AddService />} />
 
-          <Route path="about" element={<AboutusListing />} />
-          <Route path="about/add" element={<AddService />} />
-
-        </Route>
-      </Routes>
+              <Route path="about" element={<AboutusListing />} />
+              <Route path="about/add" element={<AddAboutUs />} />
+            </Route>
+          </Routes>
+        </>) : (<>
+          <Routes>
+            <Route path='/' element={<Login isTokenValid={setIsTokenValid} />} />
+            <Route path='*' element={<Login isTokenValid={setIsTokenValid} />} />
+          </Routes>
+        </>)
+      }
     </Router>
   );
 }
