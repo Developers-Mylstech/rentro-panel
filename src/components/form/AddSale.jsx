@@ -31,40 +31,40 @@ export default function AddSale() {
   };
 
   return (
-    <div className="p-6">
-      <h3 className="text-2xl font-bold mb-6">Add New Sale Detail</h3>
+    <div className="p-6 w-full">
+      <h3 className=" mb-6">Add New Sale Detail</h3>
       
       {/* Sale Information Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h4 className="font-semibold mb-4">Sale Information</h4>
-        <div className="mb-4">
+        <h4 className="subheading mb-4">Sale Information</h4>
+        <div className="mb-4  flex justify-between">
           <label className="block text-gray-600 mb-2">Title</label>
-          <InputText className="w-full p-2 border rounded" name="title" value={formData.title} onChange={handleChange} placeholder="Title" />
+          <InputText className="w-[70%] p-2 border rounded" name="title" value={formData.title} onChange={handleChange} placeholder="Title" />
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-600 mb-2">Subtitle</label>
-          <InputText className="w-full p-2 border rounded" name="subtitle" value={formData.subtitle} onChange={handleChange} placeholder="Subtitle" />
+        <div className="mb-4  flex justify-between">
+          <label className="block text  mb-2">Subtitle</label>
+          <InputText className="w-[70%] p-2 border rounded" name="subtitle" value={formData.subtitle} onChange={handleChange} placeholder="Subtitle" />
         </div>
-        <div>
-          <label className="block text-gray-600 mb-2">Description</label>
-          <InputTextarea className="w-full p-2 border rounded" name="description" value={formData.description} onChange={handleChange} placeholder="Description" />
+        <div className=' flex justify-between'>
+          <label className="block text mb-2">Description</label>
+          <InputTextarea className="w-[70%] p-2 border rounded" name="description" value={formData.description} onChange={handleChange} placeholder="Description" />
         </div>
       </div>
 
       {/* Sale Images Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h4 className="font-semibold mb-4">Images</h4>
-        <div className="mb-4">
+        <h4 className="subheading mb-4">Images</h4>
+        <div className="mb-4  flex justify-between">
           <label className="block text-gray-600 mb-2">First Image</label>
-          <input type="file" className="border p-2 rounded w-full" name="firstImage" onChange={handleFileChange} />
+          <input type="file" className="border p-2  text rounded w-[70%]" name="firstImage" onChange={handleFileChange} />
         </div>
-        <div className="mb-4">
+        <div className="mb-4  flex justify-between">
           <label className="block text-gray-600 mb-2">Second Image</label>
-          <input type="file" className="border p-2 rounded w-full" name="secondImage" onChange={handleFileChange} />
+          <input type="file" className="border p-2 text  rounded w-[70%]" name="secondImage" onChange={handleFileChange} />
         </div>
-        <div>
+        <div className='mb-4  flex justify-between'>
           <label className="block text-gray-600 mb-2">Third Image</label>
-          <input type="file" className="border p-2 rounded w-full" name="thirdImage" onChange={handleFileChange} />
+          <input type="file" className="border p-2 text rounded w-[70%]" name="thirdImage" onChange={handleFileChange} />
         </div>
       </div>
 
