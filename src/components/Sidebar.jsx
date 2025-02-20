@@ -27,7 +27,7 @@ function CustomSidebar() {
         <h2 className="text-xl font-bold text-secondary">Admin Panel</h2>
         <button
           onClick={() => setIsSidebarOpen(false)}
-          className="text-black text-xl lg:hidden"
+          className="text-black text-xl lg:hidden "
         >
           <i className="pi pi-times  text-secondary "></i>
 

@@ -52,7 +52,6 @@ export default function Orders() {
               className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent"
             />
           </IconField>
-          {/* <CustomButton title="Add Order" icon="pi pi-plus" onClick={() => navigate('add')} /> */}
         </div>
       </div>
 
