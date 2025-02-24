@@ -7,10 +7,12 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
+import { useNavigate } from "react-router-dom";
 
 export default function BrandListing({ brands }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate()
 
   const filteredBrands = brands.filter((brand) =>
     brand.name.toLowerCase().includes(search.toLowerCase())
@@ -69,7 +71,7 @@ export default function BrandListing({ brands }) {
   <CustomButton
     title="Add Brand"
     icon="pi pi-plus"
-    onClick={() => navigate("add")}
+    onClick={() => navigate("/brands/add")}
     className="w-full sm:w-auto sm:ml-3"
   />
 </div>

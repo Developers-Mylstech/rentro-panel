@@ -3,8 +3,12 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import CustomButton from '../../systemdesign/CustomeButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function ServiceList() {
+    const navigate= useNavigate()
+    
   const [services, setServices] = useState([
     {
       id: 1,
@@ -70,7 +74,7 @@ export default function ServiceList() {
   );
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-bold">Service List</h3>
         <div className="flex gap-2">
@@ -80,17 +84,18 @@ export default function ServiceList() {
             placeholder="Search..." 
             className="p-2 border rounded" 
           />
-          <Button label="+ Add New Service" className="p-button-success" />
+          <CustomButton title={'Add New '} icon={'pi pi-plus'} onClick={()=>navigate('/service/add')}/>
         </div>
       </div>
 
       <DataTable 
         value={filteredServices} 
+        stripedRows
         paginator 
         rows={5} 
         responsiveLayout="scroll" 
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        // currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
         <Column 
           field="image" 
@@ -98,7 +103,7 @@ export default function ServiceList() {
           body={(rowData) => <img src={rowData.image} alt="Service" className="w-12 h-12" />} 
         />
         <Column field="title" header="Service Title" className="font-semibold" />
-        <Column field="shortDescription" header="Service Short Description" />
+        <Column field="shortDescription" header="Service Short Description" className='w-1/2'/>
         <Column header="Option" body={actionBodyTemplate} />
       </DataTable>
     </div>

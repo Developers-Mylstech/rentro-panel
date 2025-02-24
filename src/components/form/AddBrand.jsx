@@ -34,8 +34,6 @@ export default function AddBrand() {
   return (
     <div className="">
       <h3 className="heading mb-6">Add New Brand</h3>
-
-
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
         <h4 className="font-semibold mb-4">Brand Information</h4>
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
