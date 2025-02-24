@@ -40,9 +40,10 @@ export default function AddBrand() {
         <h4 className="font-semibold mb-4">Brand Image</h4>
         <div className='flex flex-col md:flex-row justify-between md:items-center'>
           <label className="block text-gray-600 mb-2">Brand Image</label>
-          <input type="file" className="border p-2 rounded w-[70%]" onChange={handleFileChange} />
+          <input type="file" className="border p-2 rounded w-[70%] sm:w-[70%] file:w-full file:py-2" onChange={handleFileChange} />
         </div>
-       
+      
+
       </div>
       
       {/* Category Image Upload Section */}
