@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -7,11 +7,28 @@ import CustomButton from '../../systemdesign/CustomeButton';
 
 export default function AddCategory() {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const fileUploadRef = useRef();
+  const [key, setKey] = useState(0);
+
 
   const onSubmit = (data) => {
     console.log('Form Data:', data);
   };
 
+  const handleImageSelect = (event) => {
+    const file = event.files[0];
+    if (file) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width !== 500 || img.height !== 500) {
+          alert('Image dimensions must be 500x500 pixels.');
+          setKey((prevKey) => prevKey + 1);
+        }
+      };
+    }
+  };
+  
   return (
     <div className="">
       <h1 className="heading mb-6">Add New Category</h1>
@@ -46,8 +63,6 @@ export default function AddCategory() {
                 {errors.subcategory && <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>}
               </div>
             </div>
-
-
           </div>
         </form>
       </div>
@@ -60,6 +75,8 @@ export default function AddCategory() {
           <div className="w-full md:w-10/12">
             <FileUpload
               mode="basic"
+              key={key}
+              ref={fileUploadRef}
               name="categoryImage"
               chooseOptions={{ className: 'bg-secondary' }}
               url="/api/upload"
@@ -69,6 +86,7 @@ export default function AddCategory() {
               accept="image/*"
               {...register('categoryImage', { required: 'Image is required' })}
               customUpload
+              onSelect={handleImageSelect}
             />
             {errors.categoryImage && <p className="text-red-500 text-sm mt-1">{errors.categoryImage.message}</p>}
           </div>

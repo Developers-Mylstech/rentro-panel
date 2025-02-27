@@ -50,6 +50,7 @@ export default function AddBrand() {
         <div className="flex flex-col md:flex-row justify-between md:items-center">
           <label className="block text-gray-600 mb-2">Brand Image</label>
           <FileUpload
+        
             mode="basic"
             name="categoryImage"
             chooseOptions={{ className: 'bg-secondary' }}

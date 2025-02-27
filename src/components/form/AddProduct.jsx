@@ -242,7 +242,7 @@
 //         )}
 //       </div>
 
-     
+
 
 //       {/* Brand */}
 //       <div className="mb-3 flex justify-between items-center">
@@ -311,7 +311,7 @@
 //           <textarea {...register("description")} className="w-[70%] p-2 border rounded" />
 //         </div>
 //       )}
-      
+
 
 //       <h3 className="subheading my-6 mt-4">Product Images</h3>
 
@@ -324,7 +324,7 @@
 //         chooseLabel="Choose Images"
 //         chooseOptions={{className:"bg-secondary"}}
 //         multiple={false} // Disable multiple uploads at once
-        
+
 //       />
 
 //       <div className="mt-4 grid grid-cols-4 gap-4">
@@ -346,63 +346,64 @@
 //         ))}
 //       </div>
 
-    //   <h3 className="subheading my-6 mt-4">Inventory</h3>
+//   <h3 className="subheading my-6 mt-4">Inventory</h3>
 
-    //   {/* SKU */}
-    //   <div className="mb-3 flex justify-between items-center">
-    //     <label className="text mb-1">SKU</label>
-    //     <input {...register("sku")} className="w-[70%] p-2 border rounded" />
-    //   </div>
+//   {/* SKU */}
+//   <div className="mb-3 flex justify-between items-center">
+//     <label className="text mb-1">SKU</label>
+//     <input {...register("sku")} className="w-[70%] p-2 border rounded" />
+//   </div>
 
-    //   {/* Quantity */}
-    //   <div className="mb-3 flex justify-between items-center">
-    //     <label className="text mb-1">Quantity</label>
-    //     <input
-    //       type="number"
-    //       {...register("quantity")}
-    //       className="w-[70%] p-2 border rounded"
-    //     />
-    //   </div>
+//   {/* Quantity */}
+//   <div className="mb-3 flex justify-between items-center">
+//     <label className="text mb-1">Quantity</label>
+//     <input
+//       type="number"
+//       {...register("quantity")}
+//       className="w-[70%] p-2 border rounded"
+//     />
+//   </div>
 
-    //   {/* Stock Status */}
-    //   <div className="mb-3 flex justify-between items-center">
-    //     <label className="text mb-1">Stock Status</label>
-    //     <select {...register("stockStatus")} className="w-[70%] p-2 border rounded">
-    //       <option value="In Stock">In Stock</option>
-    //       <option value="Out of Stock">Out of Stock</option>
-    //     </select>
-    //   </div>
+//   {/* Stock Status */}
+//   <div className="mb-3 flex justify-between items-center">
+//     <label className="text mb-1">Stock Status</label>
+//     <select {...register("stockStatus")} className="w-[70%] p-2 border rounded">
+//       <option value="In Stock">In Stock</option>
+//       <option value="Out of Stock">Out of Stock</option>
+//     </select>
+//   </div>
 
-    //   <h3 className="subheading my-6 mt-4">Prices</h3>
+//   <h3 className="subheading my-6 mt-4">Prices</h3>
 
-    //   {/* Pricing Fields */}
-    //   {[
-    //     "Regular Rent Price",
-    //     "Offer Rent Price",
-    //     "Regular Buy Price",
-    //     "Offer Buy Price",
-    //   ].map((label, index) => (
-    //     <div className="mb-3 flex justify-between items-center" key={index}>
-    //       <label className="text mb-1">{label}</label>
-    //       <input
-    //         type="number"
-    //         {...register(label.replace(/\s+/g, "").toLowerCase())}
-    //         className="w-[70%] p-2 border rounded"
-    //       />
-    //     </div>
-    //   ))}
+//   {/* Pricing Fields */}
+//   {[
+//     "Regular Rent Price",
+//     "Offer Rent Price",
+//     "Regular Buy Price",
+//     "Offer Buy Price",
+//   ].map((label, index) => (
+//     <div className="mb-3 flex justify-between items-center" key={index}>
+//       <label className="text mb-1">{label}</label>
+//       <input
+//         type="number"
+//         {...register(label.replace(/\s+/g, "").toLowerCase())}
+//         className="w-[70%] p-2 border rounded"
+//       />
+//     </div>
+//   ))}
 
-    //   {/* Submit Button */}
-     
-    //  <div className="flex justify-center items-center w-full">
-    //  <CustomButton title="Submit" onClick={handleSubmit}/>
-    //  </div>
+//   {/* Submit Button */}
+
+//  <div className="flex justify-center items-center w-full">
+//  <CustomButton title="Submit" onClick={handleSubmit}/>
+//  </div>
 //     </form>
 //   );
 // }
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import { useForm } from "react-hook-form";
 import { FileUpload } from "primereact/fileupload";
 import "primereact/resources/primereact.min.css";
@@ -418,7 +419,7 @@ export default function AddProduct() {
     formState: { errors },
     reset
   } = useForm();
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const [fields, setFields] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -441,7 +442,7 @@ export default function AddProduct() {
     "Water Tanker",
 
   ];
-  const subCatogery =[
+  const subCatogery = [
     "Filter",
     "Cooler",
     "Dispenser",
@@ -452,14 +453,14 @@ export default function AddProduct() {
 
   ]
   const brands = [
-   "Rent RO ",
- "Kentt RO",
-  "Aquagaurd",
-  "Aqua Pro",
-   "Waterlogin", 
-  "Culligen", 
-   
-    
+    "Rent RO ",
+    "Kentt RO",
+    "Aquagaurd",
+    "Aqua Pro",
+    "Waterlogin",
+    "Culligen",
+
+
   ];
 
   const filteredCategories = mainCategories.filter((category) =>
@@ -505,13 +506,12 @@ export default function AddProduct() {
 
   const [images, setImages] = useState([]);
 
-  // Load images from local storage on component mount
+  //
   useEffect(() => {
     const storedImages = JSON.parse(localStorage.getItem("productImages")) || [];
     setImages(storedImages);
   }, []);
 
-  // Save images to local storage whenever they change
   useEffect(() => {
     localStorage.setItem("productImages", JSON.stringify(images));
   }, [images]);
@@ -520,7 +520,6 @@ export default function AddProduct() {
     const uploadedFiles = event.files;
     const newImages = [...images];
 
-    // Check each file for format and quantity
     uploadedFiles.forEach((file) => {
       const fileType = file.type;
       const isValidFormat =
@@ -562,18 +561,18 @@ export default function AddProduct() {
       brand: selectedBrand,
       images,
     });
-    
+
     onRemoveImage()
     setSelectedBrand("")
     setSelectedCategory("")
     setSelectedSubCategory("")
     setImages('')
     reset()
-  
-    
-    
+
+
+
   };
-  
+
 
   return (
     <form
@@ -595,9 +594,9 @@ export default function AddProduct() {
           <span className="text-red-500">Product Name is required</span>
         )}
       </div>
-        {errors.productName && (
-          <span className="text-red-500">Product Name is required</span>
-        )}
+      {errors.productName && (
+        <span className="text-red-500">Product Name is required</span>
+      )}
 
       {/* Main Category - Searchable Dropdown */}
       <div className=" mb-3 flex justify-between items-center relative">
@@ -736,7 +735,7 @@ export default function AddProduct() {
         )}
       </div>
 
-     
+
 
       {/* Long Description */}
       <div className="mb-3 flex justify-between items-center">
@@ -763,9 +762,8 @@ export default function AddProduct() {
             <h3
               key={option.key}
               onClick={() => toggleField(option.key)}
-              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${
-                fields.includes(option.key) ? "bg-secondary text-white" : ""
-              }`}
+              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${fields.includes(option.key) ? "bg-secondary text-white" : ""
+                }`}
             >
               {option.label}
             </h3>
@@ -805,13 +803,13 @@ export default function AddProduct() {
       <FileUpload
         name="demo[]"
         customUpload
-      chooseOptions={{className: "bg-secondary"}}
+        chooseOptions={{ className: "bg-secondary" }}
         uploadHandler={onUpload}
         accept="image/png,image/jpeg"
         maxFileSize={1000000}
         chooseLabel="Choose Images"
-        multiple={false} // Disable multiple uploads at once
-        
+        multiple={false}
+
       />
 
       <div className="mt-4 grid grid-cols-4 gap-4">
@@ -835,55 +833,55 @@ export default function AddProduct() {
 
       <h3 className="subheading my-6 mt-4">Inventory</h3>
 
-{/* SKU */}
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">SKU</label>
-  <input {...register("sku")} className="w-[70%] p-2 border rounded" />
-</div>
+      {/* SKU */}
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">SKU</label>
+        <input {...register("sku")} className="w-[70%] p-2 border rounded" />
+      </div>
 
-{/* Quantity */}
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Quantity</label>
-  <input
-    type="number"
-    {...register("quantity")}
-    className="w-[70%] p-2 border rounded"
-  />
-</div>
+      {/* Quantity */}
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Quantity</label>
+        <input
+          type="number"
+          {...register("quantity")}
+          className="w-[70%] p-2 border rounded"
+        />
+      </div>
 
-{/* Stock Status */}
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Stock Status</label>
-  <select {...register("stockStatus")} className="w-[70%] p-2 border rounded">
-    <option value="In Stock">In Stock</option>
-    <option value="Out of Stock">Out of Stock</option>
-  </select>
-</div>
+      {/* Stock Status */}
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Stock Status</label>
+        <select {...register("stockStatus")} className="w-[70%] p-2 border rounded">
+          <option value="In Stock">In Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+      </div>
 
-<h3 className="subheading my-6 mt-4">Prices</h3>
+      <h3 className="subheading my-6 mt-4">Prices</h3>
 
-{/* Pricing Fields */}
-{[
-  "Regular Rent Price",
-  "Offer Rent Price",
-  "Regular Buy Price",
-  "Offer Buy Price",
-].map((label, index) => (
-  <div className="mb-3 flex justify-between items-center" key={index}>
-    <label className="text mb-1">{label}</label>
-    <input
-      type="number"
-      {...register(label.replace(/\s+/g, "").toLowerCase())}
-      className="w-[70%] p-2 border rounded"
-    />
-  </div>
-))}
+      {/* Pricing Fields */}
+      {[
+        "Regular Rent Price",
+        "Offer Rent Price",
+        "Regular Buy Price",
+        "Offer Buy Price",
+      ].map((label, index) => (
+        <div className="mb-3 flex justify-between items-center" key={index}>
+          <label className="text mb-1">{label}</label>
+          <input
+            type="number"
+            {...register(label.replace(/\s+/g, "").toLowerCase())}
+            className="w-[70%] p-2 border rounded"
+          />
+        </div>
+      ))}
 
-{/* Submit Button */}
+      {/* Submit Button */}
 
-<div className="flex justify-center items-center w-full">
-<CustomButton title="Submit" onClick={onSubmit}/>
-</div>
+      <div className="flex justify-center items-center w-full">
+        <CustomButton title="Submit" onClick={onSubmit} />
+      </div>
     </form>
   );
 }
