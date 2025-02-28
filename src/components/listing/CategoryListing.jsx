@@ -7,10 +7,12 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
+import { useNavigate } from "react-router-dom";
 
 export default function CategoryListing({ categories }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
+  const navigate =useNavigate()
 
   const filteredCategories = categories.filter((category) =>
     category.mainCategory.toLowerCase().includes(search.toLowerCase())
@@ -54,7 +56,7 @@ export default function CategoryListing({ categories }) {
               className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent"
             />
           </IconField>
-          <CustomButton title={'Add category'} icon={'pi pi-plus'}/>
+          <CustomButton title={'Add category'} icon={'pi pi-plus'} onClick={()=>navigate('/categories/add')}/>
         </div>
       </div>
 

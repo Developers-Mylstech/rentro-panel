@@ -31,11 +31,6 @@ export default function Products() {
 
   return (
     <div className="">
-      <div className="flex justify-between mb-4">
-        <h2 className="heading font-bold mb-4">Products List</h2>
-        <CustomButton title="Add" onClick={handleNavigate} icon={'pi pi-plus'}/>
-      </div>
-
       <ProductList products={products} handleEdit={handleEdit} handleDelete={handleDelete} />
     </div>
   );

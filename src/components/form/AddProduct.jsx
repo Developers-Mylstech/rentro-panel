@@ -885,7 +885,8 @@
 //   );
 // }
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import { useForm } from "react-hook-form";
 import { FileUpload } from "primereact/fileupload";
 import "primereact/resources/primereact.min.css";
@@ -902,6 +903,7 @@ export default function AddProduct() {
   } = useForm();
 
   const [images, setImages] = useState([]);
+  // const imagesLenght =  JSON.parse(localStorage.getItem("productImages")).length;
   const [uploadSections, setUploadSections] = useState([0]); 
   const [fileNames, setFileNames] = useState([]); // Track chosen file names
   const [key, setKey] = useState(false);
@@ -994,7 +996,6 @@ export default function AddProduct() {
     setFileNames(storedFileNames);
   }, []);
 
-
   useEffect(() => {
     localStorage.setItem("productImages", JSON.stringify(images));
     localStorage.setItem("fileName", JSON.stringify(fileNames));
@@ -1004,28 +1005,24 @@ export default function AddProduct() {
     const selectedFiles = event.files;
     const newImages = [...images];
     const newFileNames = { ...fileNames };
-
-    // Check each file for format and quantity
+  
     selectedFiles.forEach((file) => {
       const fileType = file.type;
       const isValidFormat = fileType === "image/jpeg" || fileType === "image/png";
-
+  
       if (!isValidFormat) {
         alert("Only PNG and JPG images are allowed.");
-        // setKey((prev) => prev + 1)
         return;
       }
-
-      if (newImages.length < 10) {
+  
+      if (newImages.length < 10 || newImages[index]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          
-          // newImages.push(e.target.result);
-          newImages[index]=file
+          // Update the image at the correct index
+          newImages[index] = e.target.result;
           setImages(newImages);
-          newFileNames[index] = file.name; // Save the chosen file name
+          newFileNames[index] = file.name; 
           setFileNames(newFileNames);
-          
         };
         reader.readAsDataURL(file);
         setKey(!key);
@@ -1034,6 +1031,14 @@ export default function AddProduct() {
       }
     });
   };
+  
+
+  useEffect(() => {
+    if (images.length > 0) {
+      setUploadSections(Array.from({ length: images.length }, (_, index) => index));
+    }
+  }, [images]);
+  
 
   
   const onRemoveImage = (index) => {
@@ -1041,7 +1046,6 @@ export default function AddProduct() {
     updatedImages.splice(index, 1);
     setImages(updatedImages);
 
-    // Remove file name and adjust labels
     const updatedFileNames = {};
   Object.keys(fileNames).forEach((key) => {
     const numKey = parseInt(key, 10);
@@ -1364,8 +1368,9 @@ export default function AddProduct() {
         </p>
       </div>
 
-      {/* Render Multiple File Uploads */}
+      
       {uploadSections.map((sectionIndex) => { 
+        console.log(sectionIndex,'PPPP')
       return(
         <div className="mb-4 relative">
           <div className="flex justify-between w-[80%] items-center gap-10">
@@ -1396,7 +1401,7 @@ export default function AddProduct() {
             </div>
             
           </div>
-          {/* Remove Section Button */}
+        
           {sectionIndex !== 0 && (
             <button
               type="button"
@@ -1422,7 +1427,7 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-4 gap-4 hidden">
+      <div className="mt-4  grid-cols-4 gap-4 hidden">
         {images.map((img, index) => (
           <div key={index} className="relative">
             <img
