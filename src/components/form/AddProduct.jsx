@@ -986,7 +986,7 @@ export default function AddProduct() {
   };
 
 
-  // Load images from local storage on component mount
+
   useEffect(() => {
     const storedImages = JSON.parse(localStorage.getItem("productImages")) || [];
     setImages(storedImages);
@@ -994,7 +994,7 @@ export default function AddProduct() {
     setFileNames(storedFileNames);
   }, []);
 
-  // Save images to local storage whenever they change
+
   useEffect(() => {
     localStorage.setItem("productImages", JSON.stringify(images));
     localStorage.setItem("fileName", JSON.stringify(fileNames));
@@ -1019,7 +1019,9 @@ export default function AddProduct() {
       if (newImages.length < 10) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          newImages.push(e.target.result);
+          
+          // newImages.push(e.target.result);
+          newImages[index]=file
           setImages(newImages);
           newFileNames[index] = file.name; // Save the chosen file name
           setFileNames(newFileNames);
@@ -1033,6 +1035,7 @@ export default function AddProduct() {
     });
   };
 
+  
   const onRemoveImage = (index) => {
     const updatedImages = [...images];
     updatedImages.splice(index, 1);
@@ -1419,7 +1422,7 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-4 gap-4">
+      <div className="mt-4 grid grid-cols-4 gap-4 hidden">
         {images.map((img, index) => (
           <div key={index} className="relative">
             <img
