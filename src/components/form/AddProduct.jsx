@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 
 import { useForm } from "react-hook-form";
@@ -6,6 +5,8 @@ import { FileUpload } from "primereact/fileupload";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primeicons/primeicons.css";
+import { Checkbox } from "primereact/checkbox";
+import { classNames } from "primereact/utils";
 
 export default function AddProduct() {
   const {
@@ -17,17 +18,35 @@ export default function AddProduct() {
   } = useForm();
 
   const [images, setImages] = useState([]);
-  const [uploadSections, setUploadSections] = useState([0]); 
-  const [fileNames, setFileNames] = useState([]); 
+  const [uploadSections, setUploadSections] = useState([0]);
+  const [fileNames, setFileNames] = useState([]);
   const [key, setKey] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [fields, setFields] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubOpen, setSubIsOpen] = useState(false);
   const [isBrandOpen, setBrandOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(""); 
-  const [selectedSubCategory, setSelectedSubCategory] = useState(""); 
-  const [selectedBrand, setSelectedBrand] = useState(""); 
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  // const options = ["Rent", "Sell", "Service"];
+  const options = [
+    { label: "Rent", color: "text-blue-600" },
+    { label: "Sell", color: "text-green-600" },
+    { label: "Service", color: "text-red-600" },
+  ];
+
+  const onOptionChange = (e) => {
+    let updatedOptions = [...selectedOptions];
+    if (e.checked) {
+      updatedOptions.push(e.value);
+    } else {
+      updatedOptions = updatedOptions.filter((item) => item !== e.value);
+    }
+    setSelectedOptions(updatedOptions);
+  };
 
   const mainCategories = [
     "Domestic",
@@ -100,7 +119,8 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
-    const storedImages = JSON.parse(localStorage.getItem("productImages")) || [];
+    const storedImages =
+      JSON.parse(localStorage.getItem("productImages")) || [];
     setImages(storedImages);
     const storedFileNames = JSON.parse(localStorage.getItem("fileName")) || [];
     setFileNames(storedFileNames);
@@ -109,28 +129,29 @@ export default function AddProduct() {
   useEffect(() => {
     localStorage.setItem("productImages", JSON.stringify(images));
     localStorage.setItem("fileName", JSON.stringify(fileNames));
-  }, [images,fileNames]);
+  }, [images, fileNames]);
 
   const onImageSelect = (event, index) => {
     const selectedFiles = event.files;
     const newImages = [...images];
     const newFileNames = { ...fileNames };
-  
+
     selectedFiles.forEach((file) => {
       const fileType = file.type;
-      const isValidFormat = fileType === "image/jpeg" || fileType === "image/png";
-  
+      const isValidFormat =
+        fileType === "image/jpeg" || fileType === "image/png"|| fileType === "image/webp" ;
+
       if (!isValidFormat) {
-        alert("Only PNG and JPG images are allowed.");
+        alert("select the proper formate.");
         return;
       }
-  
+
       if (newImages.length < 10 || newImages[index]) {
         const reader = new FileReader();
         reader.onload = (e) => {
           newImages[index] = e.target.result;
           setImages(newImages);
-          newFileNames[index] = file.name; 
+          newFileNames[index] = file.name;
           setFileNames(newFileNames);
         };
         reader.readAsDataURL(file);
@@ -140,76 +161,69 @@ export default function AddProduct() {
       }
     });
   };
-  
 
   useEffect(() => {
     if (images.length > 0) {
-      setUploadSections(Array.from({ length: images.length }, (_, index) => index));
+      setUploadSections(
+        Array.from({ length: images.length }, (_, index) => index)
+      );
     }
   }, [images]);
-  
 
-  
   const onRemoveImage = (index) => {
     const updatedImages = [...images];
     updatedImages.splice(index, 1);
     setImages(updatedImages);
 
     const updatedFileNames = {};
-  Object.keys(fileNames).forEach((key) => {
-    const numKey = parseInt(key, 10);
-    if (numKey < index) {
-      updatedFileNames[numKey] = fileNames[numKey];
-    } else if (numKey > index) {
-      updatedFileNames[numKey - 1] = fileNames[numKey];
-    }
-  });
-
+    Object.keys(fileNames).forEach((key) => {
+      const numKey = parseInt(key, 10);
+      if (numKey < index) {
+        updatedFileNames[numKey] = fileNames[numKey];
+      } else if (numKey > index) {
+        updatedFileNames[numKey - 1] = fileNames[numKey];
+      }
+    });
   };
   const addNewFileUpload = () => {
     setUploadSections((prev) => {
       const newIndex = prev.length;
-      console.log(newIndex,'????')
+      console.log(newIndex, "????");
       const newSections = [...prev, newIndex];
-      console.log(newSections,"kjbjskbcl")
-      
+      console.log(newSections, "kjbjskbcl");
+
       setFileNames((prevNames) => ({
         ...prevNames,
-        [newIndex]: "Choose", 
+        [newIndex]: "Choose",
       }));
-      
+
       return newSections;
     });
   };
-  
+
   const removeFileUpload = (index) => {
-    if (uploadSections.length > 1) {
+    if (uploadSections.length >= 0) {
       const updatedSections = uploadSections.filter((_, i) => i !== index);
-  
+
       const reIndexedSections = updatedSections.map((_, i) => i);
       setUploadSections(reIndexedSections);
 
       const reorderedFileNames = {};
       updatedSections.forEach((_, newIndex) => {
         if (newIndex >= index) {
-          reorderedFileNames[newIndex] = fileNames[newIndex + 1] || "Choose Image";
+          reorderedFileNames[newIndex] =
+            fileNames[newIndex + 1] || "Choose Image";
         } else {
           reorderedFileNames[newIndex] = fileNames[newIndex];
         }
       });
-  
-  
+
       setFileNames(reorderedFileNames);
       onRemoveImage(index);
-     
     } else {
       alert("You must have at least one file upload section.");
     }
   };
-  
-  
-  
-  
 
   const onSubmit = (data) => {
     console.log("Form Data:", {
@@ -229,280 +243,301 @@ export default function AddProduct() {
       <h2 className="heading my-10">Add New Product</h2>
       <h3 className="subheading my-6">Product Information</h3>
 
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Product Name</label>
-  <input
-    {...register("productName", { required: true })}
-    placeholder="Product Name"
-    className="w-[70%] p-2 border rounded"
-  />
-  {errors.productName && (
-    <span className="text-red-500">Product Name is required</span>
-  )}
-</div>
-{errors.productName && (
-  <span className="text-red-500">Product Name is required</span>
-)}
-
-<div className=" mb-3 flex justify-between items-center relative">
-  <label className="text mb-1">Main Category</label>
-
-  <div
-    className="w-[70%] p-2 border rounded bg-white cursor-pointer"
-    onClick={() => setIsOpen(!isOpen)}
-  >
-    {selectedCategory || "Select Category"}
-  </div>
-
-  {isOpen && (
-    <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      <input
-        type="text"
-        className="w-full p-2 border-b"
-        placeholder="Search category..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        autoFocus
-      />
-
-      <div className="max-h-40 overflow-y-auto">
-        {filteredCategories.map((category, index) => (
-          <div
-            key={index}
-            className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
-            onClick={() => handleSelect(category)}
-          >
-            {category}
-          </div>
-        ))}
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Product Name</label>
+        <input
+          {...register("productName", { required: true })}
+          placeholder="Product Name"
+          className="w-[70%] p-2 border rounded"
+        />
+        {errors.productName && (
+          <span className="text-red-500">Product Name is required</span>
+        )}
       </div>
-    </div>
-  )}
+      {errors.productName && (
+        <span className="text-red-500">Product Name is required</span>
+      )}
 
-  <input
-    type="hidden"
-    {...register("mainCategory", { required: true })}
-  />
-  {errors.mainCategory && (
-    <span className="text-red-500">Category is required</span>
-  )}
-</div>
-<div className=" mb-3 flex justify-between items-center relative">
-  <label className="text mb-1">Sub Category</label>
+      <div className=" mb-3 flex justify-between items-center relative">
+        <label className="text mb-1">Main Category</label>
 
-  <div
-    className="w-[70%] p-2 border rounded bg-white cursor-pointer"
-    onClick={() => setSubIsOpen(!isSubOpen)}
-  >
-    {selectedSubCategory || "Select Category"}
-  </div>
+        <div
+          className="w-[70%] p-2 border rounded bg-white cursor-pointer"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {selectedCategory || "Select Category"}
+        </div>
 
-  {isSubOpen && (
-    <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      <input
-        type="text"
-        className="w-full p-2 border-b"
-        placeholder="Search category..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        autoFocus
-      />
+        {isOpen && (
+          <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
+            <input
+              type="text"
+              className="w-full p-2 border-b"
+              placeholder="Search category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
+            />
 
-      <div className="max-h-40 overflow-y-auto">
-        {filteredSubCategories.map((category, index) => (
-          <div
-            key={index}
-            className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
-            onClick={() => handleSubSelect(category)}
-          >
-            {category}
+            <div className="max-h-40 overflow-y-auto">
+              {filteredCategories.map((category, index) => (
+                <div
+                  key={index}
+                  className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
+                  onClick={() => handleSelect(category)}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        )}
+
+        <input
+          type="hidden"
+          {...register("mainCategory", { required: true })}
+        />
+        {errors.mainCategory && (
+          <span className="text-red-500">Category is required</span>
+        )}
       </div>
-    </div>
-  )}
+      <div className=" mb-3 flex justify-between items-center relative">
+        <label className="text mb-1">Sub Category</label>
 
-  <input type="hidden" {...register("subCatogery", { required: true })} />
-  {errors.mainCategory && (
-    <span className="text-red-500">Category is required</span>
-  )}
-</div>
-<div className=" mb-3 flex justify-between items-center relative">
-  <label className="text mb-1">Brand</label>
+        <div
+          className="w-[70%] p-2 border rounded bg-white cursor-pointer"
+          onClick={() => setSubIsOpen(!isSubOpen)}
+        >
+          {selectedSubCategory || "Select Category"}
+        </div>
 
-  <div
-    className="w-[70%] p-2 border rounded bg-white cursor-pointer"
-    onClick={() => setBrandOpen(!isBrandOpen)}
-  >
-    {selectedBrand || "Select Brand"}
-  </div>
+        {isSubOpen && (
+          <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
+            <input
+              type="text"
+              className="w-full p-2 border-b"
+              placeholder="Search category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
+            />
 
-  {isBrandOpen && (
-    <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      <input
-        type="text"
-        className="w-full p-2 border-b"
-        placeholder="Search Brand..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        autoFocus
-      />
-
-      <div className="max-h-40 overflow-y-auto">
-        {filteredBrand.map((brand, index) => (
-          <div
-            key={index}
-            className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
-            onClick={() => handleBrand(brand)}
-          >
-            {brand}
+            <div className="max-h-40 overflow-y-auto">
+              {filteredSubCategories.map((category, index) => (
+                <div
+                  key={index}
+                  className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
+                  onClick={() => handleSubSelect(category)}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        )}
+
+        <input type="hidden" {...register("subCatogery", { required: true })} />
+        {errors.mainCategory && (
+          <span className="text-red-500">Category is required</span>
+        )}
       </div>
-    </div>
-  )}
+      <div className=" mb-3 flex justify-between items-center relative">
+        <label className="text mb-1">Brand</label>
 
-  <input type="hidden" {...register("brand", { required: true })} />
-  {errors.brand && (
-    <span className="text-red-500">Brand is required</span>
-  )}
-</div>
+        <div
+          className="w-[70%] p-2 border rounded bg-white cursor-pointer"
+          onClick={() => setBrandOpen(!isBrandOpen)}
+        >
+          {selectedBrand || "Select Brand"}
+        </div>
 
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Long Description</label>
-  <textarea
-    {...register("longDescription")}
-    className="w-[70%] p-2 border rounded"
-  ></textarea>
-</div>
+        {isBrandOpen && (
+          <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
+            <input
+              type="text"
+              className="w-full p-2 border-b"
+              placeholder="Search Brand..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
+            />
 
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Short Description</label>
-  <input
-    {...register("shortDescription")}
-    className="w-[70%] p-2 border rounded"
-  />
-</div>
+            <div className="max-h-40 overflow-y-auto">
+              {filteredBrand.map((brand, index) => (
+                <div
+                  key={index}
+                  className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
+                  onClick={() => handleBrand(brand)}
+                >
+                  {brand}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-<div className="mb-3 flex justify-between items-center">
-  <h3 className="subheading my-6">Specifications</h3>
-  <div className="w-[70%] gap-4 flex">
-    {fieldOptions.map((option) => (
-      <h3
-        key={option.key}
-        onClick={() => toggleField(option.key)}
-        className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${
-          fields.includes(option.key) ? "bg-secondary text-white" : ""
-        }`}
-      >
-        {option.label}
-      </h3>
-    ))}
-  </div>
-</div>
+        <input type="hidden" {...register("brand", { required: true })} />
+        {errors.brand && (
+          <span className="text-red-500">Brand is required</span>
+        )}
+      </div>
+      <div className="flex justify-between items-center w-full  py-2">
+        <h3 className="text">Product For</h3>
+        <div className="flex   gap-3  w-[70%]  ">
+          {options.map((option, index) => (
+            <div key={index} className="flex align-items-center">
+              <Checkbox
+                inputId={option.label}
+                value={option.label}
+                onChange={onOptionChange}
+                checked={selectedOptions.includes(option.label)}
+                className="border   rounded-md h-6 w-6"
+              />
+              <label htmlFor={option.label} className={`ml-4 ${option.color}`}>
+                {option.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* <div className="mt-3">
+        <strong>Selected Options:</strong> {selectedOptions.join(", ") || "None"}
+      </div> */}
 
-<div className="mb-3 flex justify-between items-center">
-  <label className="text mb-1">Manufacturer</label>
-  <input
-    {...register("manufacturer")}
-    className="w-[70%] p-2 border rounded"
-  />
-</div>
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Long Description</label>
+        <textarea
+          {...register("longDescription")}
+          className="w-[70%] p-2 border rounded"
+        ></textarea>
+      </div>
 
-{fields.includes("title") && (
-  <div className="mb-3 flex justify-between items-center">
-    <label className="text mb-1">Title</label>
-    <input
-      {...register("title")}
-      className="w-[70%] p-2 border rounded"
-    />
-  </div>
-)}
-{fields.includes("brand") && (
-  <div className="mb-3 flex justify-between items-center">
-    <label className="text mb-1">Brand</label>
-    <input
-      {...register("brand")}
-      className="w-[70%] p-2 border rounded"
-    />
-  </div>
-)}
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Short Description</label>
+        <input
+          {...register("shortDescription")}
+          className="w-[70%] p-2 border rounded"
+        />
+      </div>
 
-{fields.includes("description") && (
-  <div className="mb-3 flex justify-between items-center">
-    <label className="text mb-1">Description</label>
-    <textarea
-      {...register("description")}
-      className="w-[70%] p-2 border rounded"
-    />
-  </div>
-)}
+      <div className="mb-3 flex justify-between items-center">
+        <h3 className="subheading my-6">Specifications</h3>
+        <div className="w-[70%] gap-4 flex">
+          {fieldOptions.map((option) => (
+            <h3
+              key={option.key}
+              onClick={() => toggleField(option.key)}
+              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${
+                fields.includes(option.key) ? "bg-secondary text-white" : ""
+              }`}
+            >
+              {option.label}
+            </h3>
+          ))}
+        </div>
+      </div>
 
+      <div className="mb-3 flex justify-between items-center">
+        <label className="text mb-1">Manufacturer</label>
+        <input
+          {...register("manufacturer")}
+          className="w-[70%] p-2 border rounded"
+        />
+      </div>
 
+      {fields.includes("title") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Title</label>
+          <input
+            {...register("title")}
+            className="w-[70%] p-2 border rounded"
+          />
+        </div>
+      )}
+      {fields.includes("brand") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Brand</label>
+          <input
+            {...register("brand")}
+            className="w-[70%] p-2 border rounded"
+          />
+        </div>
+      )}
+
+      {fields.includes("description") && (
+        <div className="mb-3 flex justify-between items-center">
+          <label className="text mb-1">Description</label>
+          <textarea
+            {...register("description")}
+            className="w-[70%] p-2 border rounded"
+          />
+        </div>
+      )}
 
       <div className="mb-4">
         <h4 className="font-semibold subheading">Product Images</h4>
-        <p className="text-yellow-500 opacity-70 text-sm mt-1">
+        <p className="text-gray-500 opacity-70 text-sm mt-1">
           **Image should be below 1 MB and should have dimensions of 500x600 and
           type of .png / .jpeg / .webp**
         </p>
       </div>
 
-      
-      {uploadSections.map((sectionIndex) => { 
-        console.log(sectionIndex,'PPPP')
-      return(
-        <div className="mb-4 relative">
-          <div className="flex justify-between w-[80%] items-center gap-10">
-            <label className="block text mb-2">
-              {sectionIndex === 0
-                ? "Main Image"
-                : `Image ${sectionIndex + 1}`}
-            </label>
+      {uploadSections.map((sectionIndex) => {
+        console.log(sectionIndex, "PPPP");
+        return (
+          <div className="mb-4 relative">
+            <div className=" flex md:flex-row flex-col justify-between w-[80%] items-center gap-10">
+              <label className="block text mb-2 font-bold">
+                {sectionIndex === 0
+                  ? "Main Image"
+                  : `Image ${sectionIndex + 1}`}
+              </label>
 
-            <FileUpload
-              name={`demo-${sectionIndex}[]`}
-              key={key}
-              customUpload
-              mode="basic"
-              chooseOptions={{ className: "bg-secondary" }}
-              uploadHandler={() => {}} 
-              onSelect={(e) => onImageSelect(e, sectionIndex)}
-              accept="image/png,image/jpeg"
-              maxFileSize={1000000}
-              chooseLabel={fileNames[sectionIndex] } 
-              multiple={false}
-              auto
-            />
-           
-            <div className="flex justify-center">
-            <img src={images[sectionIndex]} className="h-10 w-10 border-none" alt="" />
-           
+              <FileUpload
+                name={`demo-${sectionIndex}[]`}
+                key={key}
+                customUpload
+                mode="basic"
+                chooseOptions={{ className: "bg-white border text-secondary" }}
+                uploadHandler={() => {}}
+                onSelect={(e) => onImageSelect(e, sectionIndex)}
+                accept="image/png,image/jpeg"
+                maxFileSize={1000000}
+                chooseLabel={fileNames[sectionIndex]}
+                multiple={false}
+                auto
+              />
+
+              <div className="flex justify-center">
+               
+                {images[sectionIndex] && (
+                  <img src={images[sectionIndex]} className="h-20 w-20" />
+                )}
+              </div>
             </div>
-            
-          </div>
-        
-          {sectionIndex !== 0 && (
+
+            {/* {sectionIndex !== 0 && ( */}
             <button
               type="button"
               onClick={() => removeFileUpload(sectionIndex)}
               className="absolute top-0 right-0 text-black p-1"
               title="Remove this section"
             >
-              <i className="pi pi-times mt-4 border"></i>
+              <i className="pi pi-times md:mt-4 border"></i>
             </button>
-          )}
-        </div>
-      )})}
+            {/* )} */}
+          </div>
+        );
+      })}
 
-      <div className="flex justify-end">
-        {images.length < 10 && images.length > 0 && (
+      <div className="flex md:justify-end justify-center">
+        {images.length < 10 && (
           <button
             type="button"
             onClick={addNewFileUpload}
-            className="mt-2 px-2 py-1 rounded-lg bg-secondary text-white font-semibold"
+            className="mt-2 px-2 py-2 rounded-lg bg-secondary text-white font-semibold"
           >
-            +Add
+            <i className="pi pi-plus "></i> Add More
           </button>
         )}
       </div>
@@ -526,7 +561,7 @@ export default function AddProduct() {
         ))}
       </div>
 
-            <h3 className="subheading my-6 mt-4">Inventory</h3>
+      <h3 className="subheading my-6 mt-4">Inventory</h3>
 
       {/* SKU */}
       <div className="mb-3 flex justify-between items-center">
@@ -558,7 +593,6 @@ export default function AddProduct() {
 
       <h3 className="subheading my-6 mt-4">Prices</h3>
 
-   
       {[
         "Regular Rent Price",
         "Offer Rent Price",

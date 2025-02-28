@@ -9,6 +9,8 @@ function CustomSidebar() {
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
+  
+
   };
 
   return (<>
