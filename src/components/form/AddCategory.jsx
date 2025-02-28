@@ -69,15 +69,21 @@ export default function AddCategory() {
           />
           {errors.categoryImage && <p className="text-red-500 text-sm mt-1">{errors.categoryImage.message}</p>}
         </div> */}
-<div className="flex flex-col md:flex-row items-start w-full gap-2">
-    <label className="w-full md:w-2/12 text-left mb-2">Main Category Image</label>
-    <div className="w-full md:w-10/12">
+<div className="flex flex-col md:flex-row md:items-start  justify-between w-full gap-2">
+<div className=" mb-4">
+            <h4 className="font-semibold subheading">Main Category Image</h4>
+            <p className="text-yellow-500 opacity-70 text-sm mt-1">
+              **Image should be below 1 MB and should have dimentions of 500X600
+              and type of .png / .jpeg / .webp**
+            </p>
+            </div>
+  
         <FileUpload
             mode="basic"
             name="categoryImage"
             chooseOptions={{ className: 'bg-secondary' }}
             url="/api/upload"
-            className="w-[70%]"
+            className=""
             contentStyle="bg-red-300"
             chooseLabel="Choose File"
             accept="image/*"
@@ -85,7 +91,7 @@ export default function AddCategory() {
             customUpload
         />
         {errors.categoryImage && <p className="text-red-500 text-sm mt-1">{errors.categoryImage.message}</p>}
-    </div>
+ 
 </div>
 
 
