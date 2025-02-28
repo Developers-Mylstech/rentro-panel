@@ -1165,7 +1165,6 @@ export default function AddProduct() {
 
   {isOpen && (
     <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      {/* Search Bar */}
       <input
         type="text"
         className="w-full p-2 border-b"
@@ -1175,7 +1174,6 @@ export default function AddProduct() {
         autoFocus
       />
 
-      {/* Category Options */}
       <div className="max-h-40 overflow-y-auto">
         {filteredCategories.map((category, index) => (
           <div
@@ -1210,7 +1208,6 @@ export default function AddProduct() {
 
   {isSubOpen && (
     <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      {/* Search Bar */}
       <input
         type="text"
         className="w-full p-2 border-b"
@@ -1220,7 +1217,6 @@ export default function AddProduct() {
         autoFocus
       />
 
-      {/* Category Options */}
       <div className="max-h-40 overflow-y-auto">
         {filteredSubCategories.map((category, index) => (
           <div
@@ -1252,7 +1248,6 @@ export default function AddProduct() {
 
   {isBrandOpen && (
     <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
-      {/* Search Bar */}
       <input
         type="text"
         className="w-full p-2 border-b"
@@ -1426,7 +1421,7 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-4 gap-4 hidden">
+      <div className="mt-4  grid-cols-4 gap-4 hidden">
         {images.map((img, index) => (
           <div key={index} className="relative">
             <img
