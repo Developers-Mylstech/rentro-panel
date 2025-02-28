@@ -401,7 +401,6 @@ export default function AddProduct() {
   </div>
 </div>
 
-{/* Manufacturer Field */}
 <div className="mb-3 flex justify-between items-center">
   <label className="text mb-1">Manufacturer</label>
   <input
@@ -410,7 +409,6 @@ export default function AddProduct() {
   />
 </div>
 
-{/* Dynamic Fields Based on User Selection */}
 {fields.includes("title") && (
   <div className="mb-3 flex justify-between items-center">
     <label className="text mb-1">Title</label>
@@ -560,7 +558,7 @@ export default function AddProduct() {
 
       <h3 className="subheading my-6 mt-4">Prices</h3>
 
-      {/* Pricing Fields */}
+   
       {[
         "Regular Rent Price",
         "Offer Rent Price",
