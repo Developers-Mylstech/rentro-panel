@@ -132,10 +132,13 @@ export default function AddSale() {
 
       {/* Image Upload Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h4 className="font-semibold mb-4 subheading">Upload Images</h4>
+        <div className=' mb-4'>
+        <h4 className="font-semibold subheading">Upload Images</h4>
+        <p className='text-yellow-500 opacity-70 text-sm mt-1'>**Image should be below 1 MB and should have dimentions of 500X600 and type of .png / .jpeg / .webp**</p>
+        </div>
 
         <FileUpload 
-          mode="advanced" 
+          mode="basic" 
           name="images[]" 
           accept="image/png, image/jpeg, image/jpg, image/webp"
           maxFileSize={1000000} 
@@ -145,13 +148,14 @@ export default function AddSale() {
           uploadOptions={uploadOptions}
           chooseOptions={{className:'bg-secondary'}}
           onSelect={onImageSelect}
+          
 
         />
 
         {error && <p className="text-red-600 mt-2">{error}</p>}
 
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {previewImages.map((image, index) => (
+        {/* <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> */}
+          {/* {previewImages.map((image, index) => (
             <div key={index} className="relative">
               <img 
                 src={image} 
@@ -166,7 +170,7 @@ export default function AddSale() {
               />
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-center mt-6">
