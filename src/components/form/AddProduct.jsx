@@ -25,9 +25,9 @@ export default function AddProduct() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubOpen, setSubIsOpen] = useState(false);
   const [isBrandOpen, setBrandOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(""); // State to store selected category
-  const [selectedSubCategory, setSelectedSubCategory] = useState(""); // State to store selected category
-  const [selectedBrand, setSelectedBrand] = useState(""); // State to store selected brand
+  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const [selectedSubCategory, setSelectedSubCategory] = useState(""); 
+  const [selectedBrand, setSelectedBrand] = useState(""); 
 
   const mainCategories = [
     "Domestic",
@@ -100,7 +100,6 @@ export default function AddProduct() {
   };
 
 
-  // Load images from local storage on component mount
   useEffect(() => {
     const storedImages = JSON.parse(localStorage.getItem("productImages")) || [];
     setImages(storedImages);
@@ -130,7 +129,6 @@ export default function AddProduct() {
       if (newImages.length < 10 || newImages[index]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          // Update the image at the correct index
           newImages[index] = e.target.result;
           setImages(newImages);
           newFileNames[index] = file.name; 
@@ -161,10 +159,8 @@ export default function AddProduct() {
   Object.keys(fileNames).forEach((key) => {
     const numKey = parseInt(key, 10);
     if (numKey < index) {
-      // Keep indices before the removed one the same
       updatedFileNames[numKey] = fileNames[numKey];
     } else if (numKey > index) {
-      // Shift indices after the removed one down by 1
       updatedFileNames[numKey - 1] = fileNames[numKey];
     }
   });
@@ -177,10 +173,9 @@ export default function AddProduct() {
       const newSections = [...prev, newIndex];
       console.log(newSections,"kjbjskbcl")
       
-      // Preserve existing labels and add new label for the new section
       setFileNames((prevNames) => ({
         ...prevNames,
-        [newIndex]: "Choose", // Initialize only the new section's label
+        [newIndex]: "Choose", 
       }));
       
       return newSections;
@@ -189,27 +184,13 @@ export default function AddProduct() {
   
   const removeFileUpload = (index) => {
     if (uploadSections.length > 1) {
-      // Remove the section
       const updatedSections = uploadSections.filter((_, i) => i !== index);
   
-      // Re-index the sections to be sequential
       const reIndexedSections = updatedSections.map((_, i) => i);
       setUploadSections(reIndexedSections);
-  
-
-      // const reorderedFileNames = reorderedFileNames.filter((_, i) => i !== index);
-  
-      // Re-index the sections to be sequential
-      // const reIndexedNameSections = reorderedFileNames.map((_, i) => i);
-      // setFileNames(reIndexedNameSections);
-      // onRemoveImage(index);
-  
-      // Re-index file names to match the new section order
-      // const reorderedFileNames = [];
 
       const reorderedFileNames = {};
       updatedSections.forEach((_, newIndex) => {
-        // If the index is after the removed one, shift it by -1
         if (newIndex >= index) {
           reorderedFileNames[newIndex] = fileNames[newIndex + 1] || "Choose Image";
         } else {
@@ -248,7 +229,6 @@ export default function AddProduct() {
       <h2 className="heading my-10">Add New Product</h2>
       <h3 className="subheading my-6">Product Information</h3>
 
-{/* Product Name */}
 <div className="mb-3 flex justify-between items-center">
   <label className="text mb-1">Product Name</label>
   <input
@@ -264,7 +244,6 @@ export default function AddProduct() {
   <span className="text-red-500">Product Name is required</span>
 )}
 
-{/* Main Category - Searchable Dropdown */}
 <div className=" mb-3 flex justify-between items-center relative">
   <label className="text mb-1">Main Category</label>
 
@@ -397,7 +376,6 @@ export default function AddProduct() {
   ></textarea>
 </div>
 
-{/* Short Description */}
 <div className="mb-3 flex justify-between items-center">
   <label className="text mb-1">Short Description</label>
   <input
