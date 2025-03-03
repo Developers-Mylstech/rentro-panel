@@ -30,6 +30,8 @@ export default function AddProduct() {
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [isErrors, setErrors] = useState({});
+
 
   // const options = ["Rent", "Sell", "Service"];
   const options = [
@@ -131,36 +133,87 @@ export default function AddProduct() {
     localStorage.setItem("fileName", JSON.stringify(fileNames));
   }, [images, fileNames]);
 
+  // const onImageSelect = (event, index) => {
+  //   const selectedFiles = event.files;
+  //   const newImages = [...images];
+  //   const newFileNames = { ...fileNames };
+
+  //   selectedFiles.forEach((file) => {
+  //     const fileType = file.type;
+  //     const fileSize = file.size ;
+      
+  //     const isValidFormat =
+  //       fileType === "image/jpeg" || fileType === "image/png"|| fileType === "image/webp" 
+
+     
+
+  //     if (!isValidFormat ) {
+  //       alert("select the proper formate.");
+  //       setKey(!key);
+  //       return;
+  //     }
+    
+     
+      
+      
+  //     if (newImages.length < 10 || newImages[index]) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => {
+  //         newImages[index] = e.target.result;
+  //         setImages(newImages);
+  //         newFileNames[index] = file.name;
+  //         setFileNames(newFileNames);
+  //       };
+  //       reader.readAsDataURL(file);
+  //       setKey(!key);
+  //     } else {
+  //       alert("You can only upload up to 10 images.");
+  //     }
+  //   });
+  // };
+
+
   const onImageSelect = (event, index) => {
     const selectedFiles = event.files;
     const newImages = [...images];
     const newFileNames = { ...fileNames };
-
-    selectedFiles.forEach((file) => {
+  
+    for (let file of selectedFiles) {
       const fileType = file.type;
-      const isValidFormat =
-        fileType === "image/jpeg" || fileType === "image/png"|| fileType === "image/webp" ;
-
+      const fileSize = file.size;
+  
+      const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(fileType);
+      const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
+  
       if (!isValidFormat) {
-        alert("select the proper formate.");
+        alert("Select a proper format (JPEG, PNG, WEBP).");
+        setKey(!key);
+        return; // Stop execution
+      }
+  
+      if (!isValidSize) {
+        alert("File size exceeds 1MB. Please select a smaller file.");
+        setKey(!key);
+        return; // Stop execution
+      }
+  
+      if (newImages.length >= 10) {
+        alert("You can only upload up to 10 images.");
         return;
       }
-
-      if (newImages.length < 10 || newImages[index]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          newImages[index] = e.target.result;
-          setImages(newImages);
-          newFileNames[index] = file.name;
-          setFileNames(newFileNames);
-        };
-        reader.readAsDataURL(file);
-        setKey(!key);
-      } else {
-        alert("You can only upload up to 10 images.");
-      }
-    });
+  
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        newImages[index] = e.target.result;
+        newFileNames[index] = file.name;
+        setImages(newImages);
+        setFileNames(newFileNames);
+      };
+      reader.readAsDataURL(file);
+      setKey(!key);
+    }
   };
+  
 
   useEffect(() => {
     if (images.length > 0) {
@@ -385,7 +438,7 @@ export default function AddProduct() {
         <h3 className="text">Product For</h3>
         <div className="flex   gap-3  w-[70%]  ">
           {options.map((option, index) => (
-            <div key={index} className="flex align-items-center">
+            <div key={index} className={`flex align-items-center pr-4   md:pl-20  md:pr-20 ${option.label=="Sell"||option.label=='Rent'?"border-r-2 border-gray-200":""}`}>
               <Checkbox
                 inputId={option.label}
                 value={option.label}
@@ -482,54 +535,45 @@ export default function AddProduct() {
         </p>
       </div>
 
-      {uploadSections.map((sectionIndex) => {
-        console.log(sectionIndex, "PPPP");
-        return (
-          <div className="mb-4 relative">
-            <div className=" flex md:flex-row flex-col justify-between w-[80%] items-center gap-10">
-              <label className="block text mb-2 font-bold">
-                {sectionIndex === 0
-                  ? "Main Image"
-                  : `Image ${sectionIndex + 1}`}
-              </label>
+      {uploadSections.map((sectionIndex) => (
+        <div key={sectionIndex} className="mb-4 relative">
+          <div className="flex md:flex-row flex-col justify-between w-[80%] items-center gap-10">
+            <label className="block text mb-2 font-bold">
+              {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
+            </label>
 
-              <FileUpload
-                name={`demo-${sectionIndex}[]`}
-                key={key}
-                customUpload
-                mode="basic"
-                chooseOptions={{ className: "bg-white border text-secondary" }}
-                uploadHandler={() => {}}
-                onSelect={(e) => onImageSelect(e, sectionIndex)}
-                accept="image/png,image/jpeg"
-                maxFileSize={1000000}
-                chooseLabel={fileNames[sectionIndex]}
-                multiple={false}
-                auto
-              />
+            <FileUpload
+              name={`demo-${sectionIndex}[]`}
+              key={key} // Force re-render on invalid file selection
+              customUpload
+              mode="basic"
+              chooseOptions={{ className: "bg-white border text-secondary" }}
+              uploadHandler={() => {}}
+              onSelect={(e) => onImageSelect(e, sectionIndex)}
+              accept="image/png,image/jpeg,image/webp"
+              // maxFileSize={1024 * 1024} // 1MB limit
+              chooseLabel={fileNames[sectionIndex] || "Choose a file"}
+              multiple={false}
+              auto
+            />
 
-              <div className="flex justify-center">
-               
-                {images[sectionIndex] && (
-                  <img src={images[sectionIndex]} className="h-20 w-20" />
-                )}
-              </div>
+            <div className="flex justify-center">
+              {images[sectionIndex] && (
+                <img src={images[sectionIndex]} className="h-20 w-20" alt="Preview" />
+              )}
             </div>
-
-            {/* {sectionIndex !== 0 && ( */}
-            <button
-              type="button"
-              onClick={() => removeFileUpload(sectionIndex)}
-              className="absolute top-0 right-0 text-black p-1"
-              title="Remove this section"
-            >
-              <i className="pi pi-times md:mt-4 border"></i>
-            </button>
-            {/* )} */}
           </div>
-        );
-      })}
 
+          <button
+            type="button"
+            onClick={() => removeFileUpload(sectionIndex)}
+            className="absolute top-0 right-0 text-black p-1"
+            title="Remove this section"
+          >
+            <i className="pi pi-times md:mt-4 border"></i>
+          </button>
+        </div>
+      ))}
       <div className="flex md:justify-end justify-center">
         {images.length < 10 && (
           <button

@@ -260,7 +260,7 @@ export default function AddRent() {
       {/* Image Upload Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6">
         <h4 className="subheading mb-4">Images</h4>
-        <p className="text-yellow-500 opacity-70 text-sm mb-4">
+        <p className="text-red-500 opacity-70 text-sm mb-4">
           **Image should be below 1 MB and should have dimensions of 500X600 and type of .png / .jpeg / .webp**
         </p>
 

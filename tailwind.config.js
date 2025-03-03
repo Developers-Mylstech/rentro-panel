@@ -8,9 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      // #058271
       colors: {
         primary: "#FFFFFF",
-        secondary: "#058271", 
+        secondary: "rgb(78,155,202)", 
       },
       fontSize: {
         heading: "2rem",
