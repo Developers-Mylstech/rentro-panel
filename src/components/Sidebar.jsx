@@ -21,7 +21,7 @@ function CustomSidebar() {
       <i className="pi pi-align-left"></i>
     </button>
     <div
-      className={`fixed top-0 left-0 h-screen bg-primary shadow-md p-5 overflow-y-auto z-[55] w-1/2 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      className={`fixed top-0 left-0 h-screen bg-primary shadow-md p-5 overflow-y-auto z-[55] w-[70%] transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:w-1/6 lg:block`}
     >
       <div className="flex justify-between">
@@ -78,9 +78,10 @@ function CustomSidebar() {
 
               {activeMenu === menu.name && (
                 <ul className="pl-8 mt-2 space-y-1">
-                  <li>
+                  <li >
                     <Link
                       to={`/${menu.name}`}
+                      onClick={()=> setIsSidebarOpen(false)}
                       className={`block p-2 rounded ${location.pathname === `/${menu.name}` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
                         }`}
                     >
@@ -90,6 +91,7 @@ function CustomSidebar() {
                   {menu.name !== "orders" && (
                     <li>
                       <Link
+                      onClick={()=> setIsSidebarOpen(false)}
                         to={`/${menu.name}/add`}
                         className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ? "text-secondary font-semibold" : "text-gray-400 hover:text-secondary"
                           }`}

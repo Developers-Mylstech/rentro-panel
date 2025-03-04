@@ -537,7 +537,7 @@ export default function AddProduct() {
 
       {uploadSections.map((sectionIndex) => (
         <div key={sectionIndex} className="mb-4 relative">
-          <div className="flex md:flex-row flex-col justify-between w-[80%] items-center gap-10">
+          <div className="flex md:flex-row flex-row justify-between w-[80%]  items-center gap-10">
             <label className="block text mb-2 font-bold">
               {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
             </label>
@@ -557,7 +557,7 @@ export default function AddProduct() {
               auto
             />
 
-            <div className="flex justify-center">
+            <div className="md:flex hidden justify-center">
               {images[sectionIndex] && (
                 <img src={images[sectionIndex]} className="h-20 w-20" alt="Preview" />
               )}
@@ -570,7 +570,7 @@ export default function AddProduct() {
             className="absolute top-0 right-0 text-black p-1"
             title="Remove this section"
           >
-            <i className="pi pi-times md:mt-4 border"></i>
+            <i className="pi pi-times mt-3 border"></i>
           </button>
         </div>
       ))}
