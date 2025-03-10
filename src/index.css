@@ -26,3 +26,67 @@
     @apply text-sm font-normal text-gray-500;
   }
 }
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
+li.relative:hover .right-container,li.relative.open .right-container {
+  display: block;
+  position: absolute;
+  right: 0px;
+  top: -50px;
+  height: 50px;
+  width: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0px 10px white;
+  pointer-events: none;
+}
+
+/* Ensure the div remains hidden when not hovered */
+.right-container{
+  display: none;
+}
+
+/* Adjust parent position if necessary */
+li.relative {
+  position: relative;
+
+}
+
+
+/* Add ::after for styling or decoration */
+li.relative::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 35px -35px 0px 10px white;
+  pointer-events: none 
+  /* transition: opacity 0.3s ease; */
+}
+
+/* Make ::after visible on hover */
+li.relative:hover::after {
+  opacity: 1;
+}
+
+/* Hide ::after when dropdown is open */
+li.relative.open::after {
+  opacity: 0;
+  pointer-events: none;
+}
