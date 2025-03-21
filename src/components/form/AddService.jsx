@@ -85,13 +85,13 @@ export default function AddService() {
       <h3 className="heading mb-6">Add New Services</h3>
 
       {/* Service Information Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h2 className=" subheading mb-4">Service Information</h2>
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+        <h2 className=" subheading mb-4 dark:text-gray-100 ">Service Information</h2>
 
         <div className="mb-4 flex justify-between">
-          <label className="text mb-2">Service Title</label>
+          <label className="text mb-2 dark:text-gray-100 ">Service Title</label>
           <InputText
-            className="w-[70%] p-2 border rounded"
+            className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -99,9 +99,9 @@ export default function AddService() {
           />
         </div>
 
-        <div className="mb-4 flex justify-between">
+        <div className="mb-4 flex flex-col md:flex-row  justify-between">
           <label className="text mb-2">Service Short Description</label>
-          <div className="w-[70%]">
+          <div className="md:w-[70%] w-full">
             <Editor
               value={formData.serviceShortDescription}
               onTextChange={(e) =>
@@ -115,7 +115,7 @@ export default function AddService() {
           </div>
         </div>
 
-        <div className="mb-4  flex justify-between md:items-start">
+        <div className="mb-4  flex flex-col md:flex-row  justify-between md:items-start">
           <div className=" mb-4">
             <h4 className="font-semibold subheading">Service Image</h4>
             <p className="text-yellow-500 opacity-70 text-sm mt-1">
@@ -140,13 +140,13 @@ export default function AddService() {
         </div>
       </div>
 
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h2 className="subheading mb-4">Service Detail Information</h2>
+      <div className="border p-6 rounded-lg shadow dark:text-gray-100 dark:bg-gray-900 mb-6">
+        <h2 className="subheading mb-4 dark:text-gray-100 ">Service Detail Information</h2>
 
         <div className="mb-4 flex justify-between">
-          <label className="text mb-2">Service Heading</label>
+          <label className="text mb-2 dark:text-gray-100 ">Service Heading</label>
           <InputText
-            className="w-[70%] p-2 border rounded"
+            className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
             name="subtitle"
             value={formData.subtitle}
             onChange={handleChange}
@@ -155,11 +155,12 @@ export default function AddService() {
         </div>
 
         {/* PrimeReact Editor for Long Description */}
-        <div className="mb-4 flex justify-between">
-          <label className="text mb-2">Service Long Description</label>
-          <div className="w-[70%]">
+        <div className="mb-4 flex flex-col md:flex-row justify-between">
+          <label className="text mb-2 dark:text-gray-100 ">Service Long Description</label>
+          <div className="md:w-[70%] w-full">
             <Editor
               value={formData.description}
+              className="dark:text-gray-100 dark:bg-gray-900"
               onTextChange={(e) =>
                 setFormData({ ...formData, description: e.htmlValue })
               }
@@ -170,9 +171,9 @@ export default function AddService() {
       </div>
 
       {/* Images Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
         <div className=" mb-4">
-          <h4 className="font-semibold subheading">Images</h4>
+          <h4 className="font-semibold subheading dark:text-gray-100 dark:bg-gray-900">Images</h4>
           <p className="text-yellow-500 opacity-70 text-sm mt-1">
             **Image should be below 1 MB and should have dimentions of 500X600
             and type of .png / .jpeg / .webp**
@@ -181,7 +182,7 @@ export default function AddService() {
 
         {["firstImage", "secondImage", "thirdImage"].map((imageName, index) => (
           <div key={index} className="mb-4 flex justify-between">
-            <label className="block text mb-2">{`Image ${index + 1}`}</label>
+            <label className="block text mb-2 dark:text-gray-100 ">{`Image ${index + 1}`}</label>
             <FileUpload
               name={imageName}
               mode="basic"
@@ -191,7 +192,7 @@ export default function AddService() {
               chooseLabel={
                 imagePaths[imageName] ? imagePaths[imageName] : `Choose File`
               }
-              chooseOptions={{ className: "bg-secondary" }}
+              chooseOptions={{className: 'bg-primary border-2 border-secondary text-secondary' }}
               auto
               onSelect={(e) => handleFileSelect(e, imageName)}
             />
@@ -204,15 +205,15 @@ export default function AddService() {
       </div>
 
       {/* Features Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h2 className="subheading mb-4">Features</h2>
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+        <h2 className="subheading mb-4 dark:text-gray-100 ">Features</h2>
 
         {[1, 2, 3, 4, 5, 6].map((num) => (
           <div key={num} className="mb-4">
-            <div className="mb-4 flex justify-between">
-              <label className="text mb-2">{`Feature ${num} Title`}</label>
+            <div className="mb-4 flex justify-between ">
+              <label className="text mb-2 dark:text-gray-100 ">{`Feature ${num} Title`}</label>
               <InputText
-                className="w-[70%] p-2 border rounded"
+                className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
                 name={`feature${num}Title`}
                 value={formData[`feature${num}Title`] || ""}
                 onChange={handleChange}
@@ -220,9 +221,9 @@ export default function AddService() {
               />
             </div>
 
-            <div className="mb-4 flex justify-between">
-              <label className="text mb-2">{`Feature ${num} Description`}</label>
-              <div className="w-[70%]">
+            <div className="mb-4 flex flex-col md:flex-row  justify-between">
+              <label className="text mb-2 dark:text-gray-100 ">{`Feature ${num} Description`}</label>
+              <div className="md:w-[70%] w-full">
                 <Editor
                   value={formData[`feature${num}Description`] || ""}
                   onTextChange={(e) =>

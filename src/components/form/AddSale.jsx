@@ -107,33 +107,33 @@ export default function AddSale() {
   };
 
   return (
-    <div className="">
-      <h3 className="heading mb-6">Add New Sale Detail</h3>
+    <div className="h-screen">
+      <h3 className="heading mb-6 dark:text-gray-100 ">Add New Sale Detail</h3>
 
       {/* Sale Information Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h4 className="font-semibold mb-4 subheading">Sale Information</h4>
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+        <h4 className="font-semibold mb-4 subheading dark:text-gray-100">Sale Information</h4>
 
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="block text mb-2">Title</label>
-          <InputText className="w-[70%] p-2 border rounded" name="title" value={formData.title} onChange={handleChange} placeholder="Title" />
+          <label className="block text mb-2 dark:text-gray-100">Title</label>
+          <InputText className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900" name="title" value={formData.title} onChange={handleChange} placeholder="Title" />
         </div>
 
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="block text mb-2">Subtitle</label>
-          <InputText className="w-[70%] p-2 border rounded" name="subtitle" value={formData.subtitle} onChange={handleChange} placeholder="Subtitle" />
+          <label className="block text mb-2 dark:text-gray-100">Subtitle</label>
+          <InputText className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900" name="subtitle" value={formData.subtitle} onChange={handleChange} placeholder="Subtitle" />
         </div>
 
         <div className='flex flex-col md:flex-row justify-between md:items-center'>
-          <label className="block text mb-2">Description</label>
-          <InputTextarea className="w-[70%] p-2 border rounded" name="description" value={formData.description} onChange={handleChange} placeholder="Description" />
+          <label className="block text mb-2 dark:text-gray-100">Description</label>
+          <InputTextarea className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900" name="description" value={formData.description} onChange={handleChange} placeholder="Description" />
         </div>
       </div>
 
       {/* Image Upload Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
         <div className=' mb-4'>
-        <h4 className="font-semibold subheading">Upload Images</h4>
+        <h4 className="font-semibold subheading dark:text-gray-100">Upload Images</h4>
         <p className='text-yellow-500 opacity-70 text-sm mt-1'>**Image should be below 1 MB and should have dimentions of 500X600 and type of .png / .jpeg / .webp**</p>
         </div>
 
