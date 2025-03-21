@@ -66,27 +66,24 @@ export default function RentList() {
   );
 
   return (
-    <div>
-      {/* ✅ Responsive Header Section */}
+    <div className="h-screen">
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        {/* Heading */}
-        <h5 className="text-xl font-semibold text-gray-700 w-full md:w-auto">
+        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-300 w-full md:w-auto">
           Rental Details List
         </h5>
 
-        {/* Search and Button Container */}
         <div className="flex flex-col md:flex-row items-stretch gap-3 w-full md:w-auto">
-          {/* Search Bar */}
           <IconField
             iconPosition="right"
-            className="border rounded flex w-full md:w-64"
+            className="border rounded flex p-2 w-full md:w-64 dark:bg-gray-700 dark:border-gray-600"
           >
-            <InputIcon className="pi pi-search" />
+            <InputIcon className="pi pi-search dark:text-gray-400" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none flex-1"
+              className="p-inputtext-sm focus:ring-0 focus:outline-none flex-1 dark:bg-gray-700 dark:text-gray-200"
             />
           </IconField>
 
@@ -95,83 +92,91 @@ export default function RentList() {
             title="Add New"
             icon="pi pi-plus"
             onClick={() => navigate('add')}
-            className="w-full md:w-auto"
+            className="w-full md:w-auto dark:bg-green-600 dark:hover:bg-green-700 dark:text-white"
           />
         </div>
       </div>
 
-      {/* ✅ Table Section */}
+
+
       <DataTable
         value={filteredRentals}
         paginator
         rows={5}
         stripedRows
-        className="border border-gray-300 rounded-md mb-8 hidden lg:block"
+        paginatorClassName="dark:bg-gray-800"
+        className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block 
+             bg-white dark:bg-gray-900 dark:text-gray-200"
       >
         <Column
           field="image"
           header="Rental Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary dark:bg-gray-800 border dark:border-gray-700 text-white text-center"
+          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
         />
         <Column
           field="title"
           header="Title"
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center font-semibold"
+          headerClassName="bg-secondary dark:bg-gray-800 border-r dark:border-gray-700 text-white text-center"
+          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center font-semibold border border-gray-300 dark:border-gray-700"
         />
         <Column
           field="subtitle"
           header="Subtitle"
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary dark:bg-gray-800 border-r dark:border-gray-700 text-white text-center"
+          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-secondary text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary dark:bg-gray-800 text-white text-center"
+          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
         />
       </DataTable>
 
-      {/* ✅ Card View Section */}
-      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6">
-        {filteredRentals.map((rental) => (
-          <div
-            key={rental.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-          >
-            <img
-              src={rental.image}
-              alt={rental.title}
-              className="w-full h-32 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800">
-                {rental.title}
-              </h3>
-              <p className="text-sm text-gray-500">{rental.subtitle}</p>
-              <div className="flex justify-center mt-4 gap-3">
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
-                  onClick={() => {
-                    setSelectedRental(rental);
-                    setVisible(true);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* ✅ Delete Confirmation Dialog */}
+
+
+      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6">
+  {filteredRentals.map((rental) => (
+    <div
+      key={rental.id}
+      className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 
+                 hover:shadow-xl hover:-translate-y-1 border border-gray-300 dark:border-gray-700"
+    >
+      <img
+        src={rental.image}
+        alt={rental.title}
+        className="w-full h-32 object-cover border-b border-gray-300 dark:border-gray-700"
+      />
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+          {rental.title}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {rental.subtitle}
+        </p>
+        <div className="flex justify-center mt-4 gap-3">
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-600 hover:dark:bg-gray-500"
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-red-600 hover:dark:bg-red-500"
+            onClick={() => {
+              setSelectedRental(rental);
+              setVisible(true);
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+
       <Dialog
         header="Confirmation"
         position="top"
