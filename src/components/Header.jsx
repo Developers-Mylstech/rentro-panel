@@ -9,7 +9,7 @@ export default function Header() {
 
     useEffect(() => {
         if (darkMode) {
-            document.documentElement.classList.add("dark"); // Enables dark mode globally
+            document.documentElement.classList.add("dark");
             localStorage.setItem("theme", "dark");
         } else {
             document.documentElement.classList.remove("dark");
@@ -41,15 +41,20 @@ export default function Header() {
 
     return (
         <div className="flex justify-end py-5 border-b sticky z-50 px-10 gap-5 top-0 transition-all duration-300 
-                        bg-white text-black dark:bg-dark dark:text-dark">
+                        bg-white text-black dark:bg-gray-900 dark:text-dark">
             <Menu model={items} popup ref={menuRef} id="popup_menu_left" />
-            
-            <button 
-                onClick={toggleDarkMode} 
-                className="px-4 py-2 rounded-md transition-all duration-300 bg-gray-700 text-white dark:bg-yellow-400 dark:text-black"
+
+
+
+            <button
+                onClick={toggleDarkMode}
+                className="p-3 rounded-md transition-all duration-300  text-black  dark:text-white"
             >
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
+                {darkMode ? <i className="pi pi-sun"></i>
+                    : <i className="pi  pi-moon"></i>
+                }
             </button>
+
 
             <div className='flex gap-3 items-center' onClick={(event) => menuRef.current.toggle(event)}>
                 <i className="pi pi-user text-lg cursor-pointer dark:text-white" aria-controls="popup_menu_left" aria-haspopup />

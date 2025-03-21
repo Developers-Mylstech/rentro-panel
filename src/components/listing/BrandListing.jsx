@@ -23,19 +23,16 @@ export default function BrandListing({ brands }) {
 
   return (
     <div className="p-4">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
-        <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-0">Brand List</h1>
-
-        {/* Search and Add Button */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 text-white">
+        <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-0 dark:text-gray-200 text-black">Brand List</h1>
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <IconField iconPosition="right" className="w-full sm:w-60 border p-2 rounded">
-            <InputIcon className="pi pi-search" />
+          <IconField iconPosition="right" className="w-full sm:w-60 border border-gray-600 bg-gray-800 p-2 rounded">
+            <InputIcon className="pi pi-search text-gray-400" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none w-full"
+              className="p-inputtext-sm focus:ring-0 focus:outline-none w-full bg-gray-800 text-white placeholder-gray-400"
             />
           </IconField>
 
@@ -43,24 +40,26 @@ export default function BrandListing({ brands }) {
             title="Add Brand"
             icon="pi pi-plus"
             onClick={() => navigate("/brands/add")}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
           />
         </div>
       </div>
 
-      {/* Table View (Visible on Screens >= 768px) */}
       <div className="hidden md:block">
-        <table className="min-w-full border border-gray-300 rounded-md shadow-sm">
-          <thead className="bg-secondary text-white">
+        <table className="min-w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <thead className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
             <tr>
-              <th className="p-2 border-r">Brand Image</th>
-              <th className="p-2 border-r">Brand Name</th>
+              <th className="p-2 border-r border-gray-300 dark:border-gray-700">Brand Image</th>
+              <th className="p-2 border-r border-gray-300 dark:border-gray-700">Brand Name</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredBrands.map((brand) => (
-              <tr key={brand.id} className="border-b">
+              <tr
+                key={brand.id}
+                className="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              >
                 <td className="p-2 text-center">
                   <img
                     src={brand.image}
@@ -73,12 +72,12 @@ export default function BrandListing({ brands }) {
                   <div className="flex justify-center gap-2">
                     <Button
                       icon="pi pi-pencil"
-                      className="p-button-text text-blue-500 hover:text-blue-700"
+                      className="p-button-text text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500"
                     />
                     <Button
                       icon="pi pi-trash"
                       onClick={() => setVisible(true)}
-                      className="p-button-text text-red-500 hover:text-red-700"
+                      className="p-button-text text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500"
                     />
                   </div>
                 </td>
@@ -88,7 +87,8 @@ export default function BrandListing({ brands }) {
         </table>
       </div>
 
-      {/* Card View (Visible on Screens < 768px) */}
+
+
       <div className="block md:hidden px-4">
         {filteredBrands.map((brand) => (
           <div

@@ -105,67 +105,77 @@ export default function AddBrand() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="">
-      <h3 className="heading mb-6">Add New Brand</h3>
-
-      {/* Brand Information Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6">
-        <h4 className="font-semibold mb-4">Brand Information</h4>
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="block text-gray-600 mb-2">Brand Name</label>
-          <InputText
-            className="w-[70%] p-2 border rounded"
-            placeholder="Enter Brand Name"
-            {...register('brandName', {
-              required: 'Brand Name is required',
-            })}
-          />
-          {errors.mainCategory && (
-            <p className="mt-2 text-sm text-red-600">
-              {errors.brandName.message}
-            </p>
-          )}
-        </div>
-
-        <h4 className="font-semibold mb-4">Brand Image</h4>
-        <div className="flex flex-col md:flex-row justify-between md:items-center">
-        <div className=' mb-4'>
-        <h4 className="font-semibold subheading">Brand Image</h4>
-        <p className='text-yellow-500 opacity-70 text-sm mt-1'>**Image should be below 1 MB and should have dimentions of 500X600 and type of .png / .jpeg / .webp**</p>
-        </div>
-          <FileUpload
-            mode="basic"
-            name="brandImage"
-            customUpload
-            accept="image/jpeg, image/png"
-            chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
-            chooseLabel={brandImage?brandImage.name:"Choose File"}
-            auto
-            onSelect={(e) => {
-              const file = e.files[0];
-              const validationMessage = file ? validateFile(file) : null;
-
-              if (file && validationMessage === true) {
-                setValue('brandImage', file);
-              } else {
-                setValue('brandImage', null);
-                e.options.clear();
-              }
-            }}
-          />
-          
-          {errors.brandImage && (
-            <p className="mt-2 text-sm text-red-600">
-              {errors.brandImage.message}
-            </p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="h-screen">
+    <h3 className="heading mb-6 text-gray-900 dark:text-white">Add New Brand</h3>
+  
+    {/* Brand Information Section */}
+    <div className="border p-6 rounded-lg shadow bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-white mb-6">
+      <h4 className="font-semibold mb-4">Brand Information</h4>
+      <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
+        <label className="block text-gray-600 dark:text-gray-300 mb-2">Brand Name</label>
+        <InputText
+          className="w-[70%] p-2 border rounded bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          placeholder="Enter Brand Name"
+          {...register('brandName', {
+            required: 'Brand Name is required',
+          })}
+        />
+        {errors.brandName && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+            {errors.brandName.message}
+          </p>
+        )}
       </div>
-
-      {/* Submit Button */}
-      <div className="w-full flex justify-center items-center">
-        <CustomButton title="Submit" type="submit" icon={'pi pi-save'} />
+  
+      <h4 className="font-semibold mb-4">Brand Image</h4>
+      <div className="flex flex-col md:flex-row justify-between md:items-center">
+        <div className="mb-4">
+          <h4 className="font-semibold subheading">Brand Image</h4>
+          <p className="text-yellow-500 opacity-70 text-sm mt-1">
+            **Image should be below 1 MB and should have dimensions of 500x600 and type of .png / .jpeg / .webp**
+          </p>
+        </div>
+        <FileUpload
+          mode="basic"
+          name="brandImage"
+          customUpload
+          accept="image/jpeg, image/png"
+          chooseOptions={{
+            className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:border-gray-600 dark:text-white'
+          }}
+          chooseLabel={brandImage ? brandImage.name : "Choose File"}
+          auto
+          onSelect={(e) => {
+            const file = e.files[0];
+            const validationMessage = file ? validateFile(file) : null;
+  
+            if (file && validationMessage === true) {
+              setValue('brandImage', file);
+            } else {
+              setValue('brandImage', null);
+              e.options.clear();
+            }
+          }}
+        />
+        
+        {errors.brandImage && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+            {errors.brandImage.message}
+          </p>
+        )}
       </div>
-    </form>
+    </div>
+  
+    {/* Submit Button */}
+    <div className="w-full flex justify-center items-center">
+      <CustomButton 
+        title="Submit" 
+        type="submit" 
+        icon={'pi pi-save'} 
+        className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+      />
+    </div>
+  </form>
+  
   );
 }

@@ -14,7 +14,7 @@ export default {
         primary: "#FFFFFF",
         secondary: "rgb(78,155,202)",
         dark: "black", 
-        textDark: "#E2E8F0", 
+        textDark: "#FFFFFF", 
 
       },
       fontSize: {

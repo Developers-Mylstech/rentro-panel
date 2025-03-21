@@ -54,68 +54,78 @@ export default function AboutUsListing() {
   );
 
   return (
-    <div>
-      {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h5 className="text-xl font-semibold text-gray-700">About Us List</h5>
-        <div className="flex items-center gap-3">
+    <div className="h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        {/* Title */}
+        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+          About Us List
+        </h5>
+
+        {/* Search & Add Button */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
           {/* Search Bar */}
           <InputText
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by title"
-            className="border px-2 py-1 text-black"
+            className="border px-3 py-2 text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 rounded-md focus:ring focus:ring-primary"
           />
+
+          {/* Add New Button */}
           <CustomButton
             title="Add New"
             icon="pi pi-plus"
             onClick={() => navigate("/about/add")}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-all duration-300 shadow-md"
           />
         </div>
       </div>
 
-      {/* Table Section (For larger screens) */}
-      <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md">
+
+      <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md dark:border-gray-700">
         <DataTable
           value={filteredData}
           paginator
           rows={10}
+          paginatorClassName="dark:bg-gray-800"
           stripedRows
-          className="w-full overflow-auto"
           scrollable
+          className="w-full overflow-auto bg-white dark:bg-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-700"
         >
           <Column
             field="image"
             header="About Us Image"
             body={imageTemplate}
-            headerClassName="bg-secondary text-white border-r"
+            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
+            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center"
           />
           <Column
             field="title"
             header="Title"
-            headerClassName="bg-secondary text-white border-r"
-            className="font-semibold text-gray-700"
+            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
+            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center font-semibold"
           />
           <Column
             field="subtitle"
             header="Subtitle"
-            headerClassName="bg-secondary text-white border-r"
-            className="font-semibold text-gray-700"
+            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
+            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center font-semibold"
           />
           <Column
             header="Options"
             body={actionTemplate}
-            headerClassName="bg-secondary text-white"
+            headerClassName="bg-secondary dark:bg-gray-800 text-white border-gray-300 dark:border-gray-700 text-center"
+            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center"
           />
         </DataTable>
       </div>
 
-      {/* Card View Section (For mobile screens) */}
+
       <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
         {filteredData.map((item) => (
           <div
             key={item.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="bg-white dark:bg-gray-900 shadow-md dark:shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
           >
             {/* Card Image */}
             <img
@@ -124,26 +134,26 @@ export default function AboutUsListing() {
               className="w-full h-48 object-cover"
             />
 
-            {/* Card Content */}
             <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800">{item.title}</h3>
-              <p className="text-sm text-gray-500">{item.subtitle}</p>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">{item.title}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{item.subtitle}</p>
 
               {/* Card Actions */}
               <div className="flex justify-center mt-4 gap-3">
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-blue-500"
+                  className="p-button-sm text-white p-2 w-full bg-blue-500 dark:bg-blue-600"
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-red-500"
+                  className="p-button-sm text-white p-2 w-full bg-red-500 dark:bg-red-600"
                 />
               </div>
             </div>
           </div>
         ))}
       </div>
+
     </div>
   );
 }

@@ -67,27 +67,34 @@ export default function BannerList() {
     <div>
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
-        <h5 className="text-xl font-semibold text-gray-700">Banner List</h5>
+        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+          Banner List
+        </h5>
         <div className="flex items-center gap-3">
-          <IconField iconPosition="right" className="border p-2 rounded">
-            <InputIcon className="pi pi-search" />
+          <IconField
+            iconPosition="right"
+            className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800"
+          >
+            <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="focus:ring-0 focus:outline-none"
+              className="bg-transparent focus:ring-0 focus:outline-none text-gray-900 dark:text-gray-200"
             />
           </IconField>
           <CustomButton
             title="Add New"
             icon="pi pi-plus"
+            className="bg-primary text-white dark:bg-secondary dark:text-gray-200"
             onClick={() => navigate('add')}
           />
         </div>
       </div>
 
+
       {/* Table Section (For larger screens) */}
-      <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md">
+      <div className="hidden lg:block overflow-x-auto border border-gray-300 dark:border-gray-700 rounded-lg shadow-md dark:shadow-lg dark:bg-gray-800">
         <DataTable
           value={filteredBanners}
           paginator
@@ -100,128 +107,133 @@ export default function BannerList() {
             field="image"
             header="Banner Image"
             body={imageTemplate}
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
           <Column
             field="title"
             header="Offer Title"
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
-            className="font-semibold text-gray-700"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center font-semibold text-gray-700 dark:text-gray-800"
           />
           <Column
             field="details"
             header="Offer Details"
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
           <Column
             field="description"
             header="Offer Description"
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
           <Column
             field="originalPrice"
             header="Original Price"
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
           <Column
             field="offerPrice"
             header="Offer Price"
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
           <Column
             header="Options"
             body={actionsTemplate}
-            headerClassName="bg-secondary text-white text-center"
-            bodyClassName="text-center"
+            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:text-gray-800"
           />
         </DataTable>
       </div>
 
+
       {/* Card View Section (For mobile screens) */}
       <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 px-6">
-        {filteredBanners.map((banner) => (
-          <div
-            key={banner.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-          >
-            {/* Card Image */}
-            <img
-              src={banner.image}
-              alt={banner.title}
-              className="w-full h-48 object-contain"
-            />
+  {filteredBanners.map((banner) => (
+    <div
+      key={banner.id}
+      className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+    >
+      {/* Card Image */}
+      <img
+        src={banner.image}
+        alt={banner.title}
+        className="w-full h-48 object-contain"
+      />
 
-            {/* Card Content */}
-            <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800">
-                {banner.title}
-              </h3>
-              <p className="text-sm text-gray-500">{banner.details}</p>
-              <p className="text-sm text-gray-500 mt-2">
-                {banner.description}
-              </p>
+      {/* Card Content */}
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+          {banner.title}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{banner.details}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          {banner.description}
+        </p>
 
-              {/* Prices */}
-              <div className="flex justify-between mt-4">
-                <div>
-                  <span className="text-sm text-gray-500">Original:</span>
-                  <span className="text-md font-semibold text-gray-700 ml-1">
-                    {banner.originalPrice}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500">Offer:</span>
-                  <span className="text-md font-semibold text-red-500 ml-1">
-                    {banner.offerPrice}
-                  </span>
-                </div>
-              </div>
-
-              {/* Card Actions */}
-              <div className="flex justify-center mt-4 gap-3">
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-secondary"
-                  onClick={() => setVisible(true)}
-                />
-              </div>
-            </div>
+        {/* Prices */}
+        <div className="flex justify-between mt-4">
+          <div>
+            <span className="text-sm text-gray-500 dark:text-gray-400">Original:</span>
+            <span className="text-md font-semibold text-gray-700 dark:text-gray-300 ml-1">
+              {banner.originalPrice}
+            </span>
           </div>
-        ))}
+          <div>
+            <span className="text-sm text-gray-500 dark:text-gray-400">Offer:</span>
+            <span className="text-md font-semibold text-red-500 dark:text-red-400 ml-1">
+              {banner.offerPrice}
+            </span>
+          </div>
+        </div>
+
+        {/* Card Actions */}
+        <div className="flex justify-center mt-4 gap-3">
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-700 dark:hover:bg-gray-600"
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-700 dark:hover:bg-gray-600"
+            onClick={() => setVisible(true)}
+          />
+        </div>
       </div>
+    </div>
+  ))}
+</div>
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog
-        header="Confirmation"
-        position="top"
-        draggable={false}
-        visible={visible}
-        onHide={() => setVisible(false)}
-      >
-        <p className="mb-10">Do you want to delete this banner?</p>
-        <div className="flex justify-between">
-          <CustomButton
-            title="Yes"
-            icon="pi pi-check"
-            onClick={() => setVisible(false)}
-          />
-          <CustomButton
-            title="No"
-            icon="pi pi-times"
-            onClick={() => setVisible(false)}
-          />
-        </div>
-      </Dialog>
+  header="Confirmation"
+  position="top"
+  draggable={false}
+  visible={visible}
+  onHide={() => setVisible(false)}
+  className="dark:bg-gray-800 dark:text-gray-200"
+>
+  <p className="mb-10 dark:text-gray-300">Do you want to delete this banner?</p>
+  <div className="flex justify-between">
+    <CustomButton
+      title="Yes"
+      icon="pi pi-check"
+      onClick={() => setVisible(false)}
+      className="bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-700"
+    />
+    <CustomButton
+      title="No"
+      icon="pi pi-times"
+      onClick={() => setVisible(false)}
+      className="bg-gray-300 hover:bg-gray-400 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
+    />
+  </div>
+</Dialog>
+
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 
 function Layout() {
   return (
-    <div className="flex bg-white text-black dark:bg-dark dark:text-dark">
+    <div className="flex bg-white text-black dark:bg-gray-900 dark:text-gray-100">
       <Sidebar />
 
       <div className="flex-1 lg:ml-[17%]">
