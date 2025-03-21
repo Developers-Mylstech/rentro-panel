@@ -61,25 +61,25 @@ export default function SaleList() {
   );
 
   return (
-    <div>
+    <div className='h-screen'>
       {/* ✅ Responsive Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         {/* Title */}
-        <h3 className="text-2xl font-bold text-gray-700 w-full md:w-auto">
+        <h3 className="text-2xl font-bold text-gray-700 w-full md:w-auto dark:text-gray-100">
           Sale List
         </h3>
 
         {/* Search and Add Button */}
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto dark:text-gray-100 bg-gray-900">
           {/* Search Input */}
-          <div className="flex relative justify-between p-2  w-full md:w-64 border rounded-md">
+          <div className="flex relative justify-between p-2  w-full md:w-64 border rounded-md ">
             
-              <i className="pi pi-search  absolute top-3 right-2 text-gray-400 " />
+              <i className="pi pi-search  absolute top-3 right-2 text-gray-400 dark:text-gray-100 bg-gray-900 " />
               <InputText
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="p-inputtext-sm w-full border-none outline-none"
+                className="p-inputtext-sm w-full border-none outline-none dark:text-gray-100 dark:bg-gray-900 "
               />
        
           </div>
@@ -100,32 +100,34 @@ export default function SaleList() {
         paginator
         rows={5}
         stripedRows
-        className="hidden lg:block border border-gray-300 rounded-md"
+        className="hidden lg:block border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-900"
+        paginatorClassName='dark:text-gray-100 bg-gray-900'
+        footerClassName='dark:text-gray-100 bg-gray-900'
       >
         <Column
           field="image"
           header="Sale Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
         />
         <Column
           field="title"
           header="Title"
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center font-semibold"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
+          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-900"
         />
         <Column
           field="subtitle"
           header="Subtitle"
-          headerClassName="bg-secondary border-r text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
         />
         <Column
           header="Option"
           body={actionBodyTemplate}
-          headerClassName="bg-secondary text-white text-center"
-          bodyClassName="text-center"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
         />
       </DataTable>
 
@@ -134,19 +136,19 @@ export default function SaleList() {
         {filteredSales.map((sale) => (
           <div
             key={sale.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 "
           >
             <img
               src={sale.image}
               alt={sale.title}
-              className="w-full h-32 object-cover"
+              className="w-full h-32 object-cover dark:text-gray-100 dark:bg-gray-900"
             />
-            <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800">
+            <div className="p-4 dark:text-gray-100 dark:bg-gray-900">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 dark:bg-gray-900">
                 {sale.title}
               </h3>
-              <p className="text-sm text-gray-500">{sale.subtitle}</p>
-              <div className="flex justify-center mt-4 gap-3">
+              <p className="text-sm text-gray-500 dark:text-gray-100 dark:bg-gray-900">{sale.subtitle}</p>
+              <div className="flex justify-center mt-4 gap-3 dark:text-gray-100 dark:bg-gray-900">
                 <Button
                   icon="pi pi-pencil"
                   className="p-button-sm text-white p-2 w-full bg-secondary "
