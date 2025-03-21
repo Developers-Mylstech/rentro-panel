@@ -133,75 +133,37 @@ export default function AddProduct() {
     localStorage.setItem("fileName", JSON.stringify(fileNames));
   }, [images, fileNames]);
 
-  // const onImageSelect = (event, index) => {
-  //   const selectedFiles = event.files;
-  //   const newImages = [...images];
-  //   const newFileNames = { ...fileNames };
-
-  //   selectedFiles.forEach((file) => {
-  //     const fileType = file.type;
-  //     const fileSize = file.size ;
-      
-  //     const isValidFormat =
-  //       fileType === "image/jpeg" || fileType === "image/png"|| fileType === "image/webp" 
-
-     
-
-  //     if (!isValidFormat ) {
-  //       alert("select the proper formate.");
-  //       setKey(!key);
-  //       return;
-  //     }
-    
-     
-      
-      
-  //     if (newImages.length < 10 || newImages[index]) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => {
-  //         newImages[index] = e.target.result;
-  //         setImages(newImages);
-  //         newFileNames[index] = file.name;
-  //         setFileNames(newFileNames);
-  //       };
-  //       reader.readAsDataURL(file);
-  //       setKey(!key);
-  //     } else {
-  //       alert("You can only upload up to 10 images.");
-  //     }
-  //   });
-  // };
 
 
   const onImageSelect = (event, index) => {
     const selectedFiles = event.files;
     const newImages = [...images];
     const newFileNames = { ...fileNames };
-  
+
     for (let file of selectedFiles) {
       const fileType = file.type;
       const fileSize = file.size;
-  
+
       const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(fileType);
       const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
-  
+
       if (!isValidFormat) {
         alert("Select a proper format (JPEG, PNG, WEBP).");
         setKey(!key);
         return; // Stop execution
       }
-  
+
       if (!isValidSize) {
         alert("File size exceeds 1MB. Please select a smaller file.");
         setKey(!key);
         return; // Stop execution
       }
-  
+
       if (newImages.length >= 10) {
         alert("You can only upload up to 10 images.");
         return;
       }
-  
+
       const reader = new FileReader();
       reader.onload = (e) => {
         newImages[index] = e.target.result;
@@ -213,7 +175,7 @@ export default function AddProduct() {
       setKey(!key);
     }
   };
-  
+
 
   useEffect(() => {
     if (images.length > 0) {
@@ -293,39 +255,40 @@ export default function AddProduct() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-4 px-8 w-full mx-auto border rounded-md"
     >
-      <h2 className="heading my-10">Add New Product</h2>
-      <h3 className="subheading my-6">Product Information</h3>
+      <h2 className="heading my-10 text-gray-900 dark:text-gray-100">Add New Product</h2>
+      <h3 className="subheading my-6 text-gray-800 dark:text-gray-200">Product Information</h3>
 
       <div className="mb-3 flex justify-between items-center">
-        <label className="text mb-1">Product Name</label>
+        <label className="text mb-1 text-gray-800 dark:text-gray-200">Product Name</label>
         <input
           {...register("productName", { required: true })}
           placeholder="Product Name"
-          className="w-[70%] p-2 border rounded"
+          className="w-[70%] p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
         {errors.productName && (
-          <span className="text-red-500">Product Name is required</span>
+          <span className="text-red-500 dark:text-red-400">Product Name is required</span>
         )}
       </div>
+
       {errors.productName && (
         <span className="text-red-500">Product Name is required</span>
       )}
 
-      <div className=" mb-3 flex justify-between items-center relative">
-        <label className="text mb-1">Main Category</label>
+      <div className="mb-3 flex justify-between items-center relative">
+        <label className="text mb-1 text-gray-800 dark:text-gray-200">Main Category</label>
 
         <div
-          className="w-[70%] p-2 border rounded bg-white cursor-pointer"
+          className="w-[70%] p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           {selectedCategory || "Select Category"}
         </div>
 
         {isOpen && (
-          <div className="absolute left-[30%] top-10 w-[70%] bg-white border rounded mt-1 z-10">
+          <div className="absolute left-[30%] top-10 w-[70%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
             <input
               type="text"
-              className="w-full p-2 border-b"
+              className="w-full p-2 border-b bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               placeholder="Search category..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -336,7 +299,7 @@ export default function AddProduct() {
               {filteredCategories.map((category, index) => (
                 <div
                   key={index}
-                  className="p-2 cursor-pointer hover:bg-secondary hover:text-white"
+                  className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white"
                   onClick={() => handleSelect(category)}
                 >
                   {category}
@@ -346,14 +309,12 @@ export default function AddProduct() {
           </div>
         )}
 
-        <input
-          type="hidden"
-          {...register("mainCategory", { required: true })}
-        />
+        <input type="hidden" {...register("mainCategory", { required: true })} />
         {errors.mainCategory && (
-          <span className="text-red-500">Category is required</span>
+          <span className="text-red-500 dark:text-red-400">Category is required</span>
         )}
       </div>
+
       <div className=" mb-3 flex justify-between items-center relative">
         <label className="text mb-1">Sub Category</label>
 
@@ -438,7 +399,7 @@ export default function AddProduct() {
         <h3 className="text">Product For</h3>
         <div className="flex   gap-3  w-[70%]  ">
           {options.map((option, index) => (
-            <div key={index} className={`flex align-items-center pr-4   md:pl-20  md:pr-20 ${option.label=="Sell"||option.label=='Rent'?"border-r-2 border-gray-200":""}`}>
+            <div key={index} className={`flex align-items-center pr-4   md:pl-20  md:pr-20 ${option.label == "Sell" || option.label == 'Rent' ? "border-r-2 border-gray-200" : ""}`}>
               <Checkbox
                 inputId={option.label}
                 value={option.label}
@@ -453,9 +414,6 @@ export default function AddProduct() {
           ))}
         </div>
       </div>
-      {/* <div className="mt-3">
-        <strong>Selected Options:</strong> {selectedOptions.join(", ") || "None"}
-      </div> */}
 
       <div className="mb-3 flex justify-between items-center">
         <label className="text mb-1">Long Description</label>
@@ -480,9 +438,8 @@ export default function AddProduct() {
             <h3
               key={option.key}
               onClick={() => toggleField(option.key)}
-              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${
-                fields.includes(option.key) ? "bg-secondary text-white" : ""
-              }`}
+              className={`subheading my-6 border px-3 py-1 rounded cursor-pointer ${fields.includes(option.key) ? "bg-secondary text-white" : ""
+                }`}
             >
               {option.label}
             </h3>
@@ -548,7 +505,7 @@ export default function AddProduct() {
               customUpload
               mode="basic"
               chooseOptions={{ className: "bg-white border text-secondary" }}
-              uploadHandler={() => {}}
+              uploadHandler={() => { }}
               onSelect={(e) => onImageSelect(e, sectionIndex)}
               accept="image/png,image/jpeg,image/webp"
               // maxFileSize={1024 * 1024} // 1MB limit
