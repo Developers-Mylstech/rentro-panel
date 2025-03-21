@@ -5,10 +5,8 @@ import Footer from "./components/Footer";
 
 function Layout() {
   return (
-    <div className="flex">
-
+    <div className="flex bg-white text-black dark:bg-dark dark:text-dark">
       <Sidebar />
-
 
       <div className="flex-1 lg:ml-[17%]">
         <Header />

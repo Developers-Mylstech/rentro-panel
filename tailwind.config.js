@@ -6,12 +6,16 @@ export default {
     "node_modules/primereact/**/*.{js,ts,jsx,tsx}", // Include PrimeReact components
 
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       // #058271
       colors: {
         primary: "#FFFFFF",
-        secondary: "rgb(78,155,202)", 
+        secondary: "rgb(78,155,202)",
+        dark: "black", 
+        textDark: "#E2E8F0", 
+
       },
       fontSize: {
         heading: "2rem",

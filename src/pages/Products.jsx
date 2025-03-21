@@ -30,7 +30,7 @@ export default function Products() {
   ];
 
   return (
-    <div className="">
+    <div className="dark:bg-dark dark:text-white">
       <ProductList products={products} handleEdit={handleEdit} handleDelete={handleDelete} />
     </div>
   );
