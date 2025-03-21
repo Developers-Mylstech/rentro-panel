@@ -138,7 +138,7 @@ export default function AddBrand() {
             name="brandImage"
             customUpload
             accept="image/jpeg, image/png"
-            chooseOptions={{ className: 'bg-secondary' }}
+            chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
             chooseLabel={brandImage?brandImage.name:"Choose File"}
             auto
             onSelect={(e) => {

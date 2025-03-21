@@ -78,7 +78,7 @@ export default function AddCategory() {
               key={key}
               ref={fileUploadRef}
               name="categoryImage"
-              chooseOptions={{ className: 'bg-secondary' }}
+              chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
               url="/api/upload"
               className="w-[70%]"
               contentStyle="bg-red-300"

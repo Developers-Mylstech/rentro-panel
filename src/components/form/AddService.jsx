@@ -127,7 +127,7 @@ export default function AddService() {
           <FileUpload
             mode="basic"
             name="serviceImage"
-            chooseOptions={{ className: "bg-secondary" }}
+            chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
             url="/api/upload"
             className=""
             contentStyle="bg-red-300"
