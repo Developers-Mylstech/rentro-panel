@@ -9,16 +9,22 @@ import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
 import { useNavigate } from "react-router-dom";
 
-export default function CategoryListing({ categories }) {
+export default function CategoryList({ categories }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
-  const navigate =useNavigate()
+  const navigate = useNavigate();
 
   const filteredCategories = categories.filter((category) =>
     category.mainCategory.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Image Template
+  // Handle Delete
+  const handleDelete = () => {
+    setVisible(false);
+    console.log("Category deleted");
+  };
+
+  // Table Image Template
   const imageTemplate = (rowData) => (
     <img
       src={rowData.image}
@@ -27,7 +33,7 @@ export default function CategoryListing({ categories }) {
     />
   );
 
-
+  // Table Actions Template
   const actionsTemplate = () => (
     <div className="flex gap-2">
       <Button
@@ -44,9 +50,11 @@ export default function CategoryListing({ categories }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h5 className="heading">Category List</h5>
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-6">
+        <h5 className="text-xl font-semibold text-gray-700">Category List</h5>
         <div className="flex items-center gap-3">
+          {/* Search Bar */}
           <IconField iconPosition="right" className="border p-2 rounded">
             <InputIcon className="pi pi-search"> </InputIcon>
             <InputText
@@ -56,17 +64,21 @@ export default function CategoryListing({ categories }) {
               className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent"
             />
           </IconField>
-          <CustomButton title={'Add category'} icon={'pi pi-plus'} onClick={()=>navigate('/categories/add')}/>
+          <CustomButton
+            title={"Add category"}
+            icon={"pi pi-plus"}
+            onClick={() => navigate("/categories/add")}
+          />
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table Section */}
       <DataTable
         value={filteredCategories}
         paginator
-        rows={10}
+        rows={5}
         stripedRows
-        className="border border-gray-300 rounded-md bg"
+        className="border border-gray-300 rounded-md mb-8 hidden lg:block"
       >
         <Column
           field="image"
@@ -93,6 +105,44 @@ export default function CategoryListing({ categories }) {
         />
       </DataTable>
 
+      {/* Card View Section */}
+      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredCategories.map((category) => (
+          <div
+            key={category.id}
+            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          >
+            {/* Category Image */}
+            <img
+              src={category.image}
+              alt={category.mainCategory}
+              className="w-full h-48 "
+            />
+
+            {/* Category Details */}
+            <div className="p-4">
+              <h3 className="text-lg font-bold text-gray-800">
+                {category.mainCategory}
+              </h3>
+              <p className="text-sm text-gray-500">{category.subCategory}</p>
+
+              {/* Buttons */}
+              <div className="flex  justify-center mt-4 gap-3">
+                <Button
+                  icon="pi pi-pencil"
+                  className="p-button-sm text-white p-2 w-full bg-secondary"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  className="p-button-sm text-white p-2 w-full bg-secondary"
+                  onClick={() => setVisible(true)}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Delete Confirmation Dialog */}
       <Dialog
         header="Confirmation"
@@ -101,10 +151,18 @@ export default function CategoryListing({ categories }) {
         visible={visible}
         onHide={() => setVisible(false)}
       >
-        <p className="mb-10">Do you want to delete this field?</p>
+        <p className="mb-10">Do you want to delete this category?</p>
         <div className="flex justify-between">
-          <CustomButton title={"Yes"} icon={"pi pi-check"} />
-          <CustomButton title={"No"} icon={"pi pi-times"} />
+          <CustomButton
+            title={"Yes"}
+            icon={"pi pi-check"}
+            onClick={handleDelete}
+          />
+          <CustomButton
+            title={"No"}
+            icon={"pi pi-times"}
+            onClick={() => setVisible(false)}
+          />
         </div>
       </Dialog>
     </div>

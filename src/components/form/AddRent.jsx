@@ -277,6 +277,7 @@ export default function AddRent() {
                 accept="image/*"
                 auto
                 customUpload
+                chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
                 key={fileKey} // Force re-render
                 chooseLabel={formData[name] ? formData[name].name : 'Choose Image'}
                 onSelect={(e) => handleFileChange(e, name)}

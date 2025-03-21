@@ -146,7 +146,7 @@ export default function AddSale() {
           multiple 
           chooseLabel="Select Images" 
           uploadOptions={uploadOptions}
-          chooseOptions={{className:'bg-secondary'}}
+          chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
           onSelect={onImageSelect}
           
 

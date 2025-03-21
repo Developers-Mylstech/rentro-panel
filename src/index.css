@@ -76,7 +76,7 @@ li.relative::after {
   border-radius: 50%;
   opacity: 0;
   box-shadow: 35px -35px 0px 10px white;
-  pointer-events: none 
+  pointer-events: none ;
   /* transition: opacity 0.3s ease; */
 }
 
@@ -90,3 +90,4 @@ li.relative.open::after {
   opacity: 0;
   pointer-events: none;
 }
+
