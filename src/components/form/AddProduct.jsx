@@ -505,7 +505,7 @@ export default function AddProduct() {
         <div key={sectionIndex} className="mb-4 relative">
           <div className="flex md:flex-row flex-row justify-between md:w-[70%] w-[100%] items-center gap-10">
             <label className="block text mb-2 font-bold text-black dark:text-white">
-              {sectionIndex === 0 ? "Main Image" : `Image &nbsp; &nbsp; ${sectionIndex + 1}`}
+              {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
             </label>
 
             <FileUpload

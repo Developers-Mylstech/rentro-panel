@@ -49,13 +49,13 @@ export default function CategoryList({ categories }) {
   );
 
   return (
-    <div className=" dark:text-gray-200 p-6 w-full h-screen">
+    <div className=" dark:text-gray-200 p-6 w-full ">
       {/* Header Section */}
       <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
         <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
           Category List
         </h5>
-        <div className="flex items-center md:flex-row flex-col gap-3">
+        <div className="flex items-center md:flex-row  gap-3">
           {/* Search Bar */}
           <IconField iconPosition="right" className="border p-2 rounded bg-white dark:bg-gray-800">
             <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400"> </InputIcon>
@@ -63,11 +63,12 @@ export default function CategoryList({ categories }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent bg-transparent dark:text-white"
+              className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent bg-transparent dark:text-white w-[60%] "
             />
           </IconField>
           <CustomButton
-            title={"Add Category"}
+            title={"Category"}
+           
             icon={"pi pi-plus"}
             onClick={() => navigate("/categories/add")}
           />
