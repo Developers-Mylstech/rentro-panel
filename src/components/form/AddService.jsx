@@ -126,7 +126,7 @@ export default function AddService() {
               and type of .png / .jpeg / .webp**
             </p>
           </div>
-        
+
           <FileUpload
             mode="basic"
             name="serviceImage"
@@ -139,7 +139,7 @@ export default function AddService() {
             {...register("serviceImage", { required: "Image is required" })}
             customUpload
           />
-     
+
         </div>
       </div>
 
@@ -195,7 +195,7 @@ export default function AddService() {
               chooseLabel={
                 imagePaths[imageName] ? imagePaths[imageName] : `Choose File`
               }
-              chooseOptions={{className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300' }}
+              chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300' }}
               auto
               onSelect={(e) => handleFileSelect(e, imageName)}
             />
@@ -228,7 +228,7 @@ export default function AddService() {
               <label className="text mb-2 dark:text-gray-100 ">{`Feature ${num} Description`}</label>
               <div className="md:w-[70%] w-full">
                 <Editor
-                data-pr-classname=""
+                  data-pr-classname=""
                   value={formData[`feature${num}Description`] || ""}
                   headerStyle="text-gray-100"
                   onTextChange={(e) =>
@@ -245,7 +245,7 @@ export default function AddService() {
         ))}
       </div>
 
-      {/* Submit Button */}
+
       <div className="flex justify-center mt-6">
         <CustomButton
           title="Submit"
@@ -253,6 +253,18 @@ export default function AddService() {
           icon={"pi pi-save"}
         />
       </div>
+
+
+      <style>
+        {`.dark .ql-snow .ql-stroke {
+          stroke: lightgray !important;
+        }
+        .ql-snow .ql-picker.ql-font {
+              display: none;
+          }
+        `}
+      </style>
+
     </div>
   );
 }
