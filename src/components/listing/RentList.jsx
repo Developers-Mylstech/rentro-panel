@@ -73,7 +73,7 @@ export default function RentList() {
           Rental Details List
         </h5>
 
-        <div className="flex flex-col md:flex-row items-stretch gap-3 w-full md:w-auto">
+        <div className="flex flex-row items-stretch gap-3 w-full md:w-auto">
           <IconField
             iconPosition="right"
             className="border rounded flex p-2 w-full md:w-64 dark:bg-gray-700 dark:border-gray-600"
@@ -83,13 +83,13 @@ export default function RentList() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none flex-1 dark:bg-gray-700 dark:text-gray-200"
+              className="p-inputtext-sm focus:ring-0 focus:outline-none flex-1 dark:bg-gray-700 dark:text-gray-200 w-[60%]"
             />
           </IconField>
 
           {/* Add New Button */}
           <CustomButton
-            title="Add New"
+            title="Add"
             icon="pi pi-plus"
             onClick={() => navigate('add')}
             className="w-full md:w-auto dark:bg-green-600 dark:hover:bg-green-700 dark:text-white"
@@ -160,11 +160,11 @@ export default function RentList() {
         <div className="flex justify-center mt-4 gap-3">
           <Button
             icon="pi pi-pencil"
-            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-600 hover:dark:bg-gray-500"
+            className="p-button-sm text-white p-2 w-full bg-green-300"
           />
           <Button
             icon="pi pi-trash"
-            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-red-600 hover:dark:bg-red-500"
+            className="p-button-sm text-white p-2 w-full bg-red-400"
             onClick={() => {
               setSelectedRental(rental);
               setVisible(true);

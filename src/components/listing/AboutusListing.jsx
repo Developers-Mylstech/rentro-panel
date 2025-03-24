@@ -54,7 +54,7 @@ export default function AboutUsListing() {
   );
 
   return (
-    <div className="h-screen">
+    <div className="dark-bg-gray-900 h-screen">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         {/* Title */}
         <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
@@ -68,15 +68,15 @@ export default function AboutUsListing() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by title"
-            className="border px-3 py-2 text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 rounded-md focus:ring focus:ring-primary"
+            className="border px-3 py-2 text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 rounded-md focus:ring focus:ring-primary w-[70%]"
           />
 
           {/* Add New Button */}
           <CustomButton
-            title="Add New"
+            title="Add"
             icon="pi pi-plus"
             onClick={() => navigate("/about/add")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-all duration-300 shadow-md"
+            className="bg-green-300  text-white px-4 py-2 rounded-md transition-all duration-300 shadow-md"
           />
         </div>
       </div>
@@ -142,11 +142,11 @@ export default function AboutUsListing() {
               <div className="flex justify-center mt-4 gap-3">
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-blue-500 dark:bg-blue-600"
+                  className="p-button-sm text-white p-2 w-full bg-green-300 "
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-red-500 dark:bg-red-600"
+                  className="p-button-sm text-white p-2 w-full bg-red-400 "
                 />
               </div>
             </div>

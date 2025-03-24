@@ -31,6 +31,7 @@ export default function AddProduct() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isErrors, setErrors] = useState({});
+  
 
 
   // const options = ["Rent", "Sell", "Service"];
@@ -150,21 +151,25 @@ export default function AddProduct() {
       if (!isValidFormat) {
         alert("Select a proper format (JPEG, PNG, WEBP).");
         setKey(!key);
+        setErrors(true)
         return; // Stop execution
       }
 
       if (!isValidSize) {
         alert("File size exceeds 1MB. Please select a smaller file.");
         setKey(!key);
+        setErrors(true)
         return; // Stop execution
       }
 
       if (newImages.length >= 10) {
         alert("You can only upload up to 10 images.");
+        
         return;
       }
 
       const reader = new FileReader();
+      setErrors(false)
       reader.onload = (e) => {
         newImages[index] = e.target.result;
         newFileNames[index] = file.name;
@@ -215,6 +220,20 @@ export default function AddProduct() {
       return newSections;
     });
   };
+
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (isErrors) {
+      setShowError(true);
+      const timer = setTimeout(() => {
+        setShowError(false);
+        setErrors(false)
+      }, 3000);
+
+      return () => clearTimeout(timer); // Cleanup to prevent memory leaks
+    }
+  }, [isErrors]);
 
   const removeFileUpload = (index) => {
     if (uploadSections.length >= 0) {
@@ -523,7 +542,9 @@ export default function AddProduct() {
               chooseLabel={fileNames[sectionIndex] || "Choose a file"}
               multiple={false}
               auto
+              
             />
+             
 
             <div className="md:flex hidden justify-center">
               {images[sectionIndex] && (
@@ -535,11 +556,12 @@ export default function AddProduct() {
               )}
             </div>
           </div>
+          
 
           <button
             type="button"
             onClick={() => removeFileUpload(sectionIndex)}
-            className="absolute -top-2 md:top-0 -right-2 md:right-0 md:text-black text-white dark:text-white p-1"
+            className="absolute -top-2 md:top-0 -right-2 md:right-0 md:text-black text-white dark:text-white p-1 "
             title="Remove this section"
           >
             <i className="pi pi-times md:mt-3 mt-0 md:bg-transparent bg-secondary  text-sm   md:border border-gray-300 dark:border-gray-700 p-1 md:rounded rounded-full"></i>
@@ -552,12 +574,14 @@ export default function AddProduct() {
           <button
             type="button"
             onClick={addNewFileUpload}
-            className="mt-2 px-2 py-2 rounded-lg bg-secondary text-white font-semibold dark:bg-gray-700 dark:text-gray-200"
+            className="mt-2 px-2 py-2 rounded-lg bg-secondary text-white font-semibold dark:bg-gray-700 dark:text-gray-100 border dark:border-gray-300"
           >
             <i className="pi pi-plus"></i> Add More
           </button>
         )}
       </div>
+
+     
 
       <div className="mt-4 grid grid-cols-4 gap-4">
         {images.map((img, index) => (
@@ -577,6 +601,16 @@ export default function AddProduct() {
           </div>
         ))}
       </div>
+      {showError === true && (
+  <>
+    <span className="text-red-500 dark:text-red-400">
+      Check the image format or size
+    </span>
+   
+  </>
+)}
+     
+
 
 
       <h3 className="subheading my-6 mt-4 dark:text-gray-200">Inventory</h3>

@@ -64,10 +64,10 @@ export default function BannerList() {
   );
 
   return (
-    <div>
+    <div className='md:h-screen h-[100%]'>
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+      <div className="flex md:flex-row flex-col  justify-between items-center mb-6">
+        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200 my-4">
           Banner List
         </h5>
         <div className="flex items-center gap-3">
@@ -80,11 +80,11 @@ export default function BannerList() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="bg-transparent focus:ring-0 focus:outline-none text-gray-900 dark:text-gray-200"
+              className="bg-transparent focus:ring-0 focus:outline-none text-gray-900 dark:text-gray-200 w-[60%]"
             />
           </IconField>
           <CustomButton
-            title="Add New"
+            title="Add"
             icon="pi pi-plus"
             className="bg-primary text-white dark:bg-secondary dark:text-gray-200"
             onClick={() => navigate('add')}
@@ -100,51 +100,52 @@ export default function BannerList() {
           paginator
           rows={5}
           stripedRows
-          className="w-full"
+          className="w-full dark:bg-gray-800 dark:text-gray-100"
           scrollable
+          paginatorClassName='dark:bg-gray-800 dark:text-gray-100'
         >
           <Column
             field="image"
             header="Banner Image"
             body={imageTemplate}
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center  dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             field="title"
             header="Offer Title"
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center font-semibold text-gray-700 dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             field="details"
             header="Offer Details"
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             field="description"
             header="Offer Description"
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             field="originalPrice"
             header="Original Price"
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             field="offerPrice"
             header="Offer Price"
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             header="Options"
             body={actionsTemplate}
-            headerClassName="bg-secondary text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:text-gray-800"
+            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
           />
         </DataTable>
       </div>

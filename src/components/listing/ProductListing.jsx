@@ -356,12 +356,12 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
               <div className="flex justify-center mt-4 gap-3">
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-sm text-white bg-secondary p-2"
+                  className="p-button-sm text-white bg-green-300 p-2"
                   onClick={() => handleEdit(product.sku)}
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white bg-secondary"
+                  className="p-button-sm text-white bg-red-400"
                   onClick={() => confirmDelete(product)}
                 />
               </div>

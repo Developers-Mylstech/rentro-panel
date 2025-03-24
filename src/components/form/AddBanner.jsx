@@ -68,7 +68,7 @@ export default function AddBanner() {
   };
 
   return (
-    <div className="">
+    <div className=" h-screen">
       <h1 className="heading mb-6 dark:text-white">Add New Banner</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -81,7 +81,7 @@ export default function AddBanner() {
               <input
                 type="text"
                 {...register('offerTitle', { required: 'Offer Title is required' })}
-                className="w-[70%] p-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:ring-0 focus:outline-none"
+                className="w-[70%] p-2 border rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:ring-0 focus:outline-none "
               />
               {errors.offerTitle && <span className="text-red-500">{errors.offerTitle.message}</span>}
             </div>
@@ -101,7 +101,7 @@ export default function AddBanner() {
                 name="mainImage"
                 accept="image/png, image/jpeg, image/jpg, image/webp"
                 chooseOptions={{
-                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300",
                 }}
                 maxFileSize={1000000}
                 uploadOptions={uploadOptions}
@@ -167,7 +167,7 @@ export default function AddBanner() {
                 accept="image/png, image/jpeg, image/jpg, image/webp"
                 maxFileSize={1000000}
                 chooseOptions={{
-                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300",
                 }}
                 uploadOptions={uploadOptions}
                 onSelect={(e) => onImageSelect(e, 'productImage2')}

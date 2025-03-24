@@ -134,11 +134,11 @@ export default function CategoryList({ categories }) {
         <div className="flex justify-center mt-4 gap-3">
           <Button
             icon="pi pi-pencil"
-            className="p-button-sm text-white p-2 w-full bg-secondary "
+            className="p-button-sm text-white p-2 w-full bg-green-300 "
           />
           <Button
             icon="pi pi-trash"
-            className="p-button-sm text-white p-2 w-full bg-secondary "
+            className="p-button-sm text-white p-2 w-full bg-red-400 "
             onClick={() => setVisible(true)}
           />
         </div>

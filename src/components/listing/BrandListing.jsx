@@ -25,7 +25,7 @@ export default function BrandListing({ brands }) {
     <div className="p-4">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 text-white">
         <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-0 dark:text-gray-200 text-black">Brand List</h1>
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-row items-center gap-3 w-full sm:w-auto">
           <IconField iconPosition="right" className="w-full sm:w-60 border border-gray-600 bg-gray-800 p-2 rounded">
             <InputIcon className="pi pi-search text-gray-400" />
             <InputText
@@ -37,7 +37,7 @@ export default function BrandListing({ brands }) {
           </IconField>
 
           <CustomButton
-            title="Add Brand"
+            title="Add"
             icon="pi pi-plus"
             onClick={() => navigate("/brands/add")}
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
