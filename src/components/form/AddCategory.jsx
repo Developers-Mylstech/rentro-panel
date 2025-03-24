@@ -30,7 +30,7 @@ export default function AddCategory() {
   };
   
   return (
-    <div className="dark:bg-gray-900 h-screen  dark:text-gray-200 p-6">
+    <div className="dark:bg-gray-900 h-screen  dark:text-gray-200 md:p-6 p-2 rounded ">
       <h1 className="heading mb-6 dark:text-gray-200">Add New Category</h1>
   
       <div className="bg-white dark:bg-gray-800 p-12 rounded-lg shadow-md mb-6">
@@ -87,10 +87,10 @@ export default function AddCategory() {
               ref={fileUploadRef}
               name="categoryImage"
               chooseOptions={{
-                className: "bg-primary border-2 border-secondary text-secondary",
+                className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 dark:border-gray-300",
               }}
               url="/api/upload"
-              className="w-[70%] dark:bg-gray-700 dark:text-white"
+              className="md:w-[70%] w-full  dark:text-white"
               chooseLabel="Choose File"
               accept="image/*"
               {...register("categoryImage", { required: "Image is required" })}

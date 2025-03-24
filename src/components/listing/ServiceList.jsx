@@ -97,7 +97,7 @@ export default function ServiceList() {
 
   // Image Template
   const imageTemplate = (rowData) => (
-    <div className="flex justify-center dark:text-gray-100 dark:bg-gray-900">
+    <div className="flex justify-center dark:text-gray-100 dark:bg-gray-800">
       <img
         src={rowData.image}
         alt={rowData.title}
@@ -109,23 +109,23 @@ export default function ServiceList() {
   return (
     <div>
       {/* ✅ Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 ">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 mx-4 md:mx-0">
         {/* Title */}
         <h3 className="text-2xl font-bold text-gray-700 w-full md:w-auto dark:text-gray-100 ">
           Service List
         </h3>
 
         {/* Search and Add Button */}
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+        <div className="flex justify-between items-center gap-3 w-full md:w-auto ">
           {/* Search Bar */}
-         <div className="flex relative justify-between p-2  w-full md:w-64 border rounded-md dark:text-gray-100 dark:bg-gray-900">
+         <div className="flex relative justify-between p-2   w-[70%] md:w-64 border rounded-md dark:text-gray-100 dark:bg-gray-800">
                      
                        <i className="pi pi-search  absolute top-3 right-2 text-gray-400 " />
                        <InputText
                          value={searchQuery}
                          onChange={(e) => setSearchQuery(e.target.value)}
                          placeholder="Search..."
-                         className=" w-full border-none outline-none dark:text-gray-100 dark:bg-gray-900"
+                         className=" w-full border-none outline-none dark:text-gray-100 dark:bg-gray-800"
                         
                        />
                 
@@ -133,10 +133,10 @@ export default function ServiceList() {
 
           {/* Add New Button */}
           <CustomButton
-            title="Add New"
+            title="Add"
             icon="pi pi-plus"
             onClick={() => navigate('/service/add')}
-            className="w-full md:w-auto"
+            className=" w-auto"
           />
         </div>
       </div>
@@ -148,32 +148,32 @@ export default function ServiceList() {
         rows={5}
         stripedRows
         className="hidden lg:block border border-gray-300 rounded-md"
-        paginatorClassName='dark:text-gray-100 dark:bg-gray-900'
+        paginatorClassName='dark:text-gray-100 dark:bg-gray-800'
       >
         <Column
           field="image"
           header="Service Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           field="title"
           header="Service Title"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           field="shortDescription"
           header="Service Description"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           header="Options"
           body={actionBodyTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
       </DataTable>
 
@@ -182,28 +182,28 @@ export default function ServiceList() {
         {filteredServices.map((service) => (
           <div
             key={service.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border dark:text-gray-100 dark:bg-gray-900"
+            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border dark:text-gray-100 dark:bg-gray-800"
           >
             <img
               src={service.image}
               alt={service.title}
-              className="w-full h-32 object-cover dark:text-gray-100 dark:bg-gray-900"
+              className="w-full h-32 object-cover dark:text-gray-100 dark:bg-gray-800"
             />
             <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 dark:bg-gray-900">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 dark:bg-gray-800">
                 {service.title}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-100 dark:bg-gray-900">
+              <p className="text-sm text-gray-500 dark:text-gray-100 dark:bg-gray-800">
                 {service.shortDescription}
               </p>
-              <div className="flex justify-center mt-4 gap-3 dark:text-gray-100 dark:bg-gray-900">
+              <div className="flex justify-center mt-4 gap-3 dark:text-gray-100 dark:bg-gray-800">
                 <Button
                   icon="pi pi-pencil"
                   className="p-button-sm text-white p-2 w-full bg-secondary  "
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
+                  className="p-button-sm text-white p-2 w-full bg-red-300 "
                   onClick={() => handleDelete(service.id)}
                 />
               </div>

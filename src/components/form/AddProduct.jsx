@@ -253,17 +253,17 @@ export default function AddProduct() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-4 px-8 w-full mx-auto border rounded-md"
+      className="md:p-4 px-4  w-full mx-auto overflow-x-hidden border rounded-md"
     >
-      <h2 className="heading my-10 text-gray-900 dark:text-gray-100">Add New Product</h2>
+      <h2 className="heading my-6 md:my-10 text-gray-900 dark:text-gray-100">Add New Product</h2>
       <h3 className="subheading my-6 text-gray-800 dark:text-gray-200">Product Information</h3>
 
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 text-gray-800 dark:text-gray-200">Product Name</label>
         <input
           {...register("productName", { required: true })}
           placeholder="Product Name"
-          className="w-[70%] p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+          className="md:md:w-[70%] w-[100%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
         {errors.productName && (
           <span className="text-red-500 dark:text-red-400">Product Name is required</span>
@@ -274,18 +274,18 @@ export default function AddProduct() {
         <span className="text-red-500">Product Name is required</span>
       )}
 
-      <div className="mb-3 flex justify-between items-center relative">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
         <label className="text mb-1 text-gray-800 dark:text-gray-200">Main Category</label>
 
         <div
-          className="w-[70%] p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
+          className="md:w-[70%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           {selectedCategory || "Select Category"}
         </div>
 
         {isOpen && (
-          <div className="absolute left-[30%] top-10 w-[70%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
+          <div className="absolute md:left-[30%] left-0 md:top-10 top-7 md:w-[70%] w-[100%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
             <input
               type="text"
               className="w-full p-2 border-b bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
@@ -315,21 +315,21 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mb-3 flex justify-between items-center relative">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
         <label className="text mb-1 dark:text-gray-100">Sub Category</label>
 
         <div
-          className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 cursor-pointer"
+          className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 cursor-pointer"
           onClick={() => setSubIsOpen(!isSubOpen)}
         >
           {selectedSubCategory || "Select Category"}
         </div>
 
         {isSubOpen && (
-          <div className="absolute left-[30%] top-10 w-[70%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
+          <div className="absolute md:left-[30%] left-0 md:top-10 top-7 md:w-[70%] w-[100%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
             <input
               type="text"
-              className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Search category..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -356,21 +356,21 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mb-3 flex justify-between items-center relative">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
         <label className="text mb-1 dark:text-gray-200">Brand</label>
 
         <div
-          className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 cursor-pointer"
+          className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 cursor-pointer"
           onClick={() => setBrandOpen(!isBrandOpen)}
         >
           {selectedBrand || "Select Brand"}
         </div>
 
         {isBrandOpen && (
-          <div className="absolute left-[30%] top-10 w-[70%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
+          <div className="absolute md:left-[30%] left-0 md:top-10 top-7 md:w-[70%] w-[100%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
             <input
               type="text"
-              className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Search Brand..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -395,9 +395,9 @@ export default function AddProduct() {
         {errors.brand && <span className="text-red-500">Brand is required</span>}
       </div>
 
-      <div className="flex justify-between items-center w-full py-2">
+      <div className="flex  md:flex-row flex-col md:justify-between md:items-center w-full py-2 gap-2">
         <h3 className="text dark:text-gray-200">Product For</h3>
-        <div className="flex gap-3 w-[70%]">
+        <div className="flex gap-2 md:w-[70%] w-[100%]">
           {options.map((option, index) => (
             <div
               key={index}
@@ -413,7 +413,7 @@ export default function AddProduct() {
                 checked={selectedOptions.includes(option.label)}
                 className="border border-gray-300 dark:border-gray-600 rounded-md h-6 w-6"
               />
-              <label htmlFor={option.label} className={`ml-4 ${option.color}`}>
+              <label htmlFor={option.label} className={`md:ml-4 ml-1 ${option.color}`}>
                 {option.label}
               </label>
             </div>
@@ -421,31 +421,31 @@ export default function AddProduct() {
         </div>
       </div>
 
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Long Description</label>
         <textarea
           {...register("longDescription")}
-          className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+          className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
         ></textarea>
       </div>
 
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Short Description</label>
         <input
           {...register("shortDescription")}
-          className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+          className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
 
 
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <h3 className="subheading my-6 dark:text-gray-200">Specifications</h3>
-        <div className="w-[70%] gap-4 flex">
+        <div className="md:w-[70%] w-[100%] gap-4 flex md:flex-row flex-col">
           {fieldOptions.map((option) => (
             <h3
               key={option.key}
               onClick={() => toggleField(option.key)}
-              className={`subheading my-6 border border-gray-300 dark:border-gray-600 px-3 py-1 rounded cursor-pointer ${fields.includes(option.key) ? "bg-secondary text-white" : "bg-white dark:bg-gray-900 dark:text-gray-100"
+              className={`subheading md:my-6 my-2 border  border-gray-300 dark:border-gray-600 px-3 py-1 rounded cursor-pointer ${fields.includes(option.key) ? "bg-secondary text-white" : "bg-white dark:bg-gray-800 dark:text-gray-100"
                 }`}
             >
               {option.label}
@@ -455,40 +455,40 @@ export default function AddProduct() {
       </div>
 
 
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Manufacturer</label>
         <input
           {...register("manufacturer")}
-          className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+          className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
 
       {fields.includes("title") && (
-        <div className="mb-3 flex justify-between items-center">
+        <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
           <label className="text mb-1">Title</label>
           <input
             {...register("title")}
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+            className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
           />
         </div>
       )}
 
       {fields.includes("brand") && (
-        <div className="mb-3 flex justify-between items-center">
+        <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
           <label className="text mb-1 dark:text-gray-200">Brand</label>
           <input
             {...register("brand")}
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+            className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
           />
         </div>
       )}
 
       {fields.includes("description") && (
-        <div className="mb-3 flex justify-between items-center">
+        <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
           <label className="text mb-1 dark:text-gray-200">Description</label>
           <textarea
             {...register("description")}
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 dark:text-gray-100"
+            className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
           />
         </div>
       )}
@@ -503,9 +503,9 @@ export default function AddProduct() {
 
       {uploadSections.map((sectionIndex) => (
         <div key={sectionIndex} className="mb-4 relative">
-          <div className="flex md:flex-row flex-row justify-between w-[80%] items-center gap-10">
+          <div className="flex md:flex-row flex-row justify-between md:w-[70%] w-[100%] items-center gap-10">
             <label className="block text mb-2 font-bold text-black dark:text-white">
-              {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
+              {sectionIndex === 0 ? "Main Image" : `Image &nbsp; &nbsp; ${sectionIndex + 1}`}
             </label>
 
             <FileUpload
@@ -515,7 +515,7 @@ export default function AddProduct() {
               mode="basic"
               chooseOptions={{
                 className:
-                  "bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 text-secondary dark:text-white",
+                  "bg-white border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-secondary ",
               }}
               uploadHandler={() => { }}
               onSelect={(e) => onImageSelect(e, sectionIndex)}
@@ -539,10 +539,10 @@ export default function AddProduct() {
           <button
             type="button"
             onClick={() => removeFileUpload(sectionIndex)}
-            className="absolute top-0 right-0 text-black dark:text-white p-1"
+            className="absolute -top-2 md:top-0 -right-2 md:right-0 md:text-black text-white dark:text-white p-1"
             title="Remove this section"
           >
-            <i className="pi pi-times mt-3 border border-gray-300 dark:border-gray-700 p-1 rounded"></i>
+            <i className="pi pi-times md:mt-3 mt-0 md:bg-transparent bg-secondary  text-sm   md:border border-gray-300 dark:border-gray-700 p-1 md:rounded rounded-full"></i>
           </button>
         </div>
       ))}
@@ -582,30 +582,30 @@ export default function AddProduct() {
       <h3 className="subheading my-6 mt-4 dark:text-gray-200">Inventory</h3>
 
       {/* SKU */}
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">SKU</label>
         <input
           {...register("sku")}
-          className="w-[70%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+          className="md:w-[70%] w-[100%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
         />
       </div>
 
       {/* Quantity */}
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Quantity</label>
         <input
           type="number"
           {...register("quantity")}
-          className="w-[70%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+          className="md:w-[70%] w-[100%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
         />
       </div>
 
       {/* Stock Status */}
-      <div className="mb-3 flex justify-between items-center">
+      <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Stock Status</label>
         <select
           {...register("stockStatus")}
-          className="w-[70%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+          className="md:w-[70%] w-[100%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
         >
           <option value="In Stock" className="dark:text-black">In Stock</option>
           <option value="Out of Stock" className="dark:text-black">Out of Stock</option>
@@ -620,22 +620,24 @@ export default function AddProduct() {
         "Regular Buy Price",
         "Offer Buy Price",
       ].map((label, index) => (
-        <div className="mb-3 flex justify-between items-center" key={index}>
+        <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center" key={index}>
           <label className="text mb-1 dark:text-gray-200">{label}</label>
           <input
             type="number"
             {...register(label.replace(/\s+/g, "").toLowerCase())}
-            className="w-[70%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+            className="md:w-[70%] w-[100%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
           />
         </div>
       ))}
 
-      <button
+     <div className="flex justify-center items-center">
+     <button
         type="submit"
-        className="mt-6 bg-secondary text-white py-2 px-4 rounded hover:bg-secondary-dark transition"
+        className="mt-6 bg-secondary text-white py-2 px-4 my-4 rounded hover:bg-secondary-dark transition"
       >
         Submit Product
       </button>
+     </div>
 
     </form>
   );

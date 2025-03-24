@@ -94,12 +94,15 @@ export default function AddBanner() {
           <h2 className="subheading py-2">Images</h2>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex  justify-between items-center">
               <label className="text dark:text-gray-300">Main Image</label>
               <FileUpload
-                mode="advanced"
+                mode="basic"
                 name="mainImage"
                 accept="image/png, image/jpeg, image/jpg, image/webp"
+                chooseOptions={{
+                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+                }}
                 maxFileSize={1000000}
                 uploadOptions={uploadOptions}
                 onSelect={(e) => onImageSelect(e, 'mainImage')}
@@ -126,9 +129,12 @@ export default function AddBanner() {
             <div className="flex justify-between items-center">
               <label className="text dark:text-gray-300">Product Image 1</label>
               <FileUpload
-                mode="advanced"
+                mode="basic"
                 name="productImage1"
                 accept="image/png, image/jpeg, image/jpg, image/webp"
+                chooseOptions={{
+                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300",
+                }}
                 maxFileSize={1000000}
                 uploadOptions={uploadOptions}
                 onSelect={(e) => onImageSelect(e, 'productImage1')}
@@ -156,10 +162,13 @@ export default function AddBanner() {
             <div className='flex justify-between items-center'>
               <label className="text">Product Image 2</label>
               <FileUpload
-                mode="advanced"
+                mode="basic"
                 name="productImage2"
                 accept="image/png, image/jpeg, image/jpg, image/webp"
                 maxFileSize={1000000}
+                chooseOptions={{
+                  className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+                }}
                 uploadOptions={uploadOptions}
                 onSelect={(e) => onImageSelect(e, 'productImage2')}
               />

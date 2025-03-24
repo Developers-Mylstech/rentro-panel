@@ -109,7 +109,7 @@ export default function AddBrand() {
     <h3 className="heading mb-6 text-gray-900 dark:text-white">Add New Brand</h3>
   
     {/* Brand Information Section */}
-    <div className="border p-6 rounded-lg shadow bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-white mb-6">
+    <div className="border p-6 rounded-lg shadow bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white mb-6">
       <h4 className="font-semibold mb-4">Brand Information</h4>
       <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
         <label className="block text-gray-600 dark:text-gray-300 mb-2">Brand Name</label>
@@ -131,7 +131,7 @@ export default function AddBrand() {
       <div className="flex flex-col md:flex-row justify-between md:items-center">
         <div className="mb-4">
           <h4 className="font-semibold subheading">Brand Image</h4>
-          <p className="text-yellow-500 opacity-70 text-sm mt-1">
+          <p className="text-yellow-500 dark:text-gray-400 opacity-70 text-sm mt-1">
             **Image should be below 1 MB and should have dimensions of 500x600 and type of .png / .jpeg / .webp**
           </p>
         </div>

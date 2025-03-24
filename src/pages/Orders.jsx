@@ -19,17 +19,17 @@ export default function Orders() {
   ]);
 
   return (
-    <div className='h-screen'>
-      <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-center mb-4   dark:text-gray-100 ">
+    <div className=''>
+      <div className="flex flex-col md:flex-row gap-2 justify-between items-center mb-4 px-6 md:px-2  dark:text-gray-100 ">
         <h5 className="heading w-full dark:text-gray-100 ">Orders List</h5>
-        <div className="flex items-center w-full  md:justify-end mt-2">
+        <div className="flex items-center w-full  md:justify-end mt-2 ">
           <IconField iconPosition="right" className='border rounded'>
             <InputIcon className="pi pi-search"> </InputIcon>
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className=" focus:ring-0  focus:outline-none focus:border-transparent dark:bg-gray-900 p-2"
+              className=" focus:ring-0  focus:outline-none focus:border-transparent dark:bg-gray-800 p-2"
               
             />
           </IconField>

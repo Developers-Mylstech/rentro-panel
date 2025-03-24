@@ -49,13 +49,13 @@ export default function CategoryList({ categories }) {
   );
 
   return (
-    <div className="dark:bg-gray-900 dark:text-gray-200 p-6">
+    <div className=" dark:text-gray-200 p-6 w-full h-screen">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+      <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
+        <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
           Category List
         </h5>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center md:flex-row flex-col gap-3">
           {/* Search Bar */}
           <IconField iconPosition="right" className="border p-2 rounded bg-white dark:bg-gray-800">
             <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400"> </InputIcon>
@@ -80,66 +80,72 @@ export default function CategoryList({ categories }) {
         paginator
         rows={5}
         stripedRows
-        className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block"
+        paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
+        className="border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md mb-8 hidden lg:block"
       >
         <Column
           field="image"
           header="Category Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border-r text-white"
+          headerClassName="bg-secondary border text-white dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="dark:bg-gray-800 dark:text-gray-100 "
         />
         <Column
           field="mainCategory"
           header="Main Category"
-          headerClassName="bg-secondary border-r text-white text-center"
-          className="font-semibold text-gray-700 dark:text-gray-300"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          className="font-semibold text-gray-700  dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="subCategory"
           header="Subcategory"
-          headerClassName="bg-secondary border-r text-white text-center"
-          className="font-semibold text-gray-700 dark:text-gray-300"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          className="font-semibold text-gray-700  dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-secondary text-white"
+          headerClassName="bg-secondary text-white dark:bg-gray-800 dark:text-gray-100 border"
+          className="dark:bg-gray-800 dark:text-gray-100"
         />
       </DataTable>
   
-      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredCategories.map((category) => (
-          <div
-            key={category.id}
-            className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-          >
-            <img
-              src={category.image}
-              alt={category.mainCategory}
-              className="w-full h-48 object-cover"
-            />
-  
-            <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-300">
-                {category.mainCategory}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{category.subCategory}</p>
-  
-              <div className="flex justify-center mt-4 gap-3">
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-secondary hover:bg-secondary-dark"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-red-600 hover:bg-red-700"
-                  onClick={() => setVisible(true)}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
+  {filteredCategories.map((category) => (
+    <div
+      key={category.id}
+      className="bg-white dark:bg-gray-800 dark:text-gray-100 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 max-w-full"
+    >
+      <img
+        src={category.image}
+        alt={category.mainCategory}
+        className="w-full h-36 object-cover"
+      />
+
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          {category.mainCategory}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {category.subCategory}
+        </p>
+
+        <div className="flex justify-center mt-4 gap-3">
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-sm text-white p-2 w-full bg-secondary "
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-sm text-white p-2 w-full bg-secondary "
+            onClick={() => setVisible(true)}
+          />
+        </div>
       </div>
+    </div>
+  ))}
+</div>
+
   
       <Dialog
         header="Confirmation"

@@ -187,6 +187,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../systemdesign/CustomeButton';
+import { useState } from 'react';
 
 export default function ProductListing({ products, handleEdit, handleDelete }) {
   const [search, setSearch] = useState('');
@@ -235,20 +236,20 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
   );
 
   return (
-    <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-4">
+    <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-2">
       {/* Header Section */}
-      <div className="flex justify-between mb-4">
-        <div className="flex items-center w-full justify-between">
-          <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-100">
+      <div className="flex  justify-between mb-4">
+        <div className="flex items-center md:flex-row flex-col w-full justify-between">
+          <h2 className="text-xl mb-4 font-semibold text-gray-700 dark:text-gray-100">
             Products List
           </h2>
-          <div className="flex gap-3">
+          <div className="flex gap-3 md:flex-row ">
             {/* Search Bar */}
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="border px-3 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+              className="border px-2 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 w-[70%]"
             />
             <CustomButton
               title="Add"
@@ -267,48 +268,57 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
           paginator
           rows={10}
           stripedRows
-          className="w-full dark:bg-gray-900 dark:text-gray-100"
+          className="w-full dark:bg-gray-800 dark:text-gray-100"
+          paginatorClassName='dark:bg-gray-800 dark:text-gray-100'
         >
           <Column
             field="image"
             header="Product Image"
             body={imageBodyTemplate}
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="sku"
             header="SKU"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="name"
             header="Product Name"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="category"
             header="Main Category"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="quantity"
             header="Quantity"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="monthlyPrice"
             header="Monthly Price"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             field="yearlyPrice"
             header="Yearly Price"
-            headerClassName="bg-secondary text-white border-r dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
           <Column
             header="Options"
             body={actionBodyTemplate}
-            headerClassName="bg-secondary text-white dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-secondary border text-white dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100'
           />
         </DataTable>
       </div>
@@ -318,7 +328,7 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
         {filteredProducts.map((product) => (
           <div
             key={product.sku}
-            className="bg-white shadow-md rounded-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg 
+            className="bg-white shadow-md rounded-lg  overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg 
                        dark:bg-gray-800 dark:text-gray-100"
           >
             <img
@@ -346,12 +356,12 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
               <div className="flex justify-center mt-4 gap-3">
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-sm text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600"
+                  className="p-button-sm text-white bg-secondary p-2"
                   onClick={() => handleEdit(product.sku)}
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600"
+                  className="p-button-sm text-white bg-secondary"
                   onClick={() => confirmDelete(product)}
                 />
               </div>

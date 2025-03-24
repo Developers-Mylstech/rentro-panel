@@ -1,32 +1,47 @@
 
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../index.css"
 
-function CustomSidebar() {
+function CustomSidebar({isDarkMode}) {
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDark , setIsDark] = useState(false);
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
+  
+  useEffect(() => {
+    // const darkMode = window.localStorage.getItem('theme');
+    if (isDarkMode == true) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+    
+  }, [isDarkMode]);
+
+  console.log(isDarkMode,"jknsnc")
+
+
 
   return (
     <>
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 
-        className={`fixed top-4 left-4 z-[51] text-secondary  text-xl rounded-full lg:hidden ${isSidebarOpen ? "hidden" : ""
+        className={`fixed top-5 left-4 z-[51] text-secondary  dark:text-gray-100 text-3xl rounded-full lg:hidden ${isSidebarOpen ? "hidden" : ""
           }`}
       >
         <i className="pi pi-align-left"></i>
       </button>
 
       <div
-        className={`fixed top-0 left-0 h-full p-5 overflow-y-auto z-[55] w-[70%] 
-    bg-secondary dark:bg-gray-800 
+        className={`fixed top-0 left-0 h-full   p-5  overflow-y-auto z-[55] w-[70%] 
+    bg-secondary  dark:bg-gray-800 dark:text-gray-100
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     lg:translate-x-0 lg:w-1/6 lg:block`}
       >
@@ -45,20 +60,20 @@ function CustomSidebar() {
         <ul className="space-y-10 mt-10">
           <li className="pb-2 px-2 border-b">
             <h6 className="text-primary">General</h6>
-            <p className="text text-sm text-white/50">Dashboard Options</p>
+            <p className="text text-sm text-white/50 ">Dashboard Options</p>
           </li>
 
           <li>
             <Link
               to="/"
-              className={`flex items-center gap-3 p-2 w-[100%] rounded-xl py-4 pl-4 transition-all
+              className={`flex items-center gap-3 p-2 w-[100%] h-auto rounded-xl py-4 pl-4 transition-all
       ${location.pathname === "/"
-                  ? "bg-[#f8f8f8] text-secondary dark:bg-gray-800 dark:text-white"
-                  : "text-secondary bg-white dark:bg-gray-900 dark:text-white"}`
+                  ? "bg-[#f8f8f8] text-secondary  "
+                  : "text-secondary bg-white  "}`
               }
             >
-              <i className="pi pi-home text-lg font-semibold"></i>
-              <span className="text-lg font-semibold">Dashboard</span>
+              <i className="pi pi-home text-lg font-semibold dark:text-gray-800"></i>
+              <span className="text-lg font-semibold dark:text-gray-800">Dashboard</span>
             </Link>
           </li>
 
@@ -72,17 +87,17 @@ function CustomSidebar() {
           ].map((menu) => {
             const isActive = location.pathname.includes(menu.name);
             return (
-              <li className={`w-[110%] block relative  duration-[200ms] my-10 ${activeMenu === menu.name ? "open" : ""
+              <li className={`w-[112%] block relative  duration-[200ms] my-10  ${activeMenu === menu.name ? "open" : ""
                 }`} key={menu.name}>
-                <div className="right-container duration-[200ms]"></div>
+                <div className={isDark==true?"right-container":"right-container"}></div>
                 <button
                   onClick={() => toggleMenu(menu.name)}
-                  className={`flex items-center justify-between w-full p-2 rounded-l-full py-4 ${activeMenu === menu.name || isActive
-                    ? "bg-primary text-secondary"
-                    : "text-primary bg-secondary hover:bg-primary hover:text-secondary"
+                  className={`flex items-center justify-between w-full p-2 dark:hover:bg-gray-900  rounded-l-full py-4 ${activeMenu === menu.name || isActive
+                    ? "bg-primary text-secondary dark:bg-gray-900 "
+                    : "text-primary  bg-secondary   hover:bg-primary hover:text-secondary dark:bg-gray-800"
                     }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3  dark:text-gray-100">
                     <i className={`${menu.icon} text-lg `}></i>
                     <span>
                       {menu.name.charAt(0).toUpperCase() +
@@ -90,7 +105,7 @@ function CustomSidebar() {
                     </span>
                   </div>
                   <i
-                    className={`pi z-20 ${activeMenu === menu.name
+                    className={`pi z-20 dark:text-gray-100 ${activeMenu === menu.name
                       ? "pi-chevron-down"
                       : "pi-chevron-right"
                       }`}
@@ -151,18 +166,18 @@ function CustomSidebar() {
           ].map((menu) => {
             const isActive = location.pathname.includes(menu.name);
             return (
-              <li className={`w-[110%] block relative my-10 ${activeMenu === menu.name ? "open" : ""
+              <li className={`w-[112%]   block relative my-10 ${activeMenu === menu.name ? "open" : ""
                 }`} key={menu.name}>
                 <div className="right-container"></div>
 
                 <button
                   onClick={() => toggleMenu(menu.name)}
-                  className={`flex items-center justify-between w-full p-2 rounded-l-full py-4 ${activeMenu === menu.name || isActive
-                    ? "bg-primary text-secondary "
-                    : "text-primary bg-secondary hover:bg-primary hover:text-secondary"
+                  className={`flex items-center justify-between w-full p-2 dark:hover:bg-gray-900  rounded-l-full py-4 ${activeMenu === menu.name || isActive
+                    ? "bg-primary text-secondary dark:bg-gray-900 "
+                    : "text-primary bg-secondary hover:bg-primary hover:text-secondary dark:bg-gray-800"
                     }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 dark:text-gray-100">
                     <i className={`${menu.icon} text-lg`}></i>
                     <span>
                       {menu.name.charAt(0).toUpperCase() +
@@ -170,7 +185,7 @@ function CustomSidebar() {
                     </span>
                   </div>
                   <i
-                    className={`pi z-20 ${activeMenu === menu.name
+                    className={`pi z-20 dark:text-gray-100 ${activeMenu === menu.name
                       ? "pi-chevron-down"
                       : "pi-chevron-right"
                       }`}

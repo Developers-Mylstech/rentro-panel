@@ -38,6 +38,15 @@
   scrollbar-width: none; /* Firefox */
 }
 
+html {
+  --box-shadow-color: white;
+}
+
+html.dark-mode {
+  --box-shadow-color: #111827;
+}
+
+
 
 li.relative:hover .right-container,li.relative.open .right-container {
   display: block;
@@ -48,14 +57,14 @@ li.relative:hover .right-container,li.relative.open .right-container {
   width: 50px;
   background-color: transparent;
   border-radius: 50%;
-  box-shadow: 35px 35px 0px 10px white;
+  box-shadow: 35px 35px 0px 10px var(--box-shadow-color) !important;
   pointer-events: none;
 }
-
 /* Ensure the div remains hidden when not hovered */
 .right-container{
   display: none;
 }
+
 
 /* Adjust parent position if necessary */
 li.relative {
@@ -75,7 +84,7 @@ li.relative::after {
   background-color: transparent;
   border-radius: 50%;
   opacity: 0;
-  box-shadow: 35px -35px 0px 10px white;
+  box-shadow: 35px -35px 0px 10px var(--box-shadow-color);
   pointer-events: none ;
   /* transition: opacity 0.3s ease; */
 }
@@ -90,4 +99,10 @@ li.relative.open::after {
   opacity: 0;
   pointer-events: none;
 }
-
+.ql-snow .ql-stroke {
+  fill: none;
+  stroke: #c0b6b6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
