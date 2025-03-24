@@ -31,8 +31,6 @@ export default function AddProduct() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isErrors, setErrors] = useState({});
-  
-
 
   // const options = ["Rent", "Sell", "Service"];
   const options = [
@@ -134,8 +132,6 @@ export default function AddProduct() {
     localStorage.setItem("fileName", JSON.stringify(fileNames));
   }, [images, fileNames]);
 
-
-
   const onImageSelect = (event, index) => {
     const selectedFiles = event.files;
     const newImages = [...images];
@@ -145,31 +141,33 @@ export default function AddProduct() {
       const fileType = file.type;
       const fileSize = file.size;
 
-      const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(fileType);
+      const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(
+        fileType
+      );
       const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
 
       if (!isValidFormat) {
         alert("Select a proper format (JPEG, PNG, WEBP).");
         setKey(!key);
-        setErrors(true)
+        setErrors(true);
         return; // Stop execution
       }
 
       if (!isValidSize) {
         alert("File size exceeds 1MB. Please select a smaller file.");
         setKey(!key);
-        setErrors(true)
+        setErrors(true);
         return; // Stop execution
       }
 
       if (newImages.length >= 10) {
         alert("You can only upload up to 10 images.");
-        
+
         return;
       }
 
       const reader = new FileReader();
-      setErrors(false)
+      setErrors(false);
       reader.onload = (e) => {
         newImages[index] = e.target.result;
         newFileNames[index] = file.name;
@@ -180,7 +178,6 @@ export default function AddProduct() {
       setKey(!key);
     }
   };
-
 
   useEffect(() => {
     if (images.length > 0) {
@@ -224,14 +221,17 @@ export default function AddProduct() {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    if (isErrors) {
+    if (isErrors == true) {
       setShowError(true);
       const timer = setTimeout(() => {
         setShowError(false);
-        setErrors(false)
+        setErrors(false);
       }, 3000);
 
       return () => clearTimeout(timer); // Cleanup to prevent memory leaks
+      // timer()
+    } else {
+      setShowError(false);
     }
   }, [isErrors]);
 
@@ -274,18 +274,26 @@ export default function AddProduct() {
       onSubmit={handleSubmit(onSubmit)}
       className="md:p-4 px-4  w-full mx-auto overflow-x-hidden border rounded-md"
     >
-      <h2 className="heading my-6 md:my-10 text-gray-900 dark:text-gray-100">Add New Product</h2>
-      <h3 className="subheading my-6 text-gray-800 dark:text-gray-200">Product Information</h3>
+      <h2 className="heading my-6 md:my-10 text-gray-900 dark:text-gray-100">
+        Add New Product
+      </h2>
+      <h3 className="subheading my-6 text-gray-800 dark:text-gray-200">
+        Product Information
+      </h3>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
-        <label className="text mb-1 text-gray-800 dark:text-gray-200">Product Name</label>
+        <label className="text mb-1 text-gray-800 dark:text-gray-200">
+          Product Name
+        </label>
         <input
           {...register("productName", { required: true })}
           placeholder="Product Name"
           className="md:md:w-[70%] w-[100%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
         {errors.productName && (
-          <span className="text-red-500 dark:text-red-400">Product Name is required</span>
+          <span className="text-red-500 dark:text-red-400">
+            Product Name is required
+          </span>
         )}
       </div>
 
@@ -294,7 +302,9 @@ export default function AddProduct() {
       )}
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
-        <label className="text mb-1 text-gray-800 dark:text-gray-200">Main Category</label>
+        <label className="text mb-1 text-gray-800 dark:text-gray-200">
+          Main Category
+        </label>
 
         <div
           className="md:w-[70%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
@@ -328,9 +338,14 @@ export default function AddProduct() {
           </div>
         )}
 
-        <input type="hidden" {...register("mainCategory", { required: true })} />
+        <input
+          type="hidden"
+          {...register("mainCategory", { required: true })}
+        />
         {errors.mainCategory && (
-          <span className="text-red-500 dark:text-red-400">Category is required</span>
+          <span className="text-red-500 dark:text-red-400">
+            Category is required
+          </span>
         )}
       </div>
 
@@ -411,7 +426,9 @@ export default function AddProduct() {
         )}
 
         <input type="hidden" {...register("brand", { required: true })} />
-        {errors.brand && <span className="text-red-500">Brand is required</span>}
+        {errors.brand && (
+          <span className="text-red-500">Brand is required</span>
+        )}
       </div>
 
       <div className="flex  md:flex-row flex-col md:justify-between md:items-center w-full py-2 gap-2">
@@ -420,10 +437,11 @@ export default function AddProduct() {
           {options.map((option, index) => (
             <div
               key={index}
-              className={`flex align-items-center pr-4 md:pl-20 md:pr-20 ${option.label === "Sell" || option.label === "Rent"
-                ? "border-r-2 border-gray-200 dark:border-gray-600"
-                : ""
-                }`}
+              className={`flex align-items-center pr-4 md:pl-20 md:pr-20 ${
+                option.label === "Sell" || option.label === "Rent"
+                  ? "border-r-2 border-gray-200 dark:border-gray-600"
+                  : ""
+              }`}
             >
               <Checkbox
                 inputId={option.label}
@@ -432,7 +450,10 @@ export default function AddProduct() {
                 checked={selectedOptions.includes(option.label)}
                 className="border border-gray-300 dark:border-gray-600 rounded-md h-6 w-6"
               />
-              <label htmlFor={option.label} className={`md:ml-4 ml-1 ${option.color}`}>
+              <label
+                htmlFor={option.label}
+                className={`md:ml-4 ml-1 ${option.color}`}
+              >
                 {option.label}
               </label>
             </div>
@@ -449,13 +470,14 @@ export default function AddProduct() {
       </div>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
-        <label className="text mb-1 dark:text-gray-200">Short Description</label>
+        <label className="text mb-1 dark:text-gray-200">
+          Short Description
+        </label>
         <input
           {...register("shortDescription")}
           className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
-
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <h3 className="subheading my-6 dark:text-gray-200">Specifications</h3>
@@ -464,15 +486,17 @@ export default function AddProduct() {
             <h3
               key={option.key}
               onClick={() => toggleField(option.key)}
-              className={`subheading md:my-6 my-2 border  border-gray-300 dark:border-gray-600 px-3 py-1 rounded cursor-pointer ${fields.includes(option.key) ? "bg-secondary text-white" : "bg-white dark:bg-gray-800 dark:text-gray-100"
-                }`}
+              className={`subheading md:my-6 my-2 border  border-gray-300 dark:border-gray-600 px-3 py-1 rounded cursor-pointer ${
+                fields.includes(option.key)
+                  ? "bg-secondary text-white"
+                  : "bg-white dark:bg-gray-800 dark:text-gray-100"
+              }`}
             >
               {option.label}
             </h3>
           ))}
         </div>
       </div>
-
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Manufacturer</label>
@@ -513,7 +537,9 @@ export default function AddProduct() {
       )}
 
       <div className="mb-4">
-        <h4 className="font-semibold subheading dark:text-gray-200">Product Images</h4>
+        <h4 className="font-semibold subheading dark:text-gray-200">
+          Product Images
+        </h4>
         <p className="text-gray-500 opacity-70 text-sm mt-1 dark:text-gray-200">
           **Image should be below 1 MB and should have dimensions of 500x600 and
           type of .png / .jpeg / .webp**
@@ -526,25 +552,31 @@ export default function AddProduct() {
             <label className="block text mb-2 font-bold text-black dark:text-white">
               {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
             </label>
-
-            <FileUpload
-              name={`demo-${sectionIndex}[]`}
-              key={key} // Force re-render on invalid file selection
-              customUpload
-              mode="basic"
-              chooseOptions={{
-                className:
-                  "bg-white border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-secondary ",
-              }}
-              uploadHandler={() => { }}
-              onSelect={(e) => onImageSelect(e, sectionIndex)}
-              accept="image/png,image/jpeg,image/webp"
-              chooseLabel={fileNames[sectionIndex] || "Choose "}
-              multiple={false}
-              auto
-              
-            />
-             
+            <div className="flex flex-col justify-start">
+              <FileUpload
+                name={`demo-${sectionIndex}[]`}
+                key={key} // Force re-render on invalid file selection
+                customUpload
+                mode="basic"
+                chooseOptions={{
+                  className:
+                    "bg-white border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-secondary ",
+                }}
+                uploadHandler={() => {}}
+                onSelect={(e) => onImageSelect(e, sectionIndex)}
+                accept="image/png,image/jpeg,image/webp"
+                chooseLabel={fileNames[sectionIndex] || "Choose "}
+                multiple={false}
+                auto
+              />
+              {/* {showError == true && (
+                <div>
+                  <span className="text-red-500 dark:text-red-400 text-sm">
+                    Check the image format or size
+                  </span>
+                </div>
+              )} */}
+            </div>
 
             <div className="md:flex hidden justify-center">
               {images[sectionIndex] && (
@@ -556,7 +588,6 @@ export default function AddProduct() {
               )}
             </div>
           </div>
-          
 
           <button
             type="button"
@@ -581,11 +612,12 @@ export default function AddProduct() {
         )}
       </div>
 
-     
-
-      <div className="mt-4 grid grid-cols-4 gap-4">
+      <div className="mt-4 md:grid grid-cols-4 gap-4 hidden ">
         {images.map((img, index) => (
-          <div key={index} className="relative bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md">
+          <div
+            key={index}
+            className="relative bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md"
+          >
             <img
               src={img}
               alt={`product-${index}`}
@@ -601,17 +633,6 @@ export default function AddProduct() {
           </div>
         ))}
       </div>
-      {showError === true && (
-  <>
-    <span className="text-red-500 dark:text-red-400">
-      Check the image format or size
-    </span>
-   
-  </>
-)}
-     
-
-
 
       <h3 className="subheading my-6 mt-4 dark:text-gray-200">Inventory</h3>
 
@@ -641,8 +662,12 @@ export default function AddProduct() {
           {...register("stockStatus")}
           className="md:w-[70%] w-[100%] p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
         >
-          <option value="In Stock" className="dark:text-black">In Stock</option>
-          <option value="Out of Stock" className="dark:text-black">Out of Stock</option>
+          <option value="In Stock" className="dark:text-black">
+            In Stock
+          </option>
+          <option value="Out of Stock" className="dark:text-black">
+            Out of Stock
+          </option>
         </select>
       </div>
 
@@ -654,7 +679,10 @@ export default function AddProduct() {
         "Regular Buy Price",
         "Offer Buy Price",
       ].map((label, index) => (
-        <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center" key={index}>
+        <div
+          className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center"
+          key={index}
+        >
           <label className="text mb-1 dark:text-gray-200">{label}</label>
           <input
             type="number"
@@ -664,15 +692,14 @@ export default function AddProduct() {
         </div>
       ))}
 
-     <div className="flex justify-center items-center">
-     <button
-        type="submit"
-        className="mt-6 bg-secondary text-white py-2 px-4 my-4 rounded hover:bg-secondary-dark transition"
-      >
-        Submit Product
-      </button>
-     </div>
-
+      <div className="flex justify-center items-center">
+        <button
+          type="submit"
+          className="mt-6 bg-secondary text-white py-2 px-4 my-4 rounded hover:bg-secondary-dark transition"
+        >
+          Submit Product
+        </button>
+      </div>
     </form>
   );
 }
