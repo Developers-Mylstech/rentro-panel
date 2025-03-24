@@ -6,6 +6,7 @@ import CustomButton from "../../systemdesign/CustomeButton";
 import { FileUpload } from "primereact/fileupload";
 // import { classNames } from "primereact/utils";
 import { useForm } from "react-hook-form";
+import "../../index.css"
 
 export default function AddService() {
   const navigate = useNavigate();
@@ -82,16 +83,16 @@ export default function AddService() {
 
   return (
     <div className="w-full">
-      <h3 className="heading mb-6">Add New Services</h3>
+      <h3 className="heading mb-6 dark:text-gray-100">Add New Services</h3>
 
       {/* Service Information Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-800">
         <h2 className=" subheading mb-4 dark:text-gray-100 ">Service Information</h2>
 
-        <div className="mb-4 flex justify-between">
+        <div className="mb-4 flex md:flex-row flex-col justify-between">
           <label className="text mb-2 dark:text-gray-100 ">Service Title</label>
           <InputText
-            className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
+            className="md:w-[70%] w-full p-2 border rounded dark:text-gray-100 dark:bg-gray-800"
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -104,13 +105,15 @@ export default function AddService() {
           <div className="md:w-[70%] w-full">
             <Editor
               value={formData.serviceShortDescription}
+              data-pr-classname="text-gray-200"
+
               onTextChange={(e) =>
                 setFormData({
                   ...formData,
                   serviceShortDescription: e.htmlValue,
                 })
               }
-              style={{ height: "200px" }}
+              style={{ height: "200px", }}
             />
           </div>
         </div>
@@ -118,7 +121,7 @@ export default function AddService() {
         <div className="mb-4  flex flex-col md:flex-row  justify-between md:items-start">
           <div className=" mb-4">
             <h4 className="font-semibold subheading">Service Image</h4>
-            <p className="text-yellow-500 opacity-70 text-sm mt-1">
+            <p className="text-yellow-500 dark:text-gray-400 opacity-70 text-sm mt-1">
               **Image should be below 1 MB and should have dimentions of 500X600
               and type of .png / .jpeg / .webp**
             </p>
@@ -127,7 +130,7 @@ export default function AddService() {
           <FileUpload
             mode="basic"
             name="serviceImage"
-            chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary' }}
+            chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 dark:border-gray-300' }}
             url="/api/upload"
             className=""
             contentStyle="bg-red-300"
@@ -140,13 +143,13 @@ export default function AddService() {
         </div>
       </div>
 
-      <div className="border p-6 rounded-lg shadow dark:text-gray-100 dark:bg-gray-900 mb-6">
+      <div className="border p-6 rounded-lg shadow dark:text-gray-100 dark:bg-gray-800 mb-6">
         <h2 className="subheading mb-4 dark:text-gray-100 ">Service Detail Information</h2>
 
-        <div className="mb-4 flex justify-between">
+        <div className="mb-4 flex md:flex-row flex-col justify-between">
           <label className="text mb-2 dark:text-gray-100 ">Service Heading</label>
           <InputText
-            className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
+            className="md:w-[70%] w-full p-2 border rounded dark:text-gray-100 dark:bg-gray-800"
             name="subtitle"
             value={formData.subtitle}
             onChange={handleChange}
@@ -160,7 +163,7 @@ export default function AddService() {
           <div className="md:w-[70%] w-full">
             <Editor
               value={formData.description}
-              className="dark:text-gray-100 dark:bg-gray-900"
+              className="dark:text-gray-100 dark:bg-gray-800 ql-snow ql-stroke"
               onTextChange={(e) =>
                 setFormData({ ...formData, description: e.htmlValue })
               }
@@ -171,10 +174,10 @@ export default function AddService() {
       </div>
 
       {/* Images Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-800">
         <div className=" mb-4">
-          <h4 className="font-semibold subheading dark:text-gray-100 dark:bg-gray-900">Images</h4>
-          <p className="text-yellow-500 opacity-70 text-sm mt-1">
+          <h4 className="font-semibold subheading dark:text-gray-100 dark:bg-gray-800">Images</h4>
+          <p className="text-yellow-500 dark:text-gray-400 opacity-70 text-sm mt-1">
             **Image should be below 1 MB and should have dimentions of 500X600
             and type of .png / .jpeg / .webp**
           </p>
@@ -192,7 +195,7 @@ export default function AddService() {
               chooseLabel={
                 imagePaths[imageName] ? imagePaths[imageName] : `Choose File`
               }
-              chooseOptions={{className: 'bg-primary border-2 border-secondary text-secondary' }}
+              chooseOptions={{className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300' }}
               auto
               onSelect={(e) => handleFileSelect(e, imageName)}
             />
@@ -205,15 +208,15 @@ export default function AddService() {
       </div>
 
       {/* Features Section */}
-      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-900">
+      <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-800">
         <h2 className="subheading mb-4 dark:text-gray-100 ">Features</h2>
 
         {[1, 2, 3, 4, 5, 6].map((num) => (
           <div key={num} className="mb-4">
-            <div className="mb-4 flex justify-between ">
+            <div className="mb-4 flex md:flex-row flex-col justify-between ">
               <label className="text mb-2 dark:text-gray-100 ">{`Feature ${num} Title`}</label>
               <InputText
-                className="w-[70%] p-2 border rounded dark:text-gray-100 dark:bg-gray-900"
+                className="md:w-[70%] w-full p-2 border rounded dark:text-gray-100 dark:bg-gray-800"
                 name={`feature${num}Title`}
                 value={formData[`feature${num}Title`] || ""}
                 onChange={handleChange}
@@ -225,7 +228,9 @@ export default function AddService() {
               <label className="text mb-2 dark:text-gray-100 ">{`Feature ${num} Description`}</label>
               <div className="md:w-[70%] w-full">
                 <Editor
+                data-pr-classname=""
                   value={formData[`feature${num}Description`] || ""}
+                  headerStyle="text-gray-100"
                   onTextChange={(e) =>
                     setFormData({
                       ...formData,

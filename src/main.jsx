@@ -8,6 +8,8 @@ import { PrimeReactProvider } from 'primereact/api';
 
 createRoot(document.getElementById('root')).render(
   <PrimeReactProvider value={{ ripple: true }}>
-  <App />
+ <section className='dark:bg-gray-900'>
+ <App />
+ </section>
 </PrimeReactProvider>
 )

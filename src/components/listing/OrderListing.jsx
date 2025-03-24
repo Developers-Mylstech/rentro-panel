@@ -68,52 +68,52 @@ export default function OrderListing({ orders }) {
         paginator
         rows={5}
         stripedRows
-        className="border border-gray-300 rounded-md mb-8 hidden lg:block dark:bg-gray-900 dark:text-gray-100"
-        paginatorClassName="dark:bg-gray-900 dark:text-gray-100"
-        footerClassName="dark:bg-gray-900 dark:text-gray-100"
+        className="border border-gray-300 rounded-md mb-8 hidden lg:block dark:bg-gray-800 dark:text-gray-100"
+        paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
+        footerClassName="dark:bg-gray-800 dark:text-gray-100"
       >
         <Column
           field="orderCode"
           header="Order Code"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="dateTime"
           header="Date Time"
-          headerClassName="bg-secondary border  text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border  text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="customerId"
           header="Customer Id"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="customerName"
           header="Customer Name"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="paymentMethod"
           header="Payment Method"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="deliveryStatus"
           header="Delivery Status"
           body={statusTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="amount"
@@ -123,16 +123,16 @@ export default function OrderListing({ orders }) {
               ? `₹${Number(rowData.amount).toFixed(2)}`
               : "N/A"
           }
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-900 dark:text-gray-100"
-          bodyClassName="text-center dark:bg-gray-900 dark:text-gray-100"
-          footerClassName="dark:bg-gray-900 dark:text-gray-100"
+          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+          footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
       </DataTable>
 
@@ -143,23 +143,23 @@ export default function OrderListing({ orders }) {
             key={order.id}
             className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
           >
-            <div className="p-4 dark:bg-gray-900 dark:text-gray-100">
-              <h3 className="text-lg font-bold text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+            <div className="p-4 dark:bg-gray-800 dark:text-gray-100">
+              <h3 className="text-lg font-bold text-gray-800 dark:bg-gray-800 dark:text-gray-100">
                 {order.customerName}
               </h3>
-              <p className="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">
+              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
                 <span className="font-semibold">Order Code:</span>{" "}
                 {order.orderCode}
               </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">
+              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
                 <span className="font-semibold">Date Time:</span>{" "}
                 {order.dateTime}
               </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">
+              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
                 <span className="font-semibold">Payment Method:</span>{" "}
                 {order.paymentMethod}
               </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">
+              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
                 <span className="font-semibold">Amount:</span>{" "}
                 ₹
                 {Number(order.amount)
@@ -173,11 +173,11 @@ export default function OrderListing({ orders }) {
                 />
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
+                  className="p-button-sm text-white p-2 w-full bg-green-300 "
                 />
                 <Button
                   icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
+                  className="p-button-sm text-white p-2 w-full bg-red-300 "
                   onClick={() => {
                     setSelectedOrder(order);
                     setVisible(true);

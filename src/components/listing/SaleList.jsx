@@ -70,16 +70,16 @@ export default function SaleList() {
         </h3>
 
         {/* Search and Add Button */}
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto dark:text-gray-100 bg-gray-900">
+        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto dark:text-gray-100 ">
           {/* Search Input */}
-          <div className="flex relative justify-between p-2  w-full md:w-64 border rounded-md ">
+          <div className="flex relative justify-between p-2  w-full md:w-64 border rounded-md dark:bg-gray-800">
             
-              <i className="pi pi-search  absolute top-3 right-2 text-gray-400 dark:text-gray-100 bg-gray-900 " />
+              <i className="pi pi-search  absolute top-3 right-2 text-gray-400 dark:text-gray-100 dark:bg-gray-800 " />
               <InputText
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="p-inputtext-sm w-full border-none outline-none dark:text-gray-100 dark:bg-gray-900 "
+                className="p-inputtext-sm w-full border-none outline-none dark:text-gray-100 dark:bg-gray-800 "
               />
        
           </div>
@@ -100,34 +100,34 @@ export default function SaleList() {
         paginator
         rows={5}
         stripedRows
-        className="hidden lg:block border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-900"
-        paginatorClassName='dark:text-gray-100 bg-gray-900'
-        footerClassName='dark:text-gray-100 bg-gray-900'
+        className="hidden lg:block border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-800"
+        paginatorClassName='dark:text-gray-100 dark:bg-gray-800'
+        footerClassName='dark:text-gray-100 dark:bg-gray-800'
       >
         <Column
           field="image"
           header="Sale Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           field="title"
           header="Title"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           field="subtitle"
           header="Subtitle"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
         <Column
           header="Option"
           body={actionBodyTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-900"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-900"
+          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
         />
       </DataTable>
 
@@ -141,14 +141,14 @@ export default function SaleList() {
             <img
               src={sale.image}
               alt={sale.title}
-              className="w-full h-32 object-cover dark:text-gray-100 dark:bg-gray-900"
+              className="w-full h-32 object-cover dark:text-gray-100 dark:bg-gray-800"
             />
-            <div className="p-4 dark:text-gray-100 dark:bg-gray-900">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 dark:bg-gray-900">
+            <div className="p-4 dark:text-gray-100 dark:bg-gray-800">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 dark:bg-gray-800">
                 {sale.title}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-100 dark:bg-gray-900">{sale.subtitle}</p>
-              <div className="flex justify-center mt-4 gap-3 dark:text-gray-100 dark:bg-gray-900">
+              <p className="text-sm text-gray-500 dark:text-gray-100 dark:bg-gray-800">{sale.subtitle}</p>
+              <div className="flex justify-center mt-4 gap-3 dark:text-gray-100 dark:bg-gray-800">
                 <Button
                   icon="pi pi-pencil"
                   className="p-button-sm text-white p-2 w-full bg-secondary "

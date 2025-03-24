@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Menu } from 'primereact/menu';
 import { useNavigate } from 'react-router-dom';
 
-export default function Header() {
+export default function Header({setIsDarkMode}) {
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
@@ -11,14 +11,17 @@ export default function Header() {
         if (darkMode) {
             document.documentElement.classList.add("dark");
             localStorage.setItem("theme", "dark");
+            setIsDarkMode(true);
         } else {
             document.documentElement.classList.remove("dark");
+            setIsDarkMode(false);
             localStorage.setItem("theme", "light");
         }
     }, [darkMode]);
 
     const toggleDarkMode = () => {
         setDarkMode(prevMode => !prevMode);
+        
     };
 
     const items = [
@@ -42,7 +45,7 @@ export default function Header() {
     return (
         <div className="flex justify-end py-5 border-b sticky z-50 px-10 gap-5 top-0 transition-all duration-300 
                         bg-white text-black dark:bg-gray-900 dark:text-dark">
-            <Menu model={items} popup ref={menuRef} id="popup_menu_left" />
+            <Menu model={items}  popup ref={menuRef} id="popup_menu_left" />
 
 
 

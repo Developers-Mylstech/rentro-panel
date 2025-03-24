@@ -95,7 +95,7 @@ export default function AddRent() {
     <div className="w-full">
       <h3 className="heading mb-6 dark:text-gray-300">Add About Us Detail</h3>
 
-      <div className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-900 mb-6">
+      <div className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
           About Us Information
         </h2>
@@ -104,7 +104,7 @@ export default function AddRent() {
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
           <label className="text-gray-600 dark:text-gray-300 mb-2">Title</label>
           <InputText
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
+            className="md:w-[70%] w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -117,7 +117,7 @@ export default function AddRent() {
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
           <label className="text-gray-600 dark:text-gray-300 mb-2">Subtitle</label>
           <InputText
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
+            className="md:w-[70%] w-full  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
             name="subtitle"
             value={formData.subtitle}
             onChange={handleChange}
@@ -130,7 +130,7 @@ export default function AddRent() {
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
           <label className="text-gray-600 dark:text-gray-300 mb-2">Description</label>
           <InputText
-            className="w-[70%] p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
+            className="md:w-[70%] w-full  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -141,17 +141,17 @@ export default function AddRent() {
       </div>
 
 
-      <div className="border border-gray-300 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-900 mb-6">
+      <div className="border border-gray-300 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
         <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Images</h4>
 
-        <p className="text-yellow-500 opacity-80 text-sm mb-4">
+        <p className="text-yellow-500 dark:text-gray-400 opacity-80 text-sm mb-4">
           **Image should be below 1 MB and should have dimensions of 500 × 600 and type of .png / .jpeg / .webp**
         </p>
 
         {['image1', 'image2', 'image3'].map((name, index) => (
           <div key={name} className="mb-4 flex flex-col md:flex-row justify-between items-center w-full gap-4">
 
-            <div className="flex flex- md:flex-row justify-between items-center w-[80%]">
+            <div className="flex   justify-between items-center md:w-[80%] w-full">
               <label className="text-gray-600 dark:text-gray-300 mb-2">
                 Image {index + 1}
               </label>
@@ -159,13 +159,14 @@ export default function AddRent() {
               <FileUpload
                 ref={fileUploadRefs[name]}
                 mode="basic"
+                chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 dark:border-gray-300' }}
                 name={name}
                 accept="image/*"
                 auto
                 customUpload
                 key={fileKey} 
-                chooseLabel={formData[name] ? formData[name].name : 'Choose Image'}
-                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md px-3 py-2"
+                chooseLabel={formData[name] ? formData[name].name : 'Choose'}
+                className=" dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md px-3 py-2 "
                 onSelect={(e) => handleFileChange(e, name)}
               />
             </div>
@@ -183,7 +184,7 @@ export default function AddRent() {
       <div className="flex justify-center mt-6">
   <Button 
     label="Submit" 
-    className="p-button-success bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all duration-300 dark:bg-green-700 dark:hover:bg-green-800"
+    className="px-4 py-2 rounded-lg bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 "
     onClick={handleSubmit} 
   />
 </div>

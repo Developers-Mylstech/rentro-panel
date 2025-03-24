@@ -106,7 +106,7 @@ export default function RentList() {
         stripedRows
         paginatorClassName="dark:bg-gray-800"
         className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block 
-             bg-white dark:bg-gray-900 dark:text-gray-200"
+             bg-white dark:bg-gray-800 dark:text-gray-200"
       >
         <Column
           field="image"
