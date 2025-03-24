@@ -539,7 +539,7 @@ export default function AddProduct() {
               uploadHandler={() => { }}
               onSelect={(e) => onImageSelect(e, sectionIndex)}
               accept="image/png,image/jpeg,image/webp"
-              chooseLabel={fileNames[sectionIndex] || "Choose a file"}
+              chooseLabel={fileNames[sectionIndex] || "Choose "}
               multiple={false}
               auto
               
