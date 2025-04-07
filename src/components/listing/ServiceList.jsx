@@ -11,49 +11,49 @@ export default function ServiceList() {
 
   const [services] = useState([
     {
-      id: 1,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Domestic Water Filters',
       shortDescription:
         'Our Domestic Water Filters Ensure Clean, Clear, and Safe Water for Your Daily Needs.',
     },
     {
-      id: 2,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Commercial Water Filters',
       shortDescription:
         'Reliable Commercial Water Filters for Purity and Refreshment in Every Drop.',
     },
     {
-      id: 3,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Industrial Water Filters',
       shortDescription:
         'Unmatched Efficiency Ensures Pure and Clean Water for Industrial Use.',
     },
     {
-      id: 4,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'RO Services',
       shortDescription:
         'Ensuring Optimal Performance and Purity. Trust us for Reliable Maintenance.',
     },
     {
-      id: 5,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Water Coolers and Dispensers',
       shortDescription:
         'Stay refreshed with our Water Coolers and Dispensers, stylish and convenient.',
     },
     {
-      id: 6,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Chillers and Tanks',
       shortDescription:
         'Experience optimal cooling with our Chillers and Tanks, efficient and reliable.',
     },
     {
-      id: 7,
+      id: "#12344",
       image: 'https://via.placeholder.com/80',
       title: 'Appliances',
       shortDescription:
@@ -85,11 +85,11 @@ export default function ServiceList() {
     <div className="flex gap-2 justify-center">
       <Button
         icon="pi pi-pencil"
-        className="p-button-text p-button-sm text-blue-500 focus:ring-0"
+        className=" p-2 rounded text-white bg-blue-500 "
       />
       <Button
         icon="pi pi-trash"
-        className="p-button-text p-button-sm text-red-500 focus:ring-0"
+        className=" p-2 rounded text-white bg-red-500 "
         onClick={() => handleDelete(rowData.id)}
       />
     </div>
@@ -106,10 +106,23 @@ export default function ServiceList() {
     </div>
   );
 
+  const titleTemplate = (rowData) => (
+    <div className="flex flex-col  justify-start">
+      <span className='text-sm '>
+        {rowData.title}
+      </span>
+      <p className="text-gray-500 text-xs dark:text-gray-400">
+        {rowData.shortDescription}
+      </p>
+    </div>
+  )
+
+  
+
   return (
-    <div>
+    <div className='md:h-screen dark:bg-gray-900'>
       {/* ✅ Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 mx-4 md:mx-0">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 mx-4 md:mx-0 ">
         {/* Title */}
         <h3 className="text-2xl font-bold text-gray-700 w-full md:w-auto dark:text-gray-100 ">
           Service List
@@ -125,7 +138,7 @@ export default function ServiceList() {
                          value={searchQuery}
                          onChange={(e) => setSearchQuery(e.target.value)}
                          placeholder="Search..."
-                         className=" w-full border-none outline-none dark:text-gray-100 dark:bg-gray-800"
+                         className=" w-full focus:ring-0  border-none outline-none dark:text-gray-100 dark:bg-gray-800"
                         
                        />
                 
@@ -154,26 +167,33 @@ export default function ServiceList() {
           field="image"
           header="Service Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center border dark:text-gray-100 dark:bg-gray-800"
         />
+         <Column
+    field="id"
+    header="Service Code"
+    headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:text-gray-100 dark:bg-gray-800"
+    bodyClassName="text-center text-sm font-semibold border-b dark:text-gray-100 dark:bg-gray-800"
+  />
         <Column
           field="title"
-          header="Service Title"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-800"
+          header="Service "
+          body={titleTemplate}
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center  dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName=" text-sm font-semibold border-b font-semibold dark:text-gray-100 dark:bg-gray-800"
         />
-        <Column
+        {/* <Column
           field="shortDescription"
           header="Service Description"
           headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
           bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
-        />
+        /> */}
         <Column
           header="Options"
           body={actionBodyTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 border text-gray-500 font-light text-sm bordertext-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center text-sm font-semibold border-b dark:text-gray-100 dark:bg-gray-800"
         />
       </DataTable>
 

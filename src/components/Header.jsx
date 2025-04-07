@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Menu } from 'primereact/menu';
 import { useNavigate } from 'react-router-dom';
+import { ColorPicker } from 'primereact/colorpicker';
 
 export default function Header({setIsDarkMode}) {
     const menuRef = useRef(null);
@@ -32,6 +33,7 @@ export default function Header({setIsDarkMode}) {
                     label: 'Setting',
                     icon: 'pi pi-cog',
                     command: () => console.log("Settings Clicked")
+                    
                 },
                 {
                     label: 'Log out',
@@ -44,8 +46,8 @@ export default function Header({setIsDarkMode}) {
 
     return (
         <div className="flex justify-end py-5 border-b sticky z-50 px-10 gap-5 top-0 transition-all duration-300 
-                        bg-white text-black dark:bg-gray-900 dark:text-dark">
-            <Menu model={items}  popup ref={menuRef} id="popup_menu_left" />
+                         text-black bg-white dark:bg-gray-900 dark:text-dark">
+            <Menu   model={items}   popup ref={menuRef} id="popup_menu_left" className=' bg-white dark:text-gray-100 dark:bg-gray-800 '  />
 
 
 
@@ -59,9 +61,22 @@ export default function Header({setIsDarkMode}) {
             </button>
 
 
-            <div className='flex gap-3 items-center' onClick={(event) => menuRef.current.toggle(event)}>
+            <div className='flex gap-3 items-center ' onClick={(event) => menuRef.current.toggle(event)}>
                 <i className="pi pi-user text-lg cursor-pointer dark:text-white" aria-controls="popup_menu_left" aria-haspopup />
             </div>
+
+            <style>
+        {`.dark  #popup_menu_left_sub_0{
+          background: #1F2937;
+          color:#F3F4F6
+        }
+        .dark .p-menuitem-content{
+          background: #1F2937;
+          color:#F3F4F6
+        }
+      
+        `}
+      </style>
         </div>
     );
 }

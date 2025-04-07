@@ -42,6 +42,7 @@ export default function Category() {
       mainCategory: "Water Cooler",
       subCategory: "Cooler",
       image: "http://panelro.xpertspot.com/assets/images/categories/water-cooler.png",
+      
     },
     {
       id: 7,
@@ -52,7 +53,7 @@ export default function Category() {
   ];
 
   return (
-    <div>
+    <div className="md:h-screen dark:bg-gray-900">
       <CategoryList categories={categories} />
     </div>
   );

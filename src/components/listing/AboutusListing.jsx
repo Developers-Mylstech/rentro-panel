@@ -35,7 +35,7 @@ export default function AboutUsListing() {
     <img
       src={rowData.image}
       alt={rowData.title}
-      className="w-20 h-20 object-cover"
+      className="w-16 h-16 object-cover rounded-lg"
     />
   );
 
@@ -44,11 +44,11 @@ export default function AboutUsListing() {
     <div className="flex gap-2">
       <Button
         icon="pi pi-pencil"
-        className="p-button-rounded p-button-text text-blue-500"
+        className=" text-white p-2 rounded bg-blue-500"
       />
       <Button
         icon="pi pi-trash"
-        className="p-button-rounded p-button-text text-red-500"
+        className="text-white p-2 rounded bg-red-500"
       />
     </div>
   );
@@ -62,13 +62,13 @@ export default function AboutUsListing() {
         </h5>
 
         {/* Search & Add Button */}
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex justify-center items-center gap-3 w-full md:w-auto">
           {/* Search Bar */}
           <InputText
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by title"
-            className="border px-3 py-2 text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 rounded-md focus:ring focus:ring-primary w-[70%]"
+            className="border px-3 py-2 focus:ring-0  text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 rounded-md  w-[60%]"
           />
 
           {/* Add New Button */}
@@ -82,7 +82,7 @@ export default function AboutUsListing() {
       </div>
 
 
-      <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md dark:border-gray-700">
+      <div className="hidden lg:block overflow-x-auto border rounded-lg dark:border-gray-700">
         <DataTable
           value={filteredData}
           paginator
@@ -90,32 +90,32 @@ export default function AboutUsListing() {
           paginatorClassName="dark:bg-gray-800"
           stripedRows
           scrollable
-          className="w-full overflow-auto bg-white dark:bg-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-700"
+          className="w-full overflow-auto bg-white dark:bg-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-700 "
         >
           <Column
             field="image"
             header="About Us Image"
             body={imageTemplate}
-            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
-            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800  border-gray-300  text-center"
+            bodyClassName=" dark:bg-gray-800 border dark:text-gray-400 border-gray-300  text-center"
           />
           <Column
             field="title"
             header="Title"
-            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
-            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center font-semibold"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800  border-gray-300 text-center"
+            bodyClassName="text-sm font-semibold text-sm dark:bg-gray-800 border-b dark:text-gray-400 border-gray-300  text-center font-semibold"
           />
           <Column
             field="subtitle"
             header="Subtitle"
-            headerClassName="bg-secondary dark:bg-gray-800 text-white border-r border-gray-300 dark:border-gray-700 text-center"
-            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center font-semibold"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border  border-b dark:bg-gray-800  border-gray-300  text-center"
+            bodyClassName="text-sm font-semibold text-sm dark:bg-gray-800 border-b dark:text-gray-400 border-gray-300 text-center font-semibold"
           />
           <Column
             header="Options"
             body={actionTemplate}
-            headerClassName="bg-secondary dark:bg-gray-800 text-white border-gray-300 dark:border-gray-700 text-center"
-            bodyClassName="bg-gray-100 dark:bg-gray-800 border dark:text-gray-400 border-gray-300 dark:border-gray-700 text-center"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 border-gray-300  text-center"
+            bodyClassName=" text-sm font-semibold dark:bg-gray-800 border dark:text-gray-400 border-gray-300  text-center"
           />
         </DataTable>
       </div>

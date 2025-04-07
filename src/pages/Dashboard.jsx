@@ -27,13 +27,13 @@ export default function Dashboard() {
     <div className="flex flex-wrap justify-center bg-white dark:bg-gray-900 text-black dark:text-gray-100">
       {items.map((item, index) => (
         <div key={index} className="md:w-[32%] lg:w-[24%] w-full m-1">
-          <Card className={`shadow-md rounded-lg border-b-4 ${item.color} dark:border-gray-700 bg-white dark:bg-gray-800`}>
+          <Card className={`shadow-md rounded-lg border-b-4 ${item.color} dark:border-opacity-40  bg-white dark:bg-gray-800`}>
             <div className="flex justify-between items-center p-4">
               <div className="flex flex-col gap-2">
                 <h5 className="subheading font-semibold text-gray-900 dark:text-gray-100">{item.name}</h5>
                 <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{item.value}</p>
               </div>
-              <div className={`w-12 h-12 flex justify-center items-center rounded-full ${item.bgColor}`}>
+              <div className={`w-12 h-12 flex justify-center items-center rounded-full  ${item.bgColor}`}>
                 <i className={`${item.icon} text-xl text-gray-600 dark:text-gray-100`}></i>
               </div>
             </div>

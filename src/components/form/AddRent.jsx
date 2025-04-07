@@ -267,7 +267,7 @@ export default function AddRent() {
       <div className="border border-gray-300 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
         <h4 className="subheading mb-4 text-gray-800 dark:text-gray-200">Images</h4>
 
-        <p className="text-red-500 dark:text-gray-400  opacity-70 text-sm mb-4">
+        <p className="text-yellow-500 dark:text-gray-400  opacity-70 text-sm mb-4">
           **Image should be below 1 MB, with dimensions 500x600, and in .png / .jpeg / .webp format**
         </p>
 
@@ -314,7 +314,7 @@ export default function AddRent() {
       <div className="flex justify-center mt-6">
         <Button
           label="Submit"
-          className="p-button-success bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md shadow-md transition-all duration-300 
+          className="p-button-success bg-secondary text-white px-6 py-2 rounded-md shadow-md transition-all duration-300 
                dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 border dark:border-gray-300 "
           onClick={handleSubmit}
         />

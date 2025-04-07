@@ -29,7 +29,7 @@ export default function CategoryList({ categories }) {
     <img
       src={rowData.image}
       alt={rowData.mainCategory}
-      className="w-20 h-12 object-contain flex justify-center"
+      className="w-16 h-16 rounded-lg object-contain flex justify-center"
     />
   );
 
@@ -38,18 +38,18 @@ export default function CategoryList({ categories }) {
     <div className="flex gap-2">
       <Button
         icon="pi pi-pencil"
-        className="p-button-text p-button-sm text-blue-500 focus:ring-0 focus:outline-none focus:border-transparent"
+        className="rounded-lg text-white bg-blue-500 p-2 "
       />
       <Button
         icon="pi pi-trash"
         onClick={() => setVisible(true)}
-        className="p-button-text p-button-sm text-red-500 focus:ring-0 focus:outline-none focus:border-transparent"
+        className="rounded-lg text-white bg-red-500 p-2 "
       />
     </div>
   );
 
   return (
-    <div className=" dark:text-gray-200 p-6 w-full ">
+    <div className=" dark:text-gray-200 p-6 w-full h-full ">
       {/* Header Section */}
       <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
         <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
@@ -83,31 +83,32 @@ export default function CategoryList({ categories }) {
         stripedRows
         paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
         className="border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md mb-8 hidden lg:block"
+      
       >
         <Column
           field="image"
           header="Category Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border text-white dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="dark:bg-gray-800 dark:text-gray-100 "
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border  dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="dark:bg-gray-800 dark:text-gray-100 border"
         />
         <Column
           field="mainCategory"
           header="Main Category"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
-          className="font-semibold text-gray-700  dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border  text-center dark:bg-gray-800 dark:text-gray-100"
+          className="font-semibold text-gray-700  dark:bg-gray-800 border-b dark:text-gray-100"
         />
         <Column
           field="subCategory"
           header="Subcategory"
-          headerClassName="bg-secondary border text-white text-center dark:bg-gray-800 dark:text-gray-100"
-          className="font-semibold text-gray-700  dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border  text-center dark:bg-gray-800 dark:text-gray-100"
+          className="font-semibold text-gray-700  dark:bg-gray-800 border-b dark:text-gray-100"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-secondary text-white dark:bg-gray-800 dark:text-gray-100 border"
-          className="dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border  dark:bg-gray-800 dark:text-gray-100 border"
+          className="dark:bg-gray-800 border-b dark:text-gray-100"
         />
       </DataTable>
   

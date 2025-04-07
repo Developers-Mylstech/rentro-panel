@@ -57,9 +57,9 @@ export default function Login({ isTokenValid }) {
     console.log(isTokenValid);
 
     return (
-        <div className="flex justify-center items-center h-screen w-full relative overflow-hidden bg-secondary">
+        <div className="flex justify-center gap-6 items-center h-screen w-full relative overflow-hidden bg-secondary">
             {/* Welcome Section */}
-            <div className="w-[35%] hidden md:block text-center lg:text-left px-6">
+            <div className="w-[38%] hidden md:block text-center lg:text-left px-4">
                 <h1 className="text-white text-5xl  font-bold">Welcome to the App</h1>
                 <p className="text-white text-xl mt-4">
                     Your success is our business—let’s make great things happen!

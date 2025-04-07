@@ -48,16 +48,36 @@ export default function BannerList() {
     />
   );
 
+  const offerTitleTemplate = (rowData) => (
+    <div className="text-left">
+      <div className="text-sm font-semibold text-gray-700 dark:text-gray-100">
+        {rowData.title}
+      </div>
+      <div className="text-xs font-light text-gray-500 dark:text-gray-400 mt-1">
+        {rowData.description}
+      </div>
+    </div>
+  );
+
+  const offerPriceTemplate = (rowData) => (
+   
+
+      <span className="text-sm font-semibold   p-2 bg-purple-400 text-white rounded-lg">
+        {rowData.offerPrice}
+      </span>
+ 
+  )
+
   // Template for table actions column
   const actionsTemplate = () => (
     <div className="flex gap-2 justify-center">
       <Button
         icon="pi pi-pencil"
-        className="p-button-rounded p-button-text text-blue-500"
+        className="text-white bg-blue-500 p-2 rounded text-base"
       />
       <Button
         icon="pi pi-trash"
-        className="p-button-rounded p-button-text text-red-500"
+        className="text-white bg-red-500 p-2 rounded text-base"
         onClick={() => setVisible(true)}
       />
     </div>
@@ -70,10 +90,10 @@ export default function BannerList() {
         <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200 my-4">
           Banner List
         </h5>
-        <div className="flex items-center gap-3">
+        <div className="flex justify-center items-center gap-3">
           <IconField
             iconPosition="right"
-            className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800"
+            className="border  border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-800 w-[60%]"
           >
             <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400" />
             <InputText
@@ -94,7 +114,7 @@ export default function BannerList() {
 
 
       {/* Table Section (For larger screens) */}
-      <div className="hidden lg:block overflow-x-auto border border-gray-300 dark:border-gray-700 rounded-lg shadow-md dark:shadow-lg dark:bg-gray-800">
+      <div className="hidden lg:block overflow-x-auto border border-gray-300 dark:border-gray-700 rounded-lg dark:shadow-lg dark:bg-gray-800">
         <DataTable
           value={filteredBanners}
           paginator
@@ -108,44 +128,46 @@ export default function BannerList() {
             field="image"
             header="Banner Image"
             body={imageTemplate}
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center  dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border  dark:bg-gray-800 dark:text-gray-100 text-sm font-semibold"
           />
           <Column
             field="title"
             header="Offer Title"
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-100"
+            body={offerTitleTemplate}
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border-b font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-100 text-sm font-semibold"
           />
           <Column
             field="details"
             header="Offer Details"
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border-b dark:bg-gray-800 dark:text-gray-100 text-sm font-semibold"
           />
-          <Column
+          {/* <Column
             field="description"
             header="Offer Description"
             headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
             bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
-          />
+          /> */}
           <Column
             field="originalPrice"
             header="Original Price"
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border-b dark:bg-gray-800 dark:text-gray-100 text-sm font-semibold"
           />
           <Column
             field="offerPrice"
+            body={offerPriceTemplate}
             header="Offer Price"
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border-b dark:bg-gray-800 dark:text-gray-100"
           />
           <Column
             header="Options"
             body={actionsTemplate}
-            headerClassName="bg-secondary border text-white text-center dark:bg-gray-700 dark:text-gray-200"
-            bodyClassName="text-center dark:bg-gray-800 dark:text-gray-100"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-700 dark:text-gray-200"
+            bodyClassName="text-center border-b dark:bg-gray-800 dark:text-gray-100"
           />
         </DataTable>
       </div>
@@ -185,7 +207,7 @@ export default function BannerList() {
           </div>
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">Offer:</span>
-            <span className="text-md font-semibold text-red-500 dark:text-red-400 ml-1">
+            <span className="text-md font-semibold text-gray-700 dark:text-gray-100 text-sm ml-1">
               {banner.offerPrice}
             </span>
           </div>
@@ -195,11 +217,11 @@ export default function BannerList() {
         <div className="flex justify-center mt-4 gap-3">
           <Button
             icon="pi pi-pencil"
-            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-700 dark:hover:bg-gray-600"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-green-300 "
           />
           <Button
             icon="pi pi-trash"
-            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-gray-700 dark:hover:bg-gray-600"
+            className="p-button-sm text-white p-2 w-full bg-secondary dark:bg-red-400 "
             onClick={() => setVisible(true)}
           />
         </div>

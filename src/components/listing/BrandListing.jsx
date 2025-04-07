@@ -26,13 +26,13 @@ export default function BrandListing({ brands }) {
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 text-white">
         <h1 className="text-xl md:text-2xl font-bold mb-3 md:mb-0 dark:text-gray-200 text-black">Brand List</h1>
         <div className="flex flex-row items-center gap-3 w-full sm:w-auto">
-          <IconField iconPosition="right" className="w-full sm:w-60 border border-gray-600 bg-gray-800 p-2 rounded">
+          <IconField iconPosition="right" className="w-full sm:w-60 border border-gray-400 dark:bg-gray-800 p-2 rounded">
             <InputIcon className="pi pi-search text-gray-400" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none w-full bg-gray-800 text-white placeholder-gray-400"
+              className="p-inputtext-sm focus:ring-0 focus:outline-none w-full dark:bg-gray-800 text-white placeholder-gray-400 "
             />
           </IconField>
 
@@ -64,20 +64,20 @@ export default function BrandListing({ brands }) {
                   <img
                     src={brand.image}
                     alt={brand.name}
-                    className="w-20 h-12 object-contain mx-auto"
+                    className="w-16 h-12 object-contain mx-auto text-sm"
                   />
                 </td>
-                <td className="p-2 text-center font-semibold">{brand.name}</td>
+                <td className="p-2 text-center font-semibold text-sm">{brand.name}</td>
                 <td className="p-2 text-center">
                   <div className="flex justify-center gap-2">
                     <Button
                       icon="pi pi-pencil"
-                      className="p-button-text text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500"
+                      className="p-button-text rounded-lg text-white bg-blue-500 p-2 "
                     />
                     <Button
                       icon="pi pi-trash"
                       onClick={() => setVisible(true)}
-                      className="p-button-text text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500"
+                      className="p-button-text rounded-lg text-white bg-red-500 p-2 "
                     />
                   </div>
                 </td>
@@ -99,11 +99,11 @@ export default function BrandListing({ brands }) {
               <img
                 src={brand.image}
                 alt={brand.name}
-                className="w-20 h-12 object-contain"
+                className="w-10 h-6 object-contain"
               />
-              <div className="flex-1">
+              <div className="flex justify-between items-center w-full">
                 <h3 className="text-lg font-semibold">{brand.name}</h3>
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2 ">
                   <Button
                     icon="pi pi-pencil"
                     className="p-button-text text-blue-500 hover:text-blue-700"

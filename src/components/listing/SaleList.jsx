@@ -39,11 +39,11 @@ export default function SaleList() {
     <div className="flex gap-2 justify-center">
       <Button
         icon="pi pi-pencil"
-        className="p-button-text p-button-sm text-blue-500 focus:ring-0"
+        className="p-button-text p-button-sm bg-blue-500 text-white rounded p-2"
       />
       <Button
         icon="pi pi-trash"
-        className="p-button-text p-button-sm text-red-500 focus:ring-0"
+        className=" text-white rounded p-2 bg-red-500 "
         onClick={() => handleDelete(rowData.id)}
       />
     </div>
@@ -55,7 +55,7 @@ export default function SaleList() {
       <img
         src={rowData.image}
         alt="Sale"
-        className="w-16 h-16 object-contain rounded-md"
+        className="w-10 h-10 object-contain rounded-md"
       />
     </div>
   );
@@ -70,7 +70,7 @@ export default function SaleList() {
         </h3>
 
         {/* Search and Add Button */}
-        <div className="flex flex-row justify-between items-center px-2 gap-3 w-full md:w-auto dark:text-gray-100 ">
+        <div className="flex flex-row justify-center items-center px-2 gap-3 w-full md:w-auto dark:text-gray-100 ">
           {/* Search Input */}
           <div className="flex relative justify-between items-center p-2  w-[60%] md:w-64 border rounded-md dark:bg-gray-800">
             
@@ -79,7 +79,7 @@ export default function SaleList() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="p-inputtext-sm md:w-full border-none outline-none dark:text-gray-100 dark:bg-gray-800 w-full "
+                className="p-inputtext-sm md:w-full border-none focus:ring-0   focus:outline-none dark:text-gray-100 dark:bg-gray-800 w-full "
               />
        
           </div>
@@ -102,32 +102,32 @@ export default function SaleList() {
         stripedRows
         className="hidden lg:block border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-800"
         paginatorClassName='dark:text-gray-100 dark:bg-gray-800'
-        footerClassName='dark:text-gray-100 dark:bg-gray-800'
+        footerClassName='dark:text-gray-100  dark:bg-gray-800'
       >
         <Column
           field="image"
           header="Sale Image"
           body={imageTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 text-sm border dark:bg-gray-800"
         />
         <Column
           field="title"
           header="Title"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center font-semibold dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center font-semibold dark:text-gray-100 text-sm border-b  dark:bg-gray-800"
         />
         <Column
           field="subtitle"
           header="Subtitle"
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border text-white text-center dark:text-gray-100 dark:bg-gray-800"
+          bodyClassName="text-center dark:text-gray-100 font-semibold text-sm border-b  dark:bg-gray-800"
         />
         <Column
           header="Option"
           body={actionBodyTemplate}
-          headerClassName="bg-secondary border text-white text-center dark:text-gray-100 dark:bg-gray-800"
-          bodyClassName="text-center dark:text-gray-100 dark:bg-gray-800"
+          headerClassName="bg-gray-100 text-gray-700 font-medium text-sm border-b border-gray-300 text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:text-gray-100 text-sm border-b dark:bg-gray-800"
         />
       </DataTable>
 

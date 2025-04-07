@@ -17,7 +17,7 @@ export default function Brand() {
   ];
 
   return (
-    <div>
+    <div className="h-screen dark:bg-gray-900">
       <BrandList brands={brands} />
     </div>
   );

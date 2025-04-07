@@ -215,7 +215,7 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
     <img
       src={rowData.image}
       alt={rowData.name}
-      className="w-20 h-20 object-cover rounded"
+      className="w-16 h-16 object-cover rounded"
     />
   );
 
@@ -224,17 +224,26 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
     <div className="flex gap-2">
       <Button
         icon="pi pi-pencil"
-        className="p-button-rounded text-blue-600 dark:text-blue-400"
+        className=" rounded-lg text-white bg-blue-500 p-2 "
         onClick={() => handleEdit(rowData.sku)}
       />
       <Button
         icon="pi pi-trash"
-        className="p-button-rounded text-red-600 dark:text-red-400"
+        className=" rounded-lg text-white bg-red-500 p-2 "
         onClick={() => confirmDelete(rowData)}
       />
     </div>
   );
 
+  const quantityBodyTemplate = (rowData) => {
+    return (
+     <div className={`${rowData.quantity<10?"bg-orange-400 ":"bg-green-500"}  text-white font-bold py-1 w-12 flex justify-center items-center rounded`}>
+       <span className={`${rowData.quantity<10?"":""}  `} >
+        {rowData.quantity}
+      </span>
+     </div>
+    );
+  };
   return (
     <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-2">
       {/* Header Section */}
@@ -262,63 +271,70 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
       </div>
 
       {/* Table Section */}
-      <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md dark:border-gray-700">
+      <div className="hidden lg:block overflow-x-auto border rounded shadow-md dark:border-gray-700">
         <DataTable
           value={filteredProducts}
           paginator
           rows={10}
-          stripedRows
+          stripedRows={true}
           className="w-full dark:bg-gray-800 dark:text-gray-100"
-          paginatorClassName='dark:bg-gray-800 dark:text-gray-100'
+          paginatorClassName='dark:bg-gray-800 dark:text-gray-100 border'
+        
         >
           <Column
             field="image"
-            header="Product Image"
+            header="Product_Image"
             body={imageBodyTemplate}
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border  dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 border '
+
+            
           />
           <Column
             field="sku"
             header="SKU"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
           />
           <Column
             field="name"
-            header="Product Name"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            header="Product_Name"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
           />
           <Column
             field="category"
-            header="Main Category"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            header="Main_Category"
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
           />
           <Column
             field="quantity"
             header="Quantity"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            body={quantityBodyTemplate}
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100 "
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b   font-semibold  '
+            
           />
           <Column
             field="monthlyPrice"
-            header="Monthly Price"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            header="Monthly_Price"
+            // body={monthlyPriceBodyTemplate}
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
           />
           <Column
             field="yearlyPrice"
-            header="Yearly Price"
-            headerClassName="bg-secondary text-white border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            header="Yearly_Price"
+            // body={yearlyPriceBodyTemplate}
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
           />
           <Column
             header="Options"
             body={actionBodyTemplate}
-            headerClassName="bg-secondary border text-white dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100'
+            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border  dark:bg-gray-800 dark:text-gray-100"
+            className='dark:bg-gray-800  dark:text-gray-100 border-b border-r text-sm'
           />
         </DataTable>
       </div>

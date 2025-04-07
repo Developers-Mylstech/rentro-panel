@@ -52,7 +52,7 @@ export default function RentList() {
     <div className="flex gap-2 justify-center">
       <Button
         icon="pi pi-pencil"
-        className="p-button-text p-button-sm text-blue-500 focus:ring-0 focus:outline-none focus:border-transparent"
+        className="rounded p-2 bg-blue-500 text-white"
       />
       <Button
         icon="pi pi-trash"
@@ -60,7 +60,7 @@ export default function RentList() {
           setSelectedRental(rowData);
           setVisible(true);
         }}
-        className="p-button-text p-button-sm text-red-500 focus:ring-0 focus:outline-none focus:border-transparent"
+        className="rounded p-2 bg-red-500 text-white"
       />
     </div>
   );
@@ -73,10 +73,10 @@ export default function RentList() {
           Rental Details List
         </h5>
 
-        <div className="flex flex-row items-stretch gap-3 w-full md:w-auto">
+        <div className="flex justify-center flex-row items-stretch gap-3 w-full md:w-auto">
           <IconField
             iconPosition="right"
-            className="border rounded flex p-2 w-full md:w-64 dark:bg-gray-700 dark:border-gray-600"
+            className="border rounded flex p-2  md:w-64 dark:bg-gray-700 dark:border-gray-600  w-[60%]"
           >
             <InputIcon className="pi pi-search dark:text-gray-400" />
             <InputText
@@ -106,32 +106,32 @@ export default function RentList() {
         stripedRows
         paginatorClassName="dark:bg-gray-800"
         className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block 
-             bg-white dark:bg-gray-800 dark:text-gray-200"
+             bg-white dark:bg-gray-800 dark:text-gray-200 text-sm"
       >
         <Column
           field="image"
           header="Rental Image"
           body={imageTemplate}
-          headerClassName="bg-secondary dark:bg-gray-800 border dark:border-gray-700 text-white text-center"
-          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:border-gray-700 text-center"
+          bodyClassName=" dark:bg-gray-800 text-center border text-sm border-gray-300 dark:border-gray-700"
         />
         <Column
           field="title"
           header="Title"
-          headerClassName="bg-secondary dark:bg-gray-800 border-r dark:border-gray-700 text-white text-center"
-          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center font-semibold border border-gray-300 dark:border-gray-700"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:border-gray-700 text-center"
+          bodyClassName=" dark:bg-gray-800 text-center font-semibold text-sm border-b border-gray-300 dark:border-gray-700"
         />
         <Column
           field="subtitle"
           header="Subtitle"
-          headerClassName="bg-secondary dark:bg-gray-800 border-r dark:border-gray-700 text-white text-center"
-          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
+          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:border-gray-700  text-center"
+          bodyClassName=" dark:bg-gray-800 text-center font-semibold text-sm border-b border-gray-300 dark:border-gray-700"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-secondary dark:bg-gray-800 text-white text-center"
-          bodyClassName="bg-gray-100 dark:bg-gray-800 text-center border border-gray-300 dark:border-gray-700"
+          headerClassName="bg-gray-100 text-gray-500 font-light border dark:border-gray-700 text-sm dark:bg-gray-800 border text-center"
+          bodyClassName="dark:bg-gray-800 text-center border-b text-sm border-gray-300 dark:border-gray-700"
         />
       </DataTable>
 
