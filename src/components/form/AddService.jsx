@@ -157,7 +157,6 @@ export default function AddService() {
           />
         </div>
 
-        {/* PrimeReact Editor for Long Description */}
         <div className="mb-4 flex flex-col md:flex-row justify-between">
           <label className="text mb-2 dark:text-gray-100 ">Service Long Description</label>
           <div className="md:w-[70%] w-full">
@@ -173,7 +172,6 @@ export default function AddService() {
         </div>
       </div>
 
-      {/* Images Section */}
       <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:text-gray-100 dark:bg-gray-800">
         <div className=" mb-4">
           <h4 className="font-semibold subheading dark:text-gray-100 dark:bg-gray-800">Images</h4>
