@@ -5,6 +5,7 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 
 import OrdersTable from '../components/listing/OrderListing'; // Import OrdersTable
+import RequestQuotationListing from '../components/listing/RequestQuotationListing';
 
 export default function Orders() {
   const navigate = useNavigate();
@@ -17,6 +18,26 @@ export default function Orders() {
     { id: 4, orderCode: 2, dateTime: '2024-04-08 21:51:52', customerId: 1, customerName: 'Shahzad Saleem', paymentMethod: 'Cash on delivery', deliveryStatus: 'Complete', amount: 'AED 62.50' },
     { id: 5, orderCode: 1, dateTime: '2024-04-08 10:09:14', customerId: 1, customerName: 'Shahzad Saleem', paymentMethod: 'Bank Transfer', deliveryStatus: 'Complete', amount: 'AED 62.50' },
   ]);
+
+  const quotations = [
+    {
+      id: 1,
+      image: "https://via.placeholder.com/150",
+      name: "John Doe",
+      email: "john@example.com",
+      location: "New York",
+      companyName: "TechCorp",
+    },
+    {
+      id: 2,
+      image: "https://via.placeholder.com/150",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      location: "California",
+      companyName: "InnovateX",
+    },
+  ];
+  
 
   return (
     <div className=''>
@@ -37,6 +58,22 @@ export default function Orders() {
       </div>
 
       <OrdersTable orders={orders} search={search} />
+      <div className="flex flex-col md:flex-row gap-2 justify-between items-center mb-4 px-6 md:px-2  dark:text-gray-100 ">
+        <h5 className="heading w-full dark:text-gray-100 ">Request Quotation List</h5>
+        <div className="flex items-center w-full  md:justify-end mt-2 ">
+          <IconField iconPosition="right" className='border rounded'>
+            <InputIcon className="pi pi-search"> </InputIcon>
+            <InputText
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search..."
+              className=" focus:ring-0  focus:outline-none focus:border-transparent dark:bg-gray-800 p-2"
+              
+            />
+          </IconField>
+        </div>
+      </div>
+      <RequestQuotationListing quotations={quotations} search={search} />
     </div>
   );
 }
