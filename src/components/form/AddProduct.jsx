@@ -206,7 +206,8 @@ export default function AddProduct() {
   };
 
   const handleRent = () => {
-    console.log("Rent Form Submitted:", rentFormData);
+    console.log("Rent Form Submitted:", );
+    
   };
 
 
