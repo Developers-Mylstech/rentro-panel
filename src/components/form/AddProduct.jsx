@@ -31,8 +31,56 @@ export default function AddProduct() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isErrors, setErrors] = useState({});
+  const [showRentForm, setShowRentForm] = useState(false);
+  const [showSellForm, setShowSellForm] = useState(false);
 
-  // const options = ["Rent", "Sell", "Service"];
+  // const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedServices, setSelectedServices] = useState({
+    oneTime: false,
+    mmc: false,
+    amc: false,
+  });
+
+  const onServiceOptionChange = (e) => {
+    const value = e.value;
+    const isSelected = selectedOptions.includes(value);
+    setSelectedOptions((prev) =>
+      isSelected ? prev.filter((item) => item !== value) : [...prev, value]
+    );
+
+    // Reset individual service types if "Service" is unchecked
+    if (value === "Service" && isSelected) {
+      setSelectedServices({ oneTime: false, mmc: false, amc: false });
+    }
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setSelectedServices((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const renderServiceFields = (prefix, priceLabel) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-blue-50 p-4 rounded-lg shadow my-4">
+      <div>
+        <label className="block  mb-1">{priceLabel}</label>
+        <input type="number" className="w-full p-2 border-b bg-transparent rounded" placeholder="Enter price" />
+      </div>
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i}>
+          <label className="block mb-1">{prefix} Benefit {i}</label>
+          <input className="w-full p-2 border-b rounded bg-transparent" placeholder={`Benefit ${i}`} />
+        </div>
+      ))}
+    </div>
+  );
+
+
+
+  useEffect(() => {
+    setShowRentForm(selectedOptions.includes("Rent"));
+  }, [selectedOptions]);
+
+
   const options = [
     { label: "Rent", color: "text-blue-600" },
     { label: "Sell", color: "text-green-600" },
@@ -111,6 +159,120 @@ export default function AddProduct() {
     { key: "brand", label: "Brand" },
     { key: "description", label: "Description" },
   ];
+
+  const [rentFormData, setRentFormData] = useState({
+    price: '',
+    discount: '',
+    vat: 5,
+    discountedPrice: ''
+  });
+
+  useEffect(() => {
+    const { price, discount } = rentFormData;
+    if (price && discount) {
+      const discounted = price - (price * discount / 100);
+      setRentFormData((prev) => ({
+        ...prev,
+        discountedPrice: discounted.toFixed(2)
+      }));
+    } else {
+      setRentFormData((prev) => ({
+        ...prev,
+        discountedPrice: ''
+      }));
+    }
+  }, [rentFormData.price, rentFormData.discount]);
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setRentFormData((prev) => ({ ...prev, price: value }));
+  };
+
+  const handleDiscountChange = (e) => {
+    const value = e.target.value;
+    setRentFormData((prev) => ({ ...prev, discount: value }));
+  };
+
+  const onRentOptionChange = (e) => {
+    const value = e.value;
+    const selected = [...selectedOptions];
+    const index = selected.indexOf(value);
+    if (index === -1) {
+      selected.push(value);
+    } else {
+      selected.splice(index, 1);
+    }
+    setSelectedOptions(selected);
+  };
+
+  const handleRent = () => {
+    console.log("Rent Form Submitted:", rentFormData);
+  };
+
+
+  const [sellFormData, setSellFormData] = useState({
+    price: '',
+    discount: '',
+    vat: 5,
+    discountedPrice: ''
+  });
+
+  useEffect(() => {
+    setShowRentForm(selectedOptions.includes("Rent"));
+    setShowSellForm(selectedOptions.includes("Sell"));
+  }, [selectedOptions]);
+
+  // Auto calculate discounted prices
+  useEffect(() => {
+    const { price, discount } = rentFormData;
+    if (price && discount) {
+      const discounted = price - (price * discount / 100);
+      setRentFormData((prev) => ({
+        ...prev,
+        discountedPrice: discounted.toFixed(2)
+      }));
+    } else {
+      setRentFormData((prev) => ({ ...prev, discountedPrice: '' }));
+    }
+  }, [rentFormData.price, rentFormData.discount]);
+
+  useEffect(() => {
+    const { price, discount } = sellFormData;
+    if (price && discount) {
+      const discounted = price - (price * discount / 100);
+      setSellFormData((prev) => ({
+        ...prev,
+        discountedPrice: discounted.toFixed(2)
+      }));
+    } else {
+      setSellFormData((prev) => ({ ...prev, discountedPrice: '' }));
+    }
+  }, [sellFormData.price, sellFormData.discount]);
+
+  const onsSellOptionChange = (e) => {
+    const value = e.value;
+    const selected = [...selectedOptions];
+    const index = selected.indexOf(value);
+    if (index === -1) selected.push(value);
+    else selected.splice(index, 1);
+    setSelectedOptions(selected);
+  };
+
+  const handleRentSubmit = () => {
+    console.log("Rent Data Submitted:", rentFormData);
+    setShowRentForm(false);
+    setSelectedOptions((prev) => prev.filter(opt => opt !== "Rent"));
+  };
+
+  const handleSellSubmit = () => {
+    console.log("Sell Data Submitted:", sellFormData);
+    setShowSellForm(false);
+    setSelectedOptions((prev) => prev.filter(opt => opt !== "Sell"));
+  };
+
+
+
+
   const toggleField = (fieldKey) => {
     setFields((prev) =>
       prev.includes(fieldKey)
@@ -219,6 +381,7 @@ export default function AddProduct() {
   };
 
   const [showError, setShowError] = useState(false);
+  
 
   useEffect(() => {
     if (isErrors == true) {
@@ -288,7 +451,7 @@ export default function AddProduct() {
         <input
           {...register("productName", { required: true })}
           placeholder="Product Name"
-          className="md:md:w-[70%] w-[100%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+          className="md:md:w-[70%] w-[100%]  p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
         {errors.productName && (
           <span className="text-red-500 dark:text-red-400">
@@ -431,7 +594,7 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="flex  md:flex-row flex-col md:justify-between md:items-center w-full py-2 gap-2">
+      {/* <div className="flex  md:flex-row flex-col md:justify-between md:items-center w-full py-2 gap-2">
         <h3 className="text dark:text-gray-200">Product For</h3>
         <div className="flex gap-2 md:w-[70%] w-[100%]">
           {options.map((option, index) => (
@@ -459,7 +622,225 @@ export default function AddProduct() {
             </div>
           ))}
         </div>
+      </div> */}
+
+<div className="flex flex-col md:flex-row md:justify-between md:items-start w-full py-2 gap-2">
+      <h3 className="text dark:text-gray-200">Product For</h3>
+
+      <div className="flex flex-wrap md:flex-nowrap gap-4 md:w-[70%] w-full relative">
+
+      <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200 dark:border-gray-600 relative">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              inputId="Sell"
+              value="Sell"
+              onChange={onOptionChange}
+              checked={selectedOptions.includes("Sell")}
+              className="border border-gray-300 dark:border-gray-600 rounded-md h-5 w-5"
+            />
+            <label htmlFor="Sell" className="text-green-600 text-sm">Sell</label>
+          </div>
+
+          {showSellForm && (
+            <div className="absolute top-full left-0 mt-2 z-10 bg-white dark:bg-gray-800 p-4 rounded-md shadow-lg w-80">
+              <div className="flex flex-col gap-2">
+                {/* Price */}
+                <div className="flex flex-col">
+                  <label className="text-sm text-gray-700 dark:text-gray-200">Price</label>
+                  <input
+                    type="number"
+                    value={sellFormData.price}
+                    onChange={(e) => setSellFormData({ ...sellFormData, price: e.target.value })}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* Discount */}
+                <div className="flex flex-col">
+                  <label className="text-sm text-gray-700 dark:text-gray-200">Offer Discount (%)</label>
+                  <input
+                    type="number"
+                    value={sellFormData.discount}
+                    onChange={(e) => setSellFormData({ ...sellFormData, discount: e.target.value })}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* Discounted Price */}
+                <div className="flex flex-col">
+                  <label className="text-sm text-gray-700 dark:text-gray-200">Discounted Price</label>
+                  <input
+                    type="number"
+                    value={sellFormData.discountedPrice}
+                    disabled
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500 text-sm"
+                  />
+                </div>
+
+                {/* VAT */}
+                <div className="flex flex-col">
+                  <label className="text-sm text-gray-700 dark:text-gray-200">VAT (5%)</label>
+                  <input
+                    type="number"
+                    value={sellFormData.vat}
+                    disabled
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-500 text-sm"
+                  />
+                </div>
+
+                <button
+                  onClick={handleSellSubmit}
+                  className="mt-2 px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+
+
+        {/* Rent */}
+        <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200 dark:border-gray-600 relative">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              inputId="Rent"
+              value="Rent"
+              onChange={onRentOptionChange}
+              checked={selectedOptions.includes("Rent")}
+              className="border border-gray-300 dark:border-gray-600 rounded-md h-5 w-5"
+            />
+            <label htmlFor="Rent" className="text-orange-500 text-sm">Rent</label>
+          </div>
+
+          {showRentForm && (
+            <div className="absolute top-full md:left-0 -left-2 mt-2 z-10 bg-white dark:bg-gray-800 p-4 rounded-md shadow-lg w-80">
+              <div className="flex flex-col gap-2">
+                {/* Price */}
+                <div className="flex flex-col">
+                  <label htmlFor="price" className="text-sm text-gray-700 dark:text-gray-200">Price</label>
+                  <input
+                    id="price"
+                    type="number"
+                    value={rentFormData.price}
+                    onChange={handlePriceChange}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* Discount */}
+                <div className="flex flex-col">
+                  <label htmlFor="discount" className="text-sm text-gray-700 dark:text-gray-200">Offer Discount (%)</label>
+                  <input
+                    id="discount"
+                    type="number"
+                    value={rentFormData.discount}
+                    onChange={handleDiscountChange}
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
+                  />
+                </div>
+
+                {/* Discounted Price */}
+                <div className="flex flex-col">
+                  <label htmlFor="discountedPrice" className="text-sm text-gray-700 dark:text-gray-200">Discounted Price</label>
+                  <input
+                    id="discountedPrice"
+                    type="number"
+                    value={rentFormData.discountedPrice}
+                    disabled
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500 text-sm"
+                  />
+                </div>
+
+                {/* VAT */}
+                <div className="flex flex-col">
+                  <label htmlFor="vat" className="text-sm text-gray-700 dark:text-gray-200">VAT (5%)</label>
+                  <input
+                    id="vat"
+                    type="number"
+                    value={rentFormData.vat}
+                    disabled
+                    className="p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-500 text-sm"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  onClick={handleRent}
+                  className="mt-2 px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-sm rounded"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Service */}
+        <div className="">
+      {/* Main Service Checkbox */}
+      <div className="flex  items-center gap-2 pr-4">
+        <Checkbox
+          inputId="Service"
+          value="Service"
+          onChange={onServiceOptionChange}
+          checked={selectedOptions.includes("Service")}
+          className="border border-gray-300 dark:border-gray-600 rounded-md h-5 w-5"
+        />
+        <label htmlFor="Service" className="text-purple-500 text-sm">Service</label>
       </div>
+
+      {/* Sub-options under Service */}
+     
+    </div>
+    
+
+      </div>
+    </div>
+
+    {selectedOptions.includes("Service") && (
+        <div className="space-y-6 md:w-[100%] flex flex-col justify-end items-center">
+          {/* Sub-service checkboxes */}
+          <div className="flex flex-wrap gap-6 my-4 md:w-[40%] w-full">
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" name="oneTime" checked={selectedServices.oneTime} onChange={handleCheckboxChange} />
+              <span>OneTime Service</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" name="mmc" checked={selectedServices.mmc} onChange={handleCheckboxChange} />
+              <span>MMC Service</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" name="amc" checked={selectedServices.amc} onChange={handleCheckboxChange} />
+              <span>AMC Service</span>
+            </label>
+          </div>
+
+          {/* Conditional Sections */}
+          {selectedServices.oneTime && (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">OneTime Service</h2>
+              {renderServiceFields("OneTime", "OneTime Price (Per Service)")}
+            </div>
+          )}
+          {selectedServices.mmc && (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">MMC Service</h2>
+              {renderServiceFields("MMC", "MMC Price (Per Month)")}
+            </div>
+          )}
+          {selectedServices.amc && (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">AMC Service</h2>
+              {renderServiceFields("AMC", "AMC Price (Per Year)")}
+            </div>
+          )}
+        </div>
+      )}
+
+
+
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Long Description</label>
