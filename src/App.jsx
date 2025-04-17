@@ -25,6 +25,7 @@ import AboutusListing from "./components/listing/AboutusListing";
 import Login from "./pages/Login";
 import { useState } from "react";
 import AddAboutUs from "./components/form/AddAboutUs";
+import RequestQuotationListing from "./components/listing/RequestQuotationListing";
 
 function App() {
   const [isTokenValid, setIsTokenValid] = useState(false)
@@ -46,6 +47,7 @@ function App() {
               <Route path="brands/add" element={<AddBrand />} />
 
               <Route path="orders" element={<Orders />} />
+              <Route path="orders/quotation" element={<RequestQuotationListing />} />
 
               <Route path="clients" element={<Clients />} />
               <Route path="clients/add" element={<AddClient />} />

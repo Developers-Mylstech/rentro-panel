@@ -1,27 +1,47 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
 
-export default function RequestQuotationListing({ quotations }) {
+import { SplitButton } from 'primereact/splitbutton';
+import { Toast } from 'primereact/toast';
+
+export default function RequestQuotationListing() {
+  const quotations = [
+    {
+      id: 1,
+      image: "https://via.placeholder.com/150",
+      name: "John Doe",
+      email: "john@example.com",
+      location: "New York",
+      mobile: '12345678',
+      companyName: "TechCorp",
+    },
+    {
+      id: 2,
+      image: "https://via.placeholder.com/150",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      mobile: '12345678',
+      location: "California",
+      companyName: "InnovateX",
+    },
+  ];
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
 
-  // Filter quotations based on search
   const filteredQuotations = quotations.filter((q) =>
     q.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Handle Delete
   const handleDelete = () => {
     console.log(`Deleted quotation ID: ${selectedQuotation?.id}`);
     setVisible(false);
   };
 
-  // Image template
   const imageTemplate = (rowData) => (
     <img
       src={rowData.image}
@@ -30,32 +50,22 @@ export default function RequestQuotationListing({ quotations }) {
     />
   );
 
-  // Actions template
   const actionsTemplate = (rowData) => (
     <div className="flex justify-center">
-      <Button
-        icon="pi pi-trash"
-        className="p-button-text text-red-500"
-        onClick={() => {
-          setSelectedQuotation(rowData);
-          setVisible(true);
-        }}
-      />
+     <StatusSplitButton/>
     </div>
   );
 
   return (
     <div>
-      {/* Desktop Table */}
-      <h1>
-        
-      </h1>
+      <h5 className="heading w-full dark:text-gray-100  mb-3">Request Quotation List</h5>
+
       <DataTable
         value={filteredQuotations}
         paginator
         rows={5}
         stripedRows
-        className="border border-gray-300 rounded-md mb-8 hidden lg:block dark:bg-gray-800 dark:text-gray-100"
+        className="border border-gray-300 rounded-md mb-8  dark:bg-gray-800 dark:text-gray-100"
       >
         <Column
           header="Image"
@@ -67,6 +77,11 @@ export default function RequestQuotationListing({ quotations }) {
           field="name"
           header="Name"
           headerClassName="bg-secondary border text-white "
+        />
+        <Column
+          field="mobile"
+          header="mobile"
+          headerClassName="bg-secondary border text-white"
         />
         <Column
           field="email"
@@ -84,53 +99,12 @@ export default function RequestQuotationListing({ quotations }) {
           headerClassName="bg-secondary border text-white text-center"
         />
         <Column
-          header="Option"
+          header="Status"
           body={actionsTemplate}
           headerClassName="bg-secondary border text-white text-center"
         />
       </DataTable>
 
-      {/* Mobile Cards */}
-      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6">
-        {filteredQuotations.map((q) => (
-          <div
-            key={q.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-          >
-            <div className="p-4 dark:bg-gray-800 dark:text-gray-100">
-              <div className="flex justify-center mb-4">
-                <img
-                  src={q.image}
-                  alt={q.name}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-              </div>
-              <h3 className="text-lg font-bold text-center">{q.name}</h3>
-              <p className="text-sm text-center text-gray-500">
-                <strong>Email:</strong> {q.email}
-              </p>
-              <p className="text-sm text-center text-gray-500">
-                <strong>Location:</strong> {q.location}
-              </p>
-              <p className="text-sm text-center text-gray-500">
-                <strong>Company:</strong> {q.companyName}
-              </p>
-              <div className="flex justify-center mt-4">
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white bg-red-400"
-                  onClick={() => {
-                    setSelectedQuotation(q);
-                    setVisible(true);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Confirmation Dialog */}
       <Dialog
         header="Confirmation"
         position="top"
@@ -158,3 +132,71 @@ export default function RequestQuotationListing({ quotations }) {
     </div>
   );
 }
+
+
+const StatusSplitButton = () => {
+  const toast = useRef(null);
+
+  const handleStatusChange = (status) => {
+    toast.current.show({
+      severity: 'info',
+      summary: 'Status Updated',
+      detail: `Changed to: ${status}`,
+      life: 3000,
+    });
+  };
+
+  const items = [
+    {
+      label: 'Sent Quotation',
+      icon: 'pi pi-send text-sm', // Smaller icon
+      command: () => handleStatusChange('Sent Quotation'),
+      className: 'text-sm', // Smaller text
+    },
+    {
+      label: 'Negotiation',
+      icon: 'pi pi-comments text-sm',
+      command: () => handleStatusChange('Negotiation'),
+      className: 'text-sm',
+    },
+    {
+      label: 'Waiting for Approval',
+      icon: 'pi pi-clock text-sm',
+      command: () => handleStatusChange('Waiting for Approval'),
+      className: 'text-sm',
+    },
+    {
+      label: 'Close Won',
+      icon: 'pi pi-check-circle text-sm',
+      command: () => handleStatusChange('Close Won'),
+      className: 'text-sm text-green-500',
+    },
+    {
+      label: 'Close Lost',
+      icon: 'pi pi-times-circle text-sm',
+      command: () => handleStatusChange('Close Lost'),
+      className: 'text-sm text-red-500',
+    },
+  ];
+
+  const save = () => {
+    toast.current.show({
+      severity: 'success',
+      summary: 'Saved',
+      detail: 'Default action executed',
+    });
+  };
+
+  return (
+    <div className="flex justify-content-center">
+      <Toast ref={toast} />
+      <SplitButton
+        label="Update Status"
+        icon="pi pi-circle-fill text-[10px] text-green-500" // Smaller icon
+        onClick={save}
+        model={items}
+        className="p-button-outlined p-button-sm text-sm text-green-500" // Compact button
+      />
+    </div>
+  );
+};
