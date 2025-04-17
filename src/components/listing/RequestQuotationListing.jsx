@@ -4,9 +4,11 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
-
+import { FaClipboardCheck } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
 import { SplitButton } from 'primereact/splitbutton';
 import { Toast } from 'primereact/toast';
+import { IoMdMailUnread } from "react-icons/io";
 
 export default function RequestQuotationListing() {
   const quotations = [
@@ -57,124 +59,119 @@ export default function RequestQuotationListing() {
   );
 
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  {/* Total Requests */}
-  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
-    <div className="flex justify-between items-center mb-3">
-      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Total Requests</h6>
-      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-purple-100 text-purple-700 rounded-md">
-        Today
-      </span>
-    </div>
-    <div className="flex items-center justify-between">
-      <span className="text-3xl"><IoMdMailUnrea /></span>
-      <div className="text-right">
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">150</p>
-        <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
+    <div className="">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
+        <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+          <div className="flex justify-between items-center mb-3">
+            <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Total Requests</h6>
+            <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-purple-100 text-purple-700 rounded-md">
+              Today
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="md:text-2xl text-base font-bold text-purple-700 dark:text-white">150</p>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+          <div className="flex justify-between items-center mb-3">
+            <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Won</h6>
+            <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-green-100 text-green-700 rounded-md">
+              Weekly
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="md:text-2xl text-base font-bold text-green-600">45</p>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+          <div className="flex justify-between items-center mb-3">
+            <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Lost</h6>
+            <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-red-100 text-red-700 rounded-md">
+              Monthly
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="md:text-2xl text-base font-bold text-red-600">22</p>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+          <div className="flex justify-between items-center mb-3">
+            <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Waiting for Approval</h6>
+            <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-yellow-100 text-yellow-700 rounded-md">
+              Pending
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="md:text-2xl text-base font-bold text-yellow-600">18</p>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  {/* Close Won */}
-  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
-    <div className="flex justify-between items-center mb-3">
-      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Won</h6>
-      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-green-100 text-green-700 rounded-md">
-        Weekly
-      </span>
-    </div>
-    <div className="flex items-center justify-between">
-      <span className="text-3xl">✅</span>
-      <div className="text-right">
-        <p className="text-2xl font-bold text-green-600">45</p>
-        <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
+      <h5 className="heading w-full dark:text-gray-100 mb-3">Request Quotation List</h5>
+
+      <div className="overflow-x-auto">
+        <DataTable
+          value={filteredQuotations}
+          paginator
+          rows={5}
+          stripedRows
+          className="border min-w-[1000px] border-gray-300 rounded-md mb-8 dark:bg-gray-800 dark:text-gray-100"
+          scrollable
+          scrollHeight="flex"
+        >
+          <Column
+            header="Image"
+            body={imageTemplate}
+            headerClassName="bg-secondary border text-white"
+            bodyClassName="text-center"
+          />
+          <Column
+            field="name"
+            header="Name"
+            headerClassName="bg-secondary border text-white "
+          />
+          <Column
+            field="mobile"
+            header="mobile"
+            headerClassName="bg-secondary border text-white"
+          />
+          <Column
+            field="email"
+            header="Email"
+            headerClassName="bg-secondary border text-white"
+          />
+          <Column
+            field="location"
+            header="Location"
+            headerClassName="bg-secondary border text-white text-center"
+          />
+          <Column
+            field="companyName"
+            header="Company Name"
+            headerClassName="bg-secondary border text-white text-center"
+          />
+          <Column
+            header="Status"
+            body={actionsTemplate}
+            headerClassName="bg-secondary border text-white text-center"
+          />
+        </DataTable>
       </div>
-    </div>
-  </div>
-
-  {/* Close Lost */}
-  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
-    <div className="flex justify-between items-center mb-3">
-      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Lost</h6>
-      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-red-100 text-red-700 rounded-md">
-        Monthly
-      </span>
-    </div>
-    <div className="flex items-center justify-between">
-      <span className="text-3xl">❌</span>
-      <div className="text-right">
-        <p className="text-2xl font-bold text-red-600">22</p>
-        <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
-      </div>
-    </div>
-  </div>
-
-  {/* Waiting for Approval */}
-  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
-    <div className="flex justify-between items-center mb-3">
-      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Waiting for Approval</h6>
-      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-yellow-100 text-yellow-700 rounded-md">
-        Pending
-      </span>
-    </div>
-    <div className="flex items-center justify-between">
-      <span className="text-3xl">⏳</span>
-      <div className="text-right">
-        <p className="text-2xl font-bold text-yellow-600">18</p>
-        <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-      <h5 className="heading w-full dark:text-gray-100  mb-3">Request Quotation List</h5>
-
-      <DataTable
-        value={filteredQuotations}
-        paginator
-        rows={5}
-        stripedRows
-        className="border border-gray-300 rounded-md mb-8  dark:bg-gray-800 dark:text-gray-100"
-      >
-        <Column
-          header="Image"
-          body={imageTemplate}
-          headerClassName="bg-secondary border text-white"
-          bodyClassName="text-center"
-        />
-        <Column
-          field="name"
-          header="Name"
-          headerClassName="bg-secondary border text-white "
-        />
-        <Column
-          field="mobile"
-          header="mobile"
-          headerClassName="bg-secondary border text-white"
-        />
-        <Column
-          field="email"
-          header="Email"
-          headerClassName="bg-secondary border text-white"
-        />
-        <Column
-          field="location"
-          header="Location"
-          headerClassName="bg-secondary border text-white text-center"
-        />
-        <Column
-          field="companyName"
-          header="Company Name"
-          headerClassName="bg-secondary border text-white text-center"
-        />
-        <Column
-          header="Status"
-          body={actionsTemplate}
-          headerClassName="bg-secondary border text-white text-center"
-        />
-      </DataTable>
 
       <Dialog
         header="Confirmation"
@@ -204,7 +201,6 @@ export default function RequestQuotationListing() {
   );
 }
 
-
 const StatusSplitButton = () => {
   const toast = useRef(null);
 
@@ -220,9 +216,9 @@ const StatusSplitButton = () => {
   const items = [
     {
       label: 'Sent Quotation',
-      icon: 'pi pi-send text-sm', // Smaller icon
+      icon: 'pi pi-send text-sm',
       command: () => handleStatusChange('Sent Quotation'),
-      className: 'text-sm', // Smaller text
+      className: 'text-sm',
     },
     {
       label: 'Negotiation',
@@ -266,7 +262,7 @@ const StatusSplitButton = () => {
         icon="pi pi-circle-fill text-[10px] text-green-500"
         onClick={save}
         model={items}
-        className="p-button-outlined p-button-sm text-sm text-green-500" // Compact button
+        className="p-button-outlined p-button-sm text-sm text-green-500"
       />
     </div>
   );

@@ -48,7 +48,7 @@ function CustomSidebar({ isDarkMode }) {
 
 
         <div className="flex justify-between">
-          <h2 className="text-xl font-bold text-primary">Admin Panel</h2>
+          <img src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png" alt="" className="w-24" />
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="text-primary text-xl lg:hidden"
@@ -130,19 +130,18 @@ function CustomSidebar({ isDarkMode }) {
                     </li>
                     {menu.name && (
                       <li>
-                      <Link
-                        to={`/${menu.name}/${menu.name === "orders" ? "quotation" : "add"}`}
-                        onClick={() => setIsSidebarOpen(false)}
-                        className={`block p-2 rounded ${
-                          location.pathname === `/${menu.name}/add` || 
-                          location.pathname === `/${menu.name}/quotation`
-                            ? "text-primary font-semibold"
-                            : "text-white/50 hover:text-primary"
-                        }`}
-                      >
-                        - {menu.name === "orders" ? "Quotation List" : `Add New ${menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}`}
-                      </Link>
-                    </li>
+                        <Link
+                          to={`/${menu.name}/${menu.name === "orders" ? "quotation" : "add"}`}
+                          onClick={() => setIsSidebarOpen(false)}
+                          className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ||
+                              location.pathname === `/${menu.name}/quotation`
+                              ? "text-primary font-semibold"
+                              : "text-white/50 hover:text-primary"
+                            }`}
+                        >
+                          - {menu.name === "orders" ? "Quotation List" : `Add New ${menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}`}
+                        </Link>
+                      </li>
                     )}
                   </ul>
                 )}
