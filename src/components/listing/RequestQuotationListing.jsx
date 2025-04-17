@@ -52,12 +52,83 @@ export default function RequestQuotationListing() {
 
   const actionsTemplate = (rowData) => (
     <div className="flex justify-center">
-     <StatusSplitButton/>
+      <StatusSplitButton />
     </div>
   );
 
   return (
     <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  {/* Total Requests */}
+  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+    <div className="flex justify-between items-center mb-3">
+      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Total Requests</h6>
+      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-purple-100 text-purple-700 rounded-md">
+        Today
+      </span>
+    </div>
+    <div className="flex items-center justify-between">
+      <span className="text-3xl"><IoMdMailUnrea /></span>
+      <div className="text-right">
+        <p className="text-2xl font-bold text-gray-900 dark:text-white">150</p>
+        <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Close Won */}
+  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+    <div className="flex justify-between items-center mb-3">
+      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Won</h6>
+      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-green-100 text-green-700 rounded-md">
+        Weekly
+      </span>
+    </div>
+    <div className="flex items-center justify-between">
+      <span className="text-3xl">✅</span>
+      <div className="text-right">
+        <p className="text-2xl font-bold text-green-600">45</p>
+        <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Close Lost */}
+  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+    <div className="flex justify-between items-center mb-3">
+      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Close Lost</h6>
+      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-red-100 text-red-700 rounded-md">
+        Monthly
+      </span>
+    </div>
+    <div className="flex items-center justify-between">
+      <span className="text-3xl">❌</span>
+      <div className="text-right">
+        <p className="text-2xl font-bold text-red-600">22</p>
+        <p className="text-sm text-gray-500 dark:text-gray-300">Deals</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Waiting for Approval */}
+  <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
+    <div className="flex justify-between items-center mb-3">
+      <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Waiting for Approval</h6>
+      <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-yellow-100 text-yellow-700 rounded-md">
+        Pending
+      </span>
+    </div>
+    <div className="flex items-center justify-between">
+      <span className="text-3xl">⏳</span>
+      <div className="text-right">
+        <p className="text-2xl font-bold text-yellow-600">18</p>
+        <p className="text-sm text-gray-500 dark:text-gray-300">Requests</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
       <h5 className="heading w-full dark:text-gray-100  mb-3">Request Quotation List</h5>
 
       <DataTable
@@ -192,7 +263,7 @@ const StatusSplitButton = () => {
       <Toast ref={toast} />
       <SplitButton
         label="Update Status"
-        icon="pi pi-circle-fill text-[10px] text-green-500" // Smaller icon
+        icon="pi pi-circle-fill text-[10px] text-green-500"
         onClick={save}
         model={items}
         className="p-button-outlined p-button-sm text-sm text-green-500" // Compact button
