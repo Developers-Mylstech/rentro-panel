@@ -106,3 +106,7 @@ li.relative.open::after {
   stroke-linejoin: round;
   stroke-width: 2;
 }
+
+.p-multiselect-items .p-checkbox:hover {
+  border-color: #2563eb; /* Tailwind's blue-600 */
+}
