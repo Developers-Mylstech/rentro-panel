@@ -173,6 +173,15 @@ export default function AddProduct() {
         amcgold: false,
       });
     }
+
+    // if (value === "Service" && isSelected) {
+    //   setSelectedServices({
+    //     oneTime: [{oneTimePrice:null},[]],
+    //     mmc:  [{mmcPrice:null},[]],
+    //     amcbasic: [{amcbasicPrice:null},[]],
+    //     amcgold: [{amcgoldPrice:null},[]],
+    //   });
+    // }
   };
 
   const handleCheckboxChange = (e) => {
@@ -1051,7 +1060,7 @@ export default function AddProduct() {
       </div>
 
       {visibleForm === "request" && (
-              <div className="   mt-2 z-10 bg-white dark:bg-gray-800 p-4 rounded-md shadow-lg w-full border ">
+              <div className="   mt-2 z-10 bg-white dark:bg-gray-800 p-4 rounded-md w-full border ">
                <div className="bg-white rounded-2xl shadow-lg w-full  p-6">
         <div className="flex justify-between items-center mb-4 w-[100%]">
           <h2 className="text-xl font-bold text-gray-800">Request Quotation</h2>
@@ -1064,60 +1073,67 @@ export default function AddProduct() {
 
         </div>
 
-        <form className="grid md:grid-cols-2 grid-cols-1 gap-2 text-xs">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Image</label>
-            <input
-              type="file"
-              className="mt-1 block w-full rounded-lg shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-700">Name*</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border-b border-gray-300 shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
-          </div>
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm w-full max-w-4xl mx-auto p-4 bg-white rounded-lg shadow">
+  {/* Image Upload */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1">Image</label>
+    <input
+      type="file"
+      className="rounded-lg shadow-sm p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-700">Mobile *</label>
-            <input
-              type="tel"
-              className="mt-1 block w-full border-b border-gray-300  shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your mobile number"
-            />
-          </div>
+  {/* Name */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1">Name*</label>
+    <input
+      type="text"
+      className="rounded-lg shadow-sm p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Enter your name"
+    />
+  </div>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-700">Company Name (if)</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border-b border-gray-300 shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter company name"
-            />
-          </div>
+  {/* Mobile */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1">Mobile*</label>
+    <input
+      type="tel"
+      className="rounded-lg shadow-sm p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Enter your mobile number"
+    />
+  </div>
 
-          <div className="col-span-2">
-            <label className="block text-xs font-medium text-gray-700">Location</label>
-            <input
-              type="text"
-              className="mt-1 block w-full  border-b border-gray-300 shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter location"
-            />
-          </div>
+  {/* Company Name */}
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1">Company Name (if any)</label>
+    <input
+      type="text"
+      className="rounded-lg shadow-sm p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Enter company name"
+    />
+  </div>
 
-          <div className="col-span-2 flex justify-center items-center">
-          <button
-            type="submit"
-            className="py-2 px-4 bg-blue-600 text-white  rounded-lg hover:bg-blue-700 transition"
-          >
-            Submit
-          </button>
-          </div>
-        </form>
+  {/* Location (Full Width) */}
+  <div className="col-span-1 md:col-span-2 flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-1">Location</label>
+    <input
+      type="text"
+      className="rounded-lg shadow-sm p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Enter location"
+    />
+  </div>
+
+  {/* Submit Button (Centered) */}
+  <div className="col-span-1 md:col-span-2 flex justify-center mt-2">
+    <button
+      type="submit"
+      className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+    >
+      Submit
+    </button>
+  </div>
+</form>
+
       </div>
               </div>
             )}
@@ -1166,7 +1182,11 @@ export default function AddProduct() {
           </div>
 
           {/* Conditional Sections */}
-          {selectedServices.oneTime && (
+
+        </div>
+      )}
+
+{selectedServices.oneTime && (
             <div className="w-full">
               <h2 className="text-lg font-bold text-gray-800">
                 OneTime Service
@@ -1208,8 +1228,6 @@ export default function AddProduct() {
               />
             </div>
           )}
-        </div>
-      )}
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Long Description</label>
