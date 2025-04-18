@@ -1,19 +1,19 @@
 
 
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../index.css"
 
-function CustomSidebar({isDarkMode}) {
+function CustomSidebar({ isDarkMode }) {
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDark , setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   const toggleMenu = (menu) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
-  
+
   useEffect(() => {
     // const darkMode = window.localStorage.getItem('theme');
     if (isDarkMode == true) {
@@ -21,10 +21,10 @@ function CustomSidebar({isDarkMode}) {
     } else {
       document.documentElement.classList.remove('dark-mode');
     }
-    
+
   }, [isDarkMode]);
 
-  console.log(isDarkMode,"jknsnc")
+  console.log(isDarkMode, "jknsnc")
 
 
 
@@ -48,7 +48,7 @@ function CustomSidebar({isDarkMode}) {
 
 
         <div className="flex justify-between">
-          <h2 className="text-xl font-bold text-primary">Admin Panel</h2>
+          <img src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png" alt="" className="w-24" />
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="text-primary text-xl lg:hidden"
@@ -89,7 +89,7 @@ function CustomSidebar({isDarkMode}) {
             return (
               <li className={`w-[112%] block relative  duration-[200ms] my-10  ${activeMenu === menu.name ? "open" : ""
                 }`} key={menu.name}>
-                <div className={isDark==true?"right-container":"right-container"}></div>
+                <div className={isDark == true ? "right-container" : "right-container"}></div>
                 <button
                   onClick={() => toggleMenu(menu.name)}
                   className={`flex items-center justify-between w-full p-2 dark:hover:bg-gray-900  rounded-l-full py-4 ${activeMenu === menu.name || isActive
@@ -128,19 +128,18 @@ function CustomSidebar({isDarkMode}) {
                           menu.name.slice(1)}
                       </Link>
                     </li>
-                    {menu.name !== "orders" && (
+                    {menu.name && (
                       <li>
                         <Link
-                          to={`/${menu.name}/add`}
+                          to={`/${menu.name}/${menu.name === "orders" ? "quotation" : "add"}`}
                           onClick={() => setIsSidebarOpen(false)}
-                          className={`block p-2 rounded ${location.pathname === `/${menu.name}/add`
-                            ? "text-primary font-semibold"
-                            : "text-white/50 hover:text-primary"
+                          className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ||
+                              location.pathname === `/${menu.name}/quotation`
+                              ? "text-primary font-semibold"
+                              : "text-white/50 hover:text-primary"
                             }`}
                         >
-                          - Add New{" "}
-                          {menu.name.charAt(0).toUpperCase() +
-                            menu.name.slice(1)}
+                          - {menu.name === "orders" ? "Quotation List" : `Add New ${menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}`}
                         </Link>
                       </li>
                     )}
