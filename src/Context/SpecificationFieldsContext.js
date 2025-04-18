@@ -22,6 +22,7 @@ const useSpecificationFieldsStore = create((set) => ({
     try {
       const res = await axiosInstance.get('/specification-fields');
       set({ specificationFields: res?.data || [] });
+      return res.data
     } catch (error) {
       alert("Failed to fetch specification fields");
     }

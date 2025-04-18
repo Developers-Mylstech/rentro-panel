@@ -10,6 +10,10 @@ import { classNames } from "primereact/utils";
 import { MultiSelect } from "primereact/multiselect";
 import { FiPlus } from "react-icons/fi";
 import { IoMdSave } from "react-icons/io";
+import useSpecificationFieldsStore from "../../Context/SpecificationFieldsContext"
+import useCategoryStore from "../../Context/CategoryContext"
+import useBrandStore from '../../Context/BrandContext'
+
 
 const RenderServiceFields = ({
   prefix,
@@ -44,7 +48,7 @@ const RenderServiceFields = ({
     setIsDone(true);
   };
 
-  // ✅ Log updated data properly
+  // console.log(brands)
   useEffect(() => {
     console.log("Updated serviceData:", serviceData);
   }, [serviceData]);
@@ -102,6 +106,21 @@ const RenderServiceFields = ({
 };
 
 export default function AddProduct() {
+  const {brands,getAllBrands}=useBrandStore()
+
+  const {specificationFields, getAllSpecificationFields} = useSpecificationFieldsStore()
+
+  const {categoryList,getAllCategories} = useCategoryStore()
+
+
+  useEffect(() => {
+    getAllBrands()
+    getAllCategories()
+    getAllSpecificationFields()
+
+    console.log(categoryList,"from addproduct")
+  }, [])
+
   const {
     handleSubmit,
     formState: { errors },
@@ -238,10 +257,10 @@ export default function AddProduct() {
     }));
 
     // Show/hide the form based on checkbox
-    setVisibleForms((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
+    // setVisibleForms((prev) => ({
+    //   ...prev,
+    //   [name]: checked,
+    // }));
   };
 
   useEffect(() => {
@@ -319,34 +338,34 @@ export default function AddProduct() {
     "Accessories",
     "Sweet Water/ Salt Water/Sewage",
   ];
-  const brands = [
-    "Rent RO ",
-    "Kentt RO",
-    "Aquagaurd",
-    "Aqua Pro",
-    "Waterlogin",
-    "Culligen",
-  ];
+  // const brands = [
+  //   "Rent RO ",
+  //   "Kentt RO",
+  //   "Aquagaurd",
+  //   "Aqua Pro",
+  //   "Waterlogin",
+  //   "Culligen",
+  // ];
 
-  const filteredCategories = mainCategories.filter((category) =>
-    category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = categoryList?.filter((category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const filteredSubCategories = subCatogery.filter((category) =>
-    category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSubCategories = categoryList?.subCategories?.filter((category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const filteredBrand = brands.filter((brand) =>
-    brand.toLowerCase().includes(searchTerm.toLowerCase())
+    brand.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSelect = (category) => {
-    setSelectedCategory(category);
+    setSelectedCategory(category.name);
     setValue("mainCategory", category);
     setIsOpen(false);
     setSearchTerm("");
   };
 
   const handleSubSelect = (category) => {
-    setSelectedSubCategory(category);
+    setSelectedSubCategory(category.subCategories.name);
     setValue("subCatogery", category);
     setSubIsOpen(false);
     setSearchTerm("");
@@ -676,11 +695,7 @@ export default function AddProduct() {
           placeholder="Product Name"
           className="md:md:w-[70%] w-[100%]  p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
-        {errors.productName && (
-          <span className="text-red-500 dark:text-red-400">
-            Product Name is required
-          </span>
-        )}
+       
       </div>
 
       {errors.productName && (
@@ -711,13 +726,13 @@ export default function AddProduct() {
             />
 
             <div className="max-h-40 overflow-y-auto">
-              {filteredCategories.map((category, index) => (
+              {filteredCategories?.map((category, index) => (
                 <div
                   key={index}
                   className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white"
                   onClick={() => handleSelect(category)}
                 >
-                  {category}
+                  {category.name}
                 </div>
               ))}
             </div>
@@ -757,13 +772,13 @@ export default function AddProduct() {
             />
 
             <div className="max-h-40 overflow-y-auto">
-              {filteredSubCategories.map((category, index) => (
+              {filteredSubCategories?.map((category, index) => (
                 <div
                   key={index}
                   className="p-2 cursor-pointer hover:bg-secondary dark:hover:bg-gray-700 hover:text-white"
                   onClick={() => handleSubSelect(category)}
                 >
-                  {category}
+                  {category.name}
                 </div>
               ))}
             </div>
@@ -792,19 +807,20 @@ export default function AddProduct() {
               type="text"
               className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Search Brand..."
-              value={searchTerm}
+              value={brands.name}
               onChange={(e) => setSearchTerm(e.target.value)}
               autoFocus
             />
 
             <div className="max-h-40 overflow-y-auto">
-              {filteredBrand.map((brand, index) => (
+              {filteredBrand?.map((brand, index) => (
+            
                 <div
                   key={index}
                   className="p-2 cursor-pointer hover:bg-secondary dark:hover:bg-gray-700 hover:text-white"
                   onClick={() => handleBrand(brand)}
                 >
-                  {brand}
+                  {brand.name}
                 </div>
               ))}
             </div>
@@ -1355,7 +1371,7 @@ export default function AddProduct() {
             <MultiSelect
               value={selectedSpecification}
               onChange={(e) => handleSpecificationChange(e.value)}
-              options={specifications}
+              options={specificationFields}
               optionLabel="name"
               filter
               placeholder="Select Specifications"
