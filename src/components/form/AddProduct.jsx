@@ -1566,6 +1566,7 @@ export default function AddProduct() {
       <div className="flex justify-center items-center">
         <button
           type="submit"
+       
           className="mt-6 bg-secondary text-white py-2 px-4 my-4 rounded hover:bg-secondary-dark transition"
         >
           Submit Product
