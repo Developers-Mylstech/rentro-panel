@@ -1277,7 +1277,7 @@ export default function AddProduct() {
           />
         </div>
       )}
-      {selectedServices.mmc && visibleForms.mmc && (
+      {selectedServices.mmc && (
         <div className="w-full">
           <h2 className="text-lg font-bold text-gray-800">MMC Service</h2>
           <RenderServiceFields
@@ -1287,9 +1287,9 @@ export default function AddProduct() {
             setServices={setMmcSetvice}
             serviceLable={"mmc"}
             setSelectedServices={setSelectedServices}
-            hideForm={() =>
-              setVisibleForms((prev) => ({ ...prev, mmc: false }))
-            }
+            // hideForm={() =>
+            //   setVisibleForms((prev) => ({ ...prev, mmc: false }))
+            // }
           />
         </div>
       )}
