@@ -14,18 +14,34 @@ import { FiPlus } from "react-icons/fi";
 import { IoMdSave } from "react-icons/io";
 
 
-const RenderServiceFields = ({ prefix, priceLabel }) => {
+const RenderServiceFields = ({ prefix, priceLabel, serviceData, setServices, serviceLable }) => {
   const [benefits, setBenefits] = useState([""]);
+  const [servicePrice, setServicePrice] = useState("");
 
   const handleAddBenefit = () => {
     setBenefits([...benefits, ""]);
   };
 
   const handleBenefitChange = (index, value) => {
-    const updated = [...benefits];
-    updated[index] = value;
-    setBenefits(updated);
+    const updatedBenefits = [...benefits];
+    updatedBenefits[index] = value;
+    setBenefits(updatedBenefits);
   };
+
+  const handleAddService = () => {
+    setServices(prev => ({
+      ...prev,
+      [serviceLable]: {
+        Price: servicePrice,
+        Benefits: benefits,
+      },
+    }));
+  };
+
+  // ✅ Log updated data properly
+  useEffect(() => {
+    console.log("Updated serviceData:", serviceData);
+  }, [serviceData]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-blue-50 p-4 rounded-lg shadow my-4">
@@ -35,19 +51,22 @@ const RenderServiceFields = ({ prefix, priceLabel }) => {
           type="number"
           className="w-full p-2 border-b bg-transparent rounded focus:ring-0 focus:outline-none"
           placeholder="Enter price"
+          value={servicePrice}
+          onChange={(e) => setServicePrice(e.target.value)}
         />
       </div>
 
-      {benefits.map((benefit, i) => (
-        <div key={i}>
+      {benefits.map((benefit, index) => (
+        <div key={index}>
           <label className="block mb-1">
-            {prefix} Benefit {i + 1}
+            {prefix} Benefit {index + 1}
           </label>
           <input
+            type="text"
             value={benefit}
-            onChange={(e) => handleBenefitChange(i, e.target.value)}
+            onChange={(e) => handleBenefitChange(index, e.target.value)}
             className="w-full p-2 border-b rounded bg-transparent focus:ring-0 focus:outline-none"
-            placeholder={`Benefit ${i + 1}`}
+            placeholder={`Benefit ${index + 1}`}
           />
         </div>
       ))}
@@ -59,6 +78,16 @@ const RenderServiceFields = ({ prefix, priceLabel }) => {
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           + Add More
+        </button>
+      </div>
+
+      <div className="col-span-1 md:col-span-2">
+        <button
+          type="button"
+          onClick={handleAddService}
+          className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Done
         </button>
       </div>
     </div>
@@ -150,12 +179,25 @@ export default function AddProduct() {
   const [productFor, setProductFor] = useState()
   
 
+  // const [selectedServices, setSelectedServices] = useState({
+  //   oneTime: false,
+  //   mmc: false,
+  //   amcbasic: false,
+  //   amcgold: false,
+  // });
   const [selectedServices, setSelectedServices] = useState({
-    oneTime: false,
-    mmc: false,
-    amcbasic: false,
-    amcgold: false,
   });
+
+
+ 
+
+  const [oneTimeService, setOneTimeSetvice] = useState({})
+
+  const [mmcService, setMmcSetvice] = useState({})
+
+  const [amcBasicService, setAmcBasicSetvice] = useState({ })
+
+  const [amcGoldService, setAmcGoldSetvice] = useState({})
 
   const onServiceOptionChange = (e) => {
     const value = e.value;
@@ -165,21 +207,21 @@ export default function AddProduct() {
     );
 
     // Reset individual service types if "Service" is unchecked
-    if (value === "Service" && isSelected) {
-      setSelectedServices({
-        oneTime: false,
-        mmc: false,
-        amcbasic: false,
-        amcgold: false,
-      });
-    }
+    // if (value === "Service" && isSelected) {
+    //   setSelectedServices({
+    //     oneTime: false,
+    //     mmc: false,
+    //     amcbasic: false,
+    //     amcgold: false,
+    //   });
+    // }
 
     // if (value === "Service" && isSelected) {
     //   setSelectedServices({
-    //     oneTime: [{oneTimePrice:null},[]],
-    //     mmc:  [{mmcPrice:null},[]],
-    //     amcbasic: [{amcbasicPrice:null},[]],
-    //     amcgold: [{amcgoldPrice:null},[]],
+    //     oneTime: {oneTimePrice:null,oneBenefits:[]},
+    //     mmc:  {mmcPrice:null,mmcbenefits:[]},
+    //     amcbasic: {amcbasicPrice:null,amcbBenefits:[]},
+    //     amcgold: {amcgoldPrice:null,macgBenefits:[]},
     //   });
     // }
   };
@@ -571,12 +613,19 @@ export default function AddProduct() {
       sellFormData,
       selectedServices
     })
+    setSelectedServices({
+      oneTimeService,
+      mmcService,
+      amcBasicService,
+      amcGoldService
+    })
     console.log("Form Data:", {
 
       ...data,
       images,
       productFor,
-      customFields
+      customFields,
+      selectedServices
       // rentData: selectedOptions.includes("Rent") ? rentFormData : null,
       // sellData: selectedOptions.includes("Sell") ? sellFormData : null,
       // serviceData: selectedOptions.includes("Service")
@@ -1194,6 +1243,12 @@ export default function AddProduct() {
               <RenderServiceFields
                 prefix="OneTime"
                 priceLabel="OneTime Price (Per Service)"
+                serviceData = {oneTimeService}
+                setServices={setOneTimeSetvice}
+                serviceLable= {"oneTime"}
+               
+                
+
               />
             </div>
           )}
@@ -1203,6 +1258,11 @@ export default function AddProduct() {
               <RenderServiceFields
                 prefix="MMC"
                 priceLabel="MMC Price (Per Month)"
+                serviceData = {mmcService}
+                setServices={setMmcSetvice}
+                serviceLable= {"mmc"}
+                
+                
               />
             </div>
           )}
@@ -1214,6 +1274,9 @@ export default function AddProduct() {
               <RenderServiceFields
                 prefix="AMC"
                 priceLabel="AMC Price (Per Year)"
+                serviceData = {amcBasicService}
+                setServices={setAmcBasicSetvice}
+                serviceLable= {"amcBasic"}
               />
             </div>
           )}
@@ -1225,6 +1288,9 @@ export default function AddProduct() {
               <RenderServiceFields
                 prefix="AMC"
                 priceLabel="AMC Price (Per Year)"
+                serviceData = {amcGoldService}
+                setServices={setAmcGoldSetvice}
+                serviceLable= {"amcGold"}
               />
             </div>
           )}
