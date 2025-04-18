@@ -353,6 +353,10 @@ export default function AddProduct() {
   const filteredSubCategories = categoryList?.subCategories?.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+
+
+  console.log(filteredSubCategories,"sub category")
   const filteredBrand = brands.filter((brand) =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
