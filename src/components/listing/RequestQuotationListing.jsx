@@ -60,7 +60,9 @@ export default function RequestQuotationListing() {
 
   return (
     <div className="">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
+
+<h5 className="heading w-full dark:text-gray-100 mb-3">Request Quotation List</h5>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
         <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
           <div className="flex justify-between items-center mb-3">
             <h6 className="text-gray-700 dark:text-white text-sm font-semibold">Total Requests</h6>
@@ -122,7 +124,6 @@ export default function RequestQuotationListing() {
         </div>
       </div>
 
-      <h5 className="heading w-full dark:text-gray-100 mb-3">Request Quotation List</h5>
 
       <div className="overflow-x-auto">
         <DataTable
@@ -216,35 +217,36 @@ const StatusSplitButton = () => {
   const items = [
     {
       label: 'Sent Quotation',
-      icon: 'pi pi-send text-sm',
+      icon: 'pi pi-send text-sm text-blue-400',
       command: () => handleStatusChange('Sent Quotation'),
-      className: 'text-sm',
+      className: 'text-sm text-gray-400',
     },
     {
       label: 'Negotiation',
-      icon: 'pi pi-comments text-sm',
+      icon: 'pi pi-comments text-sm text-purple-400',
       command: () => handleStatusChange('Negotiation'),
-      className: 'text-sm',
+      className: 'text-sm text-gray-400',
     },
     {
       label: 'Waiting for Approval',
-      icon: 'pi pi-clock text-sm',
+      icon: 'pi pi-clock text-sm text-yellow-400',
       command: () => handleStatusChange('Waiting for Approval'),
-      className: 'text-sm',
+      className: 'text-sm text-gray-400',
     },
     {
       label: 'Close Won',
-      icon: 'pi pi-check-circle text-sm',
+      icon: 'pi pi-check-circle text-sm text-green-400',
       command: () => handleStatusChange('Close Won'),
-      className: 'text-sm text-green-500',
+      className: 'text-sm text-gray-400',
     },
     {
       label: 'Close Lost',
-      icon: 'pi pi-times-circle text-sm',
+      icon: 'pi pi-times-circle text-sm text-red-400',
       command: () => handleStatusChange('Close Lost'),
-      className: 'text-sm text-red-500',
+      className: 'text-sm text-gray-400',
     },
   ];
+  
 
   const save = () => {
     toast.current.show({
@@ -264,6 +266,12 @@ const StatusSplitButton = () => {
         model={items}
         className="p-button-outlined p-button-sm text-sm text-green-500"
       />
+      <style>
+        {
+          `.p-menuitem-text{
+          color:#848484}`
+        }
+      </style>
     </div>
   );
 };

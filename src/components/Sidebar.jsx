@@ -40,8 +40,9 @@ function CustomSidebar({ isDarkMode }) {
       </button>
 
       <div
-        className={`fixed top-0 left-0 h-full   p-5  overflow-y-auto z-[55] w-[70%] 
-    bg-secondary  dark:bg-gray-800 dark:text-gray-100
+        className={`fixed top-0 left-0 h-full p-5 overflow-y-auto z-[55] w-[70%] 
+    bg-secondary dark:bg-gray-800 dark:text-gray-100
+    transition-transform duration-1000 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     lg:translate-x-0 lg:w-1/6 lg:block`}
       >
@@ -134,9 +135,9 @@ function CustomSidebar({ isDarkMode }) {
                           to={`/${menu.name}/${menu.name === "orders" ? "quotation" : "add"}`}
                           onClick={() => setIsSidebarOpen(false)}
                           className={`block p-2 rounded ${location.pathname === `/${menu.name}/add` ||
-                              location.pathname === `/${menu.name}/quotation`
-                              ? "text-primary font-semibold"
-                              : "text-white/50 hover:text-primary"
+                            location.pathname === `/${menu.name}/quotation`
+                            ? "text-primary font-semibold"
+                            : "text-white/50 hover:text-primary"
                             }`}
                         >
                           - {menu.name === "orders" ? "Quotation List" : `Add New ${menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}`}
