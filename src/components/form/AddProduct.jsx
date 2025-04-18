@@ -958,7 +958,7 @@ export default function AddProduct() {
               <Checkbox
                 inputId="Rent"
                 value="Rent"
-                ref={formRef}
+           
                 onChange={onOptionChange}
                 checked={selectedOptions.includes("Rent")}
                 className="border border-gray-300 dark:border-gray-600 rounded-md h-5 w-5"
@@ -1445,6 +1445,7 @@ export default function AddProduct() {
             <label className="block text mb-2 font-bold text-black dark:text-white">
               {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
             </label>
+           
             <div className="flex flex-col justify-start">
               <FileUpload
                 name={`demo-${sectionIndex}[]`}
