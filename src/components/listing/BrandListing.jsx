@@ -6,19 +6,18 @@ import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import CustomButton from "../../systemdesign/CustomeButton";
 import { useNavigate } from "react-router-dom";
+import useBrandStore from "../../Context/BrandContext";
 
 export default function BrandListing({ brands }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
+  const { removeBrand, getAllBrands } = useBrandStore()
   const navigate = useNavigate();
 
-  const filteredBrands = brands.filter((brand) =>
-    brand.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleDelete = () => {
+  const handleDelete = (brandId) => {
+    removeBrand(brandId)
     setVisible(false);
-    // Add delete logic here
+    getAllBrands()
   };
 
   return (
@@ -55,7 +54,7 @@ export default function BrandListing({ brands }) {
             </tr>
           </thead>
           <tbody>
-            {filteredBrands.map((brand) => (
+            {brands.map((brand) => (
               <tr
                 key={brand.id}
                 className="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
@@ -76,7 +75,7 @@ export default function BrandListing({ brands }) {
                     />
                     <Button
                       icon="pi pi-trash"
-                      onClick={() => setVisible(true)}
+                      onClick={() => handleDelete(brand.brandId)}
                       className="p-button-text rounded-lg text-white bg-red-500 p-2 "
                     />
                   </div>
@@ -89,7 +88,7 @@ export default function BrandListing({ brands }) {
 
 
 
-      <div className="block md:hidden px-4">
+      {/* <div className="block md:hidden px-4">
         {filteredBrands.map((brand) => (
           <div
             key={brand.id}
@@ -118,9 +117,8 @@ export default function BrandListing({ brands }) {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
-      {/* Confirmation Dialog */}
       <Dialog
         header="Confirmation"
         position="top"

@@ -66,9 +66,11 @@ import { InputText } from 'primereact/inputtext';
 import CustomButton from '../../systemdesign/CustomeButton';
 import { FileUpload } from 'primereact/fileupload';
 import { useForm } from 'react-hook-form';
+import useBrandStore from '../../Context/BrandContext';
 
 export default function AddBrand() {
   const navigate = useNavigate();
+  const {addBrand}=useBrandStore()
   const {
     register,
     handleSubmit,
@@ -77,13 +79,12 @@ export default function AddBrand() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      brandName: '',
-      brandImage: null,
+      name: '',
+      // brandImage: null,
     },
   });
 
-  // Watch for categoryImage for previewing file name
-  const brandImage = watch('brandImage');
+  const brandImage = watch('name');
 
   // Image Validation
   const validateFile = (file) => {
@@ -100,8 +101,12 @@ export default function AddBrand() {
   };
 
   const onSubmit = (data) => {
-    console.log('New Brand Added:', data);
-    navigate('/brands');
+    const res = addBrand(data)
+
+    if(res ){
+      navigate('/brands');
+
+    }
   };
 
   return (
@@ -116,13 +121,13 @@ export default function AddBrand() {
         <InputText
           className="w-[70%] p-2 border rounded bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           placeholder="Enter Brand Name"
-          {...register('brandName', {
+          {...register('name', {
             required: 'Brand Name is required',
           })}
         />
-        {errors.brandName && (
+        {errors.name && (
           <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-            {errors.brandName.message}
+            {errors.name.message}
           </p>
         )}
       </div>
