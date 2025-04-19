@@ -253,7 +253,7 @@ export default function AddBrandWithImageUploader() {
             image: uploadedUrl, // Use the fileUrl directly
         };
 
-        addBrand(payload)
+        // addBrand(payload)
 
         try {
             await addBrand(payload);
