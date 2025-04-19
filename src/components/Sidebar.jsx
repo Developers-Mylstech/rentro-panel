@@ -24,8 +24,6 @@ function CustomSidebar({ isDarkMode }) {
 
   }, [isDarkMode]);
 
-  console.log(isDarkMode, "jknsnc")
-
 
 
   return (

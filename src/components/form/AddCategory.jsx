@@ -3,16 +3,19 @@ import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
-import CustomButton from '../../systemdesign/CustomeButton';
 
 export default function AddCategory() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const fileUploadRef = useRef();
   const [key, setKey] = useState(0);
 
+  // State to store form data
+  const [formData, setFormData] = useState(null);
 
+  // Handle form submission
   const onSubmit = (data) => {
-    console.log('Form Data:', data);
+    // Store form data in state
+    setFormData(data);
   };
 
   const handleImageSelect = (event) => {
@@ -28,15 +31,15 @@ export default function AddCategory() {
       };
     }
   };
-  
+
   return (
-    <div className="dark:bg-gray-900 h-screen  dark:text-gray-200 md:p-6 p-2 rounded ">
+    <div className="dark:bg-gray-900 h-screen dark:text-gray-200 md:p-6 p-2 rounded ">
       <h1 className="heading mb-6 dark:text-gray-200">Add New Category</h1>
-  
+
       <div className="bg-white dark:bg-gray-800 p-12 rounded-lg shadow-md mb-6">
         <h2 className="subheading mb-4">Category Information</h2>
-  
-        <form onSubmit={handleSubmit(onSubmit)} className="">
+
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-4">
             <div className="flex flex-col md:flex-row items-center md:items-start w-full">
               <label className="w-full md:w-2/12 text-left text mb-2 dark:text-gray-300">
@@ -53,7 +56,7 @@ export default function AddCategory() {
                 )}
               </div>
             </div>
-  
+
             <div className="flex flex-col md:flex-row items-center md:items-start w-full">
               <label className="w-full md:w-2/12 text-left text mb-2 dark:text-gray-300">
                 Sub Category
@@ -70,12 +73,16 @@ export default function AddCategory() {
               </div>
             </div>
           </div>
+
+          <div className="flex justify-center mt-6">
+            <Button label="Submit" icon="pi pi-save" type="submit" className="p-button-primary" />
+          </div>
         </form>
       </div>
-  
-      <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md">
+
+      {/* <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md">
         <h2 className="subheading mb-4">Category Image</h2>
-  
+
         <div className="flex flex-col md:flex-row items-center justify-center w-full gap-2">
           <label className="w-full md:w-2/12 text mb-2 dark:text-gray-300">
             Main Category Image
@@ -102,13 +109,15 @@ export default function AddCategory() {
             )}
           </div>
         </div>
-      </div>
-  
-      {/* Submit Button */}
-      <div className="flex justify-center mt-6">
-        <CustomButton title={"Submit"} icon={"pi pi-save"} />
-      </div>
+      </div> */}
+
+      {/* Display Form Data */}
+      {formData && (
+        <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md mt-6">
+          <h2 className="subheading mb-4">Form Data</h2>
+          <pre>{JSON.stringify(formData, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
-  
 }
