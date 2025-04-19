@@ -1204,30 +1204,33 @@ const ImageUploader = ({ images, onChange }) => {
     const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files);
         const validImages = [];
-
+    
         for (const file of files) {
             const image = new Image();
             const objectUrl = URL.createObjectURL(file);
-
+    
             const isValid = await new Promise((resolve) => {
                 image.onload = () => {
                     const is500x500 = image.width === 500 && image.height === 500;
+                    const isUnder500KB = file.size <= 500 * 1024; // 500KB in bytes
                     URL.revokeObjectURL(objectUrl);
-                    resolve(is500x500);
+                    resolve(is500x500 && isUnder500KB);
                 };
                 image.onerror = () => resolve(false);
                 image.src = objectUrl;
             });
-
+    
             if (isValid) {
                 validImages.push(file);
             } else {
-                alert(`"${file.name}" is not 500x500 pixels. It will be skipped.`);
+                const sizeKB = (file.size / 1024).toFixed(2);
+                alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
             }
         }
-
+    
         setSelectedFiles(validImages);
     };
+    
 
     const resetImage = () => {
         setSelectedFiles([])
@@ -1280,7 +1283,7 @@ const ImageUploader = ({ images, onChange }) => {
                     </button>
 
                     <p className="text-sm text-gray-500 italic mt-2">
-    Only 500x500 pixel images are allowed.
+    Only 500x500 pixel images are allowed. size should be 500kb
 </p>
                     <input
                         id="file-upload"
