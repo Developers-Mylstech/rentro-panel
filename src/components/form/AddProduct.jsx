@@ -120,8 +120,6 @@ export default function AddProduct() {
     getAllBrands()
     getAllCategories()
     getAllSpecificationFields()
-
-    console.log(categoryList, "from addproduct")
   }, [])
 
   const {
@@ -161,6 +159,7 @@ export default function AddProduct() {
   const [customFields, setCustomFields] = useState([]);
   const [showNewFieldInput, setShowNewFieldInput] = useState(false);
   const [newFieldName, setNewFieldName] = useState("");
+  const [shortDescription, setShortDescription] = useState('');
 
   const handleAddNewField = () => {
     if (!newFieldName.trim()) return;
@@ -226,30 +225,9 @@ export default function AddProduct() {
       isSelected ? prev.filter((item) => item !== value) : [...prev, value]
     );
 
-    // Reset individual service types if "Service" is unchecked
-    // if (value === "Service" && isSelected) {
-    //   setSelectedServices({
-    // oneTime: false,
-    // mmc: false,
-    // amcbasic: false,
-    // amcgold: false,
-    //   });
-    // }
 
-    // if (value === "Service" && isSelected) {
-    //   setSelectedServices({
-    //     oneTime: {oneTimePrice:null,oneBenefits:[]},
-    //     mmc:  {mmcPrice:null,mmcbenefits:[]},
-    //     amcbasic: {amcbasicPrice:null,amcbBenefits:[]},
-    //     amcgold: {amcgoldPrice:null,macgBenefits:[]},
-    //   });
-    // }
   };
 
-  // const handleCheckboxChange = (e) => {
-  //   const { name, checked } = e.target;
-  //   setSelectedServices((prev) => ({ ...prev, [name]: checked }));
-  // };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -278,7 +256,6 @@ export default function AddProduct() {
     { label: "Service", color: "text-red-600" },
   ];
 
-  console.log(flatCategoryList, 'Olkkk')
 
   const onOptionChange = (e) => {
     const value = e.value;
@@ -323,34 +300,6 @@ export default function AddProduct() {
     setVisibleForm(null); // Just hide the form
   };
 
-  const mainCategories = [
-    "Domestic",
-    "Commercial",
-    "Industrial",
-    "Water Cooler",
-    "Chillers",
-    "Appliances",
-    "Accessories",
-    "Dispenser",
-    "Water Tanker",
-  ];
-  const subCatogery = [
-    "Filter",
-    "Cooler",
-    "Dispenser",
-    "Chillers",
-    "Appliances",
-    "Accessories",
-    "Sweet Water/ Salt Water/Sewage",
-  ];
-  // const brands = [
-  //   "Rent RO ",
-  //   "Kentt RO",
-  //   "Aquagaurd",
-  //   "Aqua Pro",
-  //   "Waterlogin",
-  //   "Culligen",
-  // ];
 
   const filteredCategories = flatCategoryList?.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -378,7 +327,7 @@ export default function AddProduct() {
 
   const handleBrand = (brand) => {
     setSelectedBrand(brand);
-    
+
   };
 
   const fieldOptions = [
@@ -500,153 +449,28 @@ export default function AddProduct() {
 
   const handleSellDiscountTypeChange = (type) => {
     setSellDiscountType(type);
-    // Recalculate when switching types
     handleSellDiscountChange({ target: { value: sellDiscountValue } });
   };
 
   const handleDiscountTypeChange = (type) => {
     setDiscountType(type);
-    // Recalculate when switching types
     handleDiscountChange({ target: { value: discountValue } });
   };
 
-  // const onRentOptionChange = (e) => {
-  //   const value = e.value;
-  //   const selected = [...selectedOptions];
-  //   const index = selected.indexOf(value);
-  //   if (index === -1) {
-  //     selected.push(value);
-  //   } else {
-  //     selected.splice(index, 1);
-  //   }
-  //   setSelectedOptions(selected);
-  // };
-
-  // const toggleField = (fieldKey) => {
-  //   setFields((prev) =>
-  //     prev.includes(fieldKey)
-  //       ? prev.filter((f) => f !== fieldKey)
-  //       : [...prev, fieldKey]
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   const storedImages =
-  //     JSON.parse(localStorage.getItem("productImages")) || [];
-  //   setImages(storedImages);
-  //   const storedFileNames = JSON.parse(localStorage.getItem("fileName")) || [];
-  //   setFileNames(storedFileNames);
-  // }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem("productImages", JSON.stringify(images));
-  //   localStorage.setItem("fileName", JSON.stringify(fileNames));
-  // }, [images, fileNames]);
-
-  // const onImageSelect = (event, index) => {
-  //   const selectedFiles = event.files;
-  //   const newImages = [...images];
-  //   const newFileNames = { ...fileNames };
-
-  //   for (let file of selectedFiles) {
-  //     const fileType = file.type;
-  //     const fileSize = file.size;
-
-  //     const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(
-  //       fileType
-  //     );
-  //     const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
-
-  //     if (!isValidFormat) {
-  //       alert("Select a proper format (JPEG, PNG, WEBP).");
-  //       setKey(!key);
-  //       setErrors(true);
-  //       return;
-  //     }
-
-  //     if (!isValidSize) {
-  //       alert("File size exceeds 1MB. Please select a smaller file.");
-  //       setKey(!key);
-  //       setErrors(true);
-  //       return;
-  //     }
-
-  //     if (newImages.length >= 10) {
-  //       alert("You can only upload up to 10 images.");
-  //       return;
-  //     }
-
-  //     const reader = new FileReader();
-  //     setErrors(false);
-  //     reader.onload = (e) => {
-  //       newImages[index] = e.target.result;
-  //       newFileNames[index] = file.name;
-  //       setImages(newImages);
-  //       setFileNames(newFileNames);
-  //     };
-  //     reader.readAsDataURL(file);
-  //     setKey(!key);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (images.length > 0) {
-  //     setUploadSections(
-  //       Array.from({ length: images.length }, (_, index) => index)
-  //     );
-  //   }
-  // }, [images]);
-
-  // const onRemoveImage = (index) => {
-  //   const updatedImages = [...images];
-  //   updatedImages.splice(index, 1);
-  //   setImages(updatedImages);
-
-  //   const updatedFileNames = {};
-  //   Object.keys(fileNames).forEach((key) => {
-  //     const numKey = parseInt(key, 10);
-  //     if (numKey < index) {
-  //       updatedFileNames[numKey] = fileNames[numKey];
-  //     } else if (numKey > index) {
-  //       updatedFileNames[numKey - 1] = fileNames[numKey];
-  //     }
-  //   });
-  //   setFileNames(updatedFileNames);
-  // };
-
-  // const addNewFileUpload = () => {
-  //   if (images.length < 10) {
-  //     setUploadSections((prev) => [...prev, prev.length]);
-  //     setFileNames((prev) => ({ ...prev, [uploadSections.length]: "Choose" }));
-  //   } else {
-  //     alert("Maximum 10 images allowed");
-  //   }
-  // };
-
-  // const removeFileUpload = (index) => {
-  //   if (uploadSections.length > 1) {
-  //     const updatedSections = uploadSections.filter((_, i) => i !== index);
-  //     setUploadSections(updatedSections);
-  //     onRemoveImage(index);
-  //   } else {
-  //     alert("You must have at least one file upload section.");
-  //   }
-  // };
-
   const onSubmit = (data) => {
-    // Extract specs (custom fields)
     const specifications = customFields.map(field => ({
       name: field.name,
       value: field.value,
     }));
-  
+
 
     const payload = {
-      name: data.name || "",
+      name: data.productName || "",
       description: data.description || "",
       longDescription: data.longDescription || "",
-      brandId: selectedBrand, // assuming this is the ID
-      imageUrls: images, // full list of uploaded image URLs
+      description: shortDescription || "",
+      brandId: selectedBrand,
+      imageUrls: images,
       specifications: specifications,
       productFor: {
         sell: {
@@ -680,18 +504,18 @@ export default function AddProduct() {
           },
         },
       },
-      categoryId: parseInt(data.categoryId || 0),
-      subCategoryId: parseInt(data.subCategoryId || 0),
+      categoryId: data?.subCatogery?.parentCategoryId,
+      // subCategoryId: parseInt(data?.subCategoryId.categoryId || 0),
       inventory: {
         quantity: parseInt(data.quantity || 0),
         sku: data.sku || "",
-        stockStatus: data.stockStatus || "IN_STOCK", 
+        stockStatus: data.stockStatus || "IN_STOCK",
       },
     };
-  
+
     console.log("Final Payload:", payload);
-    console.log(data,"poondf")
-  
+    console.log(data, "data form object")
+
     setImages([]);
     setFileNames([]);
     setSelectedOptions([]);
@@ -708,12 +532,8 @@ export default function AddProduct() {
       vat: 5,
       discountedPrice: "",
     });
-  
-    // Optionally reset the form
-    // reset();
   };
-  
-  console.log(images, 'imagesssssss')
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -1379,8 +1199,11 @@ export default function AddProduct() {
         </label>
         <input
           {...register("shortDescription")}
+          value={shortDescription}
+          onChange={(e) => setShortDescription(e.target.value)}
           className="md:w-[70%] w-[100%] p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 dark:text-gray-100"
         />
+
       </div>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
@@ -1473,102 +1296,11 @@ export default function AddProduct() {
         )}
       </div>
 
-      <div className="mb-4">
-        <h4 className="font-semibold subheading dark:text-gray-200">
-          Product Images
-        </h4>
-        <p className="text-gray-500 opacity-70 text-sm mt-1 dark:text-gray-200">
-          **Image should be below 1 MB and should have dimensions of 500x600 and
-          type of .png / .jpeg / .webp**
-        </p>
-      </div>
+     
 
-      {/* {uploadSections.map((sectionIndex) => (
-        <div key={sectionIndex} className="mb-4 relative">
-          <div className="flex md:flex-row flex-row justify-between md:w-[70%] w-[100%] items-center gap-10">
-            <label className="block text mb-2 font-bold text-black dark:text-white">
-              {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
-            </label>
-
-            <div className="flex flex-col justify-start">
-              <FileUpload
-                name={`demo-${sectionIndex}[]`}
-                key={key}
-                customUpload
-                mode="basic"
-                chooseOptions={{
-                  className:
-                    "bg-white border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-secondary ",
-                }}
-                uploadHandler={() => { }}
-                onSelect={(e) => onImageSelect(e, sectionIndex)}
-                accept="image/png,image/jpeg,image/webp"
-                chooseLabel={fileNames[sectionIndex] || "Choose "}
-                multiple={false}
-                auto
-              />
-
-            </div>
-
-            <div className="md:flex hidden justify-center">
-              {images[sectionIndex] && (
-                <img
-                  src={images[sectionIndex]}
-                  className="h-20 w-20 border border-gray-300 dark:border-gray-600 rounded-lg"
-                  alt="Preview"
-                />
-              )}
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => removeFileUpload(sectionIndex)}
-            className="absolute -top-2 md:top-0 -right-2 md:right-0 md:text-black text-white dark:text-white p-1 "
-            title="Remove this section"
-          >
-            <i className="pi pi-times md:mt-3 mt-0 md:bg-transparent bg-secondary  text-sm   md:border border-gray-300 dark:border-gray-700 p-1 md:rounded rounded-full"></i>
-          </button>
-        </div>
-      ))}
-
-      <div className="flex md:justify-end justify-center">
-        {images.length < 10 && (
-          <button
-            type="button"
-            onClick={addNewFileUpload}
-            className="mt-2 px-2 py-2 rounded-lg bg-secondary text-white font-semibold dark:bg-gray-700 dark:text-gray-100 border dark:border-gray-300"
-          >
-            <i className="pi pi-plus"></i> Add More
-          </button>
-        )}
-      </div>
-
-      <div className="mt-4 md:grid grid-cols-4 gap-4 hidden ">
-        {images.map((img, index) => (
-          <div
-            key={index}
-            className="relative bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md"
-          >
-            <img
-              src={img}
-              alt={`product-${index}`}
-              className="w-full h-32 object-cover rounded border border-gray-300 dark:border-gray-700"
-            />
-            <button
-              type="button"
-              className="absolute top-1 right-1 text-black dark:text-white p-1"
-              onClick={() => onRemoveImage(index)}
-            >
-              <i className="pi pi-times"></i>
-            </button>
-          </div>
-        ))}
-      </div> */}
-
+      
       <h3 className="subheading my-6 mt-4 dark:text-gray-200">Inventory</h3>
 
-      {/* SKU */}
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">SKU</label>
         <input
@@ -1577,7 +1309,6 @@ export default function AddProduct() {
         />
       </div>
 
-      {/* Quantity */}
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Quantity</label>
         <input
@@ -1602,7 +1333,7 @@ export default function AddProduct() {
         </select>
       </div>
 
-      <ImageUploader setImage ={setImages} />
+      <ImageUploader setImage={setImages} />
 
       <div className="flex justify-center items-center">
         <button

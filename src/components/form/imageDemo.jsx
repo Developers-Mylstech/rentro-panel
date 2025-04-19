@@ -112,10 +112,11 @@ export default function ImageUploader({ setImage }) {
             {responseData.length > 0 && (
                 <div className="pt-4">
                     <h3 className="font-semibold">Uploaded Files:</h3>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                    <ul className="text-sm flex gap-2 text-gray-700 space-y-1">
                         {responseData.map((file, index) => (
                             <li key={index} className="flex items-center gap-2">
-                                ✅ <a href={file.fileUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">{file.fileName}</a> ({file.size} bytes)
+                                <img src={file.fileUrl} alt="" className='w-20 h-20 rounded-lg object-cover'/>
+                                {/* ✅ <a href={file.fileUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">{file.fileName}</a> ({file.size} bytes) */}
                             </li>
                         ))}
                     </ul>
