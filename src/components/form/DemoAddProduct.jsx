@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import useCategoryStore from '../../Context/CategoryContext';
-import useSpecificationFieldsStore from '../../Context/SpecificationFieldsContext';
 import useImageUploadStore from '../../Context/ImageUploadContext';
 import useBrandStore from '../../Context/BrandContext';
 import SpecificationFields from '../formComponet/SpecificationFields';
@@ -12,7 +11,7 @@ import useProductStore from '../../Context/ProductContext';
 
 
 const DemoProduct = () => {
-    const {createProduct}  = useProductStore()
+    const { createProduct } = useProductStore()
     const [productData, setProductData] = useState({
         basicInfo: {
             name: '',
@@ -41,6 +40,7 @@ const DemoProduct = () => {
             quantity: 0,
             stockStatus: 'IN_STOCK'
         },
+        keyFeatures: [],
         specifications: [],
         images: []
     });
@@ -54,7 +54,7 @@ const DemoProduct = () => {
                 };
             }
 
-            // If field is null, replace entire section (e.g., specifications)
+
             if (field === null) {
                 return {
                     ...prev,
@@ -62,7 +62,7 @@ const DemoProduct = () => {
                 };
             }
 
-            // Otherwise, update nested field
+
             return {
                 ...prev,
                 [section]: {
@@ -97,17 +97,15 @@ const DemoProduct = () => {
                         onChange={handleInputChange}
                     />
 
-                    {/* <ProductSpecifications
-                        specs={productData.specifications}
-                        onChange={handleInputChange}
-                    /> */}
-
-
                     <SpecificationFields specs={productData.specifications}
                         onChange={handleInputChange} />
 
                     <InventorySection
                         inventory={productData.inventory}
+                        onChange={handleInputChange}
+                    />
+                    <KeyFeaturesFields
+                        features={productData.keyFeatures}
                         onChange={handleInputChange}
                     />
                     <ImageUploader
@@ -131,7 +129,7 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
-    console.log(productData, 'UUUU')
+
     const payload = {
         name: productData.basicInfo.name,
         description: productData.basicInfo.shortDescription,
@@ -161,30 +159,30 @@ const preparePayload = (productData) => {
             service: {
                 ots: {
                     price: productData.pricing?.services?.oneTime?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.oneTime?.benefits) 
-                        ? productData.pricing?.services?.oneTime?.benefits 
+                    benefits: Array.isArray(productData.pricing?.services?.oneTime?.benefits)
+                        ? productData.pricing?.services?.oneTime?.benefits
                         : []
                 },
                 mmc: {
                     price: productData.pricing?.services?.mmc?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits) 
-                        ? productData.pricing?.services?.mmc?.benefits 
+                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
+                        ? productData.pricing?.services?.mmc?.benefits
                         : []
                 },
                 amcBasic: {
                     price: productData.pricing?.services?.amcBasic?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits) 
-                        ? productData.pricing?.services?.amcBasic?.benefits 
+                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
+                        ? productData.pricing?.services?.amcBasic?.benefits
                         : []
                 },
                 amcGold: {
                     price: productData.pricing?.services?.amcGold?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits) 
-                        ? productData.pricing?.services?.amcGold?.benefits 
+                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
+                        ? productData.pricing?.services?.amcGold?.benefits
                         : []
                 }
             }
-            
+
         },
         categoryId: +productData.category.main.categoryId,
         subCategoryId: +productData.category.sub,
@@ -364,8 +362,8 @@ const CategoryBrandSelection = ({ category, brand, onChange }) => {
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">Brand*</label>
                     <select
-                        value={brand}
-                        onChange={(e) => onChange('brand', 'brand', e.target.value)}
+                        value={brand || ""}
+                        onChange={(e) => onChange('brand', 'brand', e.target.value)} 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     >
                         <option value="">Select Brand</option>
@@ -376,6 +374,7 @@ const CategoryBrandSelection = ({ category, brand, onChange }) => {
                         ))}
                     </select>
                 </div>
+
             </div>
         </div>
     );
@@ -463,7 +462,8 @@ const SellPricingForm = ({ data, onChange }) => {
     const [formData, setFormData] = useState(data || {
         price: '',
         discount: '',
-        discountedPrice: ''
+        discountedPrice: '',
+        benefits: ['']
     });
     const [discountType, setDiscountType] = useState('percentage');
 
@@ -487,11 +487,27 @@ const SellPricingForm = ({ data, onChange }) => {
         onChange(updated);
     };
 
+    const handleBenefitChange = (index, value) => {
+        const updatedBenefits = [...formData.benefits];
+        updatedBenefits[index] = value;
+        handleChange('benefits', updatedBenefits);
+    };
+
+    const addBenefit = () => {
+        handleChange('benefits', [...formData.benefits, '']);
+    };
+
+    const removeBenefit = (index) => {
+        const updatedBenefits = [...formData.benefits];
+        updatedBenefits.splice(index, 1);
+        handleChange('benefits', updatedBenefits);
+    };
+
     return (
         <div className="bg-white p-4 rounded-lg border border-gray-200">
             <h3 className="text-lg font-medium text-gray-800 mb-4">Sell Pricing</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">Price (AED)</label>
                     <div className="relative rounded-md shadow-sm">
@@ -511,8 +527,8 @@ const SellPricingForm = ({ data, onChange }) => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700">Discount</label>
                     <div className="flex space-x-4 mb-1">
+                    <label className="block text-sm font-medium text-gray-700">Discount</label>
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
@@ -552,6 +568,46 @@ const SellPricingForm = ({ data, onChange }) => {
                     />
                 </div>
             </div>
+
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h4 className="text-md font-medium text-gray-700">Purchase Benefits</h4>
+                    <button
+                        type="button"
+                        onClick={addBenefit}
+                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                    >
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add Benefit
+                    </button>
+                </div>
+
+                {formData.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={benefit}
+                            onChange={(e) => handleBenefitChange(index, e.target.value)}
+                            placeholder={`Benefit ${index + 1}`}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {formData.benefits.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => removeBenefit(index)}
+                                className="p-2 text-red-600 hover:text-red-800"
+                                title="Remove benefit"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
@@ -563,7 +619,8 @@ const RentPricingForm = ({ data, onChange }) => {
     const [formData, setFormData] = useState(data || {
         monthlyPrice: '',
         discount: '',
-        discountedPrice: ''
+        discountedPrice: '',
+        benefits: ['']
     });
     const [discountType, setDiscountType] = useState('percentage');
 
@@ -587,11 +644,27 @@ const RentPricingForm = ({ data, onChange }) => {
         onChange(updated);
     };
 
+    const handleBenefitChange = (index, value) => {
+        const updatedBenefits = [...formData.benefits];
+        updatedBenefits[index] = value;
+        handleChange('benefits', updatedBenefits);
+    };
+
+    const addBenefit = () => {
+        handleChange('benefits', [...formData.benefits, '']);
+    };
+
+    const removeBenefit = (index) => {
+        const updatedBenefits = [...formData.benefits];
+        updatedBenefits.splice(index, 1);
+        handleChange('benefits', updatedBenefits);
+    };
+
     return (
         <div className="bg-white p-4 rounded-lg border border-gray-200">
             <h3 className="text-lg font-medium text-gray-800 mb-4">Rent Pricing</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">Monthly Price (AED)</label>
                     <div className="relative rounded-md shadow-sm">
@@ -611,8 +684,8 @@ const RentPricingForm = ({ data, onChange }) => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700">Discount</label>
                     <div className="flex space-x-4 mb-1">
+                    <label className="block text-sm font-medium text-gray-700">Discount</label>
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
@@ -651,6 +724,46 @@ const RentPricingForm = ({ data, onChange }) => {
                         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
+            </div>
+
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h4 className="text-md font-medium text-gray-700">Rental Benefits</h4>
+                    <button
+                        type="button"
+                        onClick={addBenefit}
+                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                    >
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add Benefit
+                    </button>
+                </div>
+
+                {formData.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={benefit}
+                            onChange={(e) => handleBenefitChange(index, e.target.value)}
+                            placeholder={`Benefit ${index + 1}`}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {formData.benefits.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => removeBenefit(index)}
+                                className="p-2 text-red-600 hover:text-red-800"
+                                title="Remove benefit"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -836,325 +949,6 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
 
 
 
-// const ProductSpecifications = ({ specs, onChange }) => {
-//     const { 
-//         specificationFields, 
-//         getAllSpecificationFields, 
-//         addSpecificationField,
-//         getCommonFieldTemplates
-//     } = useSpecificationFieldsStore();
-
-//     const [selectedSpecs, setSelectedSpecs] = useState([]);
-//     const [newFieldName, setNewFieldName] = useState('');
-//     const [newFieldUnit, setNewFieldUnit] = useState('');
-//     const [showNewField, setShowNewField] = useState(false);
-//     const [showTemplates, setShowTemplates] = useState(false);
-//     const [isLoading, setIsLoading] = useState(false);
-
-//     useEffect(() => {
-//         getAllSpecificationFields();
-//     }, [getAllSpecificationFields]);
-
-//     // Initialize with existing specs when component mounts
-//     useEffect(() => {
-//         if (specs.length > 0) {
-//             setSelectedSpecs(specs);
-//         }
-//     }, [specs]);
-
-//     const handleSpecChange = (selectedOptions) => {
-//         const selectedSpecs = selectedOptions.map(option => JSON.parse(option));
-//         setSelectedSpecs(selectedSpecs);
-
-//         // Merge with existing specs to preserve values
-//         const updatedSpecs = selectedSpecs.map(spec => {
-//             const existingSpec = specs.find(s => s.code === spec.code);
-//             return existingSpec || { ...spec, value: '' };
-//         });
-
-//         onChange('specifications', updatedSpecs);
-//     };
-
-//     const handleFieldValueChange = (code, value) => {
-//         onChange('specifications', specs.map(spec =>
-//             spec.code === code ? { ...spec, value } : spec
-//         ));
-//     };
-
-//     const addNewField = async () => {
-//         if (!newFieldName.trim()) return;
-
-//         setIsLoading(true);
-//         try {
-//             const code = newFieldName.toLowerCase().replace(/\s+/g, '_');
-//             const fieldData = { 
-//                 name: newFieldName,
-//                 code,
-//                 ...(newFieldUnit && { unit: newFieldUnit })
-//             };
-
-//             const newField = await addSpecificationField(fieldData);
-
-//             // Add the new field to selected specs
-//             const updatedSelectedSpecs = [...selectedSpecs, newField];
-//             setSelectedSpecs(updatedSelectedSpecs);
-
-//             // Add to current specifications with empty value
-//             onChange('specifications', [...specs, { 
-//                 ...newField, 
-//                 value: '' 
-//             }]);
-
-//             // Reset form
-//             setNewFieldName('');
-//             setNewFieldUnit('');
-//             setShowNewField(false);
-//         } finally {
-//             setIsLoading(false);
-//         }
-//     };
-
-//     const applyTemplate = (template) => {
-//         setNewFieldName(template.name);
-//         if (template.unit) {
-//             setNewFieldUnit(template.unit);
-//         }
-//         setShowTemplates(false);
-//         setShowNewField(true);
-//     };
-
-//     const removeSpecification = (code) => {
-//         const updatedSpecs = specs.filter(spec => spec.code !== code);
-//         const updatedSelectedSpecs = selectedSpecs.filter(spec => spec.code !== code);
-
-//         setSelectedSpecs(updatedSelectedSpecs);
-//         onChange('specifications', updatedSpecs);
-//     };
-
-//     return (
-//         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-//             <h2 className="text-xl font-semibold text-gray-700 mb-4">Specifications</h2>
-
-//             <div className="space-y-6">
-//                 {/* Specification Selection Section */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-2">
-//                         Choose Specifications
-//                     </label>
-
-//                     <div className="flex flex-col gap-4">
-//                         <div className="relative">
-//                             <select
-//                                 multiple
-//                                 value={selectedSpecs.map(spec => JSON.stringify(spec))}
-//                                 onChange={(e) => handleSpecChange(
-//                                     Array.from(e.target.selectedOptions, opt => opt.value)
-//                                 )}
-//                                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 h-auto min-h-[42px] max-h-40 overflow-y-auto"
-//                             >
-//                                 {specificationFields.map(spec => (
-//                                     <option 
-//                                         key={spec.code} 
-//                                         value={JSON.stringify(spec)}
-//                                         className="p-2 hover:bg-gray-100"
-//                                     >
-//                                         {spec.name}
-//                                     </option>
-//                                 ))}
-//                             </select>
-//                             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-//                                 <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-//                                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-//                                 </svg>
-//                             </div>
-//                         </div>
-
-//                         <div className="flex flex-wrap gap-2">
-//                             {!showNewField && (
-//                                 <button
-//                                     type="button"
-//                                     onClick={() => setShowNewField(true)}
-//                                     className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-//                                 >
-//                                     <svg className="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-//                                         <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-//                                     </svg>
-//                                     Create Custom Specification
-//                                 </button>
-//                             )}
-
-//                             <button
-//                                 type="button"
-//                                 onClick={() => setShowTemplates(!showTemplates)}
-//                                 className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-//                             >
-//                                 <svg className="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-//                                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-//                                 </svg>
-//                                 {showTemplates ? 'Hide Templates' : 'Show Templates'}
-//                             </button>
-//                         </div>
-//                     </div>
-
-//                     <p className="mt-1 text-sm text-gray-500">
-//                         Hold Ctrl/Cmd to select multiple specifications
-//                     </p>
-//                 </div>
-
-//                 {/* Template Selection */}
-//                 {showTemplates && (
-//                     <div className="bg-white p-4 rounded-lg border border-gray-200">
-//                         <h3 className="text-sm font-medium text-gray-700 mb-2">
-//                             Common Specification Templates
-//                         </h3>
-//                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-//                             {getCommonFieldTemplates().map((template, index) => (
-//                                 <button
-//                                     key={index}
-//                                     type="button"
-//                                     onClick={() => applyTemplate(template)}
-//                                     className="text-left p-2 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors"
-//                                 >
-//                                     <div className="font-medium">{template.name}</div>
-//                                     {template.unit && (
-//                                         <div className="text-xs text-gray-500">{template.unit}</div>
-//                                     )}
-//                                 </button>
-//                             ))}
-//                         </div>
-//                     </div>
-//                 )}
-
-//                 {/* New Specification Form */}
-//                 {showNewField && (
-//                     <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-3">
-//                         <h3 className="text-sm font-medium text-gray-700">
-//                             Create New Specification
-//                         </h3>
-
-//                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                             <div>
-//                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-//                                     Name*
-//                                 </label>
-//                                 <input
-//                                     type="text"
-//                                     value={newFieldName}
-//                                     onChange={(e) => setNewFieldName(e.target.value)}
-//                                     placeholder="e.g., Weight, Color, Material"
-//                                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div>
-//                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-//                                     Unit (optional)
-//                                 </label>
-//                                 <input
-//                                     type="text"
-//                                     value={newFieldUnit}
-//                                     onChange={(e) => setNewFieldUnit(e.target.value)}
-//                                     placeholder="e.g., kg, cm, inches"
-//                                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-//                                 />
-//                             </div>
-//                         </div>
-
-//                         <div className="flex justify-end gap-2 pt-2">
-//                             <button
-//                                 type="button"
-//                                 onClick={() => {
-//                                     setShowNewField(false);
-//                                     setNewFieldName('');
-//                                     setNewFieldUnit('');
-//                                 }}
-//                                 className="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-//                             >
-//                                 Cancel
-//                             </button>
-//                             <button
-//                                 type="button"
-//                                 onClick={addNewField}
-//                                 disabled={isLoading || !newFieldName.trim()}
-//                                 className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
-//                             >
-//                                 {isLoading ? (
-//                                     <>
-//                                         <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-//                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//                                         </svg>
-//                                         Saving...
-//                                     </>
-//                                 ) : 'Save Specification'}
-//                             </button>
-//                         </div>
-//                     </div>
-//                 )}
-
-//                 {/* Selected Specifications */}
-//                 {specs.length > 0 && (
-//                     <div className="space-y-4">
-//                         <div className="flex justify-between items-center">
-//                             <h3 className="text-sm font-medium text-gray-700">
-//                                 Selected Specifications ({specs.length})
-//                             </h3>
-//                             <span className="text-xs text-gray-500">
-//                                 First specification will be considered as primary
-//                             </span>
-//                         </div>
-
-//                         <div className="space-y-4">
-//                             {specs.map((spec, index) => (
-//                                 <div key={spec.code} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center bg-white p-3 rounded-lg border border-gray-200">
-//                                     <div className="flex items-center gap-2">
-//                                         {index === 0 && (
-//                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-//                                                 Primary
-//                                             </span>
-//                                         )}
-//                                         <span className="font-medium">{spec.name}</span>
-//                                         {spec.unit && (
-//                                             <span className="text-xs text-gray-500">({spec.unit})</span>
-//                                         )}
-//                                     </div>
-
-//                                     <div className="md:col-span-2">
-//                                         <input
-//                                             type="text"
-//                                             value={spec.value}
-//                                             onChange={(e) => handleFieldValueChange(spec.code, e.target.value)}
-//                                             placeholder={`Enter ${spec.name}`}
-//                                             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-//                                         />
-//                                     </div>
-
-//                                     <div className="flex justify-end">
-//                                         <button
-//                                             type="button"
-//                                             onClick={() => removeSpecification(spec.code)}
-//                                             className="text-red-600 hover:text-red-800"
-//                                             title="Remove specification"
-//                                         >
-//                                             <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-//                                                 <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-//                                             </svg>
-//                                         </button>
-//                                     </div>
-//                                 </div>
-//                             ))}
-//                         </div>
-//                     </div>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-
-
-
 const InventorySection = ({ inventory, onChange }) => {
     return (
         <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
@@ -1205,6 +999,94 @@ const InventorySection = ({ inventory, onChange }) => {
 
 
 
+const KeyFeaturesFields = ({ features = [], onChange }) => {
+    const [keyFeatures, setKeyFeatures] = useState(features.length > 0 ? features : ['']);
+
+    // Ensure we always have at least one empty field
+    useEffect(() => {
+        if (keyFeatures.length === 0) {
+            setKeyFeatures(['']);
+        }
+    }, [keyFeatures]);
+
+    // Notify parent of changes
+    useEffect(() => {
+        // Filter out empty strings before sending to parent
+        const nonEmptyFeatures = keyFeatures.filter(feature => feature.trim() !== '');
+        onChange('keyFeatures', null, nonEmptyFeatures);
+    }, [keyFeatures]);
+
+    const handleFeatureChange = (index, value) => {
+        const updatedFeatures = [...keyFeatures];
+        updatedFeatures[index] = value;
+        setKeyFeatures(updatedFeatures);
+    };
+
+    const addFeature = () => {
+        setKeyFeatures([...keyFeatures, '']);
+    };
+
+    const removeFeature = (index) => {
+        if (keyFeatures.length <= 1) {
+            // If it's the last feature, just clear it instead of removing
+            const updatedFeatures = [...keyFeatures];
+            updatedFeatures[index] = '';
+            setKeyFeatures(updatedFeatures);
+        } else {
+            const updatedFeatures = keyFeatures.filter((_, i) => i !== index);
+            setKeyFeatures(updatedFeatures);
+        }
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Key Features</h2>
+
+            <div className="space-y-3">
+                {keyFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                        <div className="flex-1">
+                            <textarea
+                                value={feature}
+                                onChange={(e) => handleFeatureChange(index, e.target.value)}
+                                placeholder={`Enter key feature #${index + 1}`}
+                                rows={2}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => removeFeature(index)}
+                            className="mt-2 px-2 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors"
+                            title="Remove feature"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-4">
+                <button
+                    type="button"
+                    onClick={addFeature}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
+                    Add Another Feature
+                </button>
+            </div>
+        </div>
+    );
+};
+
+
+
+
 
 const ImageUploader = ({ images, onChange }) => {
     const { uploadFiles, isLoading } = useImageUploadStore();
@@ -1215,6 +1097,9 @@ const ImageUploader = ({ images, onChange }) => {
         setSelectedFiles(files);
     };
 
+    const resetImage = () => {
+        setSelectedFiles([])
+    }
     const handleUpload = async () => {
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
@@ -1237,6 +1122,7 @@ const ImageUploader = ({ images, onChange }) => {
                         Choose Images
                     </label>
 
+
                     <button
                         onClick={handleUpload}
                         disabled={isLoading || selectedFiles.length === 0}
@@ -1247,6 +1133,14 @@ const ImageUploader = ({ images, onChange }) => {
                     >
                         {isLoading ? "Uploading..." : "Upload"}
                     </button>
+                    <button
+                        onClick={() => resetImage()}
+                        disabled={isLoading || selectedFiles.length === 0}
+                        className={`px-4 py-2 bg-red-500 rounded-lg text-white font-bold `}
+                    >
+                        Reset Images
+                    </button>
+
 
                     <input
                         id="file-upload"
