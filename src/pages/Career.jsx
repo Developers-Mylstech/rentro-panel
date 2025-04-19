@@ -80,7 +80,7 @@ const jobRoles = [
   { 
     id: 1, 
     title: 'Manager', 
-    candidates: 5, 
+    candidates: 1, 
     posted: '2023-05-15', 
     status: 'active',
     description: 'We are looking for an experienced Manager to lead our team...',
@@ -90,7 +90,7 @@ const jobRoles = [
   { 
     id: 2, 
     title: 'React Developer', 
-    candidates: 8, 
+    candidates: 1, 
     posted: '2023-06-20', 
     status: 'active',
     description: 'Join our frontend team to build amazing user experiences...',
@@ -265,13 +265,13 @@ const Career = () => {
 
           <div 
             id="jobs-container"
-            className="flex gap-6 pb-4 overflow-x-auto scrollbar-hide"
+            className="flex gap-6 pb-4 overflow-x-auto scrollbar-hide mx-4"
             style={{ scrollBehavior: 'smooth' }}
           >
             {jobRoles.map(job => (
               <div 
                 key={job.id} 
-                className={`flex-shrink-0 w-72 bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 ${selectedRole === job.id ? 'ring-2 ring-blue-500' : 'hover:shadow-lg'}`}
+                className={`flex-shrink-0 w-72 bg-white rounded-xl m-4 border overflow-hidden transition-all duration-300 ${selectedRole === job.id ? 'ring-2 ring-blue-500' : 'hover:shadow-lg'}`}
                 onClick={() => setSelectedRole(job.id)}
               >
                 {job.image && (
@@ -313,7 +313,7 @@ const Career = () => {
         </div>
 
         {selectedRole && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="bg-white rounded-xl border overflow-hidden">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">
@@ -464,3 +464,6 @@ const Career = () => {
 };
 
 export default Career;
+
+
+
