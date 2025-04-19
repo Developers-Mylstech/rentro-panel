@@ -6,6 +6,7 @@ import useImageUploadStore from '../../Context/ImageUploadContext';
 import useBrandStore from '../../Context/BrandContext';
 import SpecificationFields from '../formComponet/SpecificationFields';
 import useProductStore from '../../Context/ProductContext';
+import { RxCross2, RxCrossCircled } from 'react-icons/rx';
 
 
 
@@ -46,6 +47,7 @@ const DemoProduct = () => {
     });
 
     const handleInputChange = (section, field, value) => {
+
         setProductData(prev => {
             if (field === 'images') {
                 return {
@@ -77,6 +79,7 @@ const DemoProduct = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
+
         createProduct(payload)
     };
 
@@ -129,7 +132,7 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
-
+    console.log(productData, 'OUUu')
     const payload = {
         name: productData.basicInfo.name,
         description: productData.basicInfo.shortDescription,
@@ -144,17 +147,17 @@ const preparePayload = (productData) => {
         productFor: {
             sell: {
                 actualPrice: productData.pricing?.sell?.actualPrice || 0,
-                discountPrice: productData.pricing?.sell?.discountPrice || 0,
+                discountPrice: productData.pricing?.sell?.discountedPrice || 0,
                 benefits: productData.pricing?.sell?.benefits || []
             },
             rent: {
                 monthlyPrice: productData.pricing?.rent?.monthlyPrice || 0,
-                discountPrice: productData.pricing?.rent?.discountPrice || 0,
+                discountPrice: productData.pricing?.rent?.discountedPrice || 0,
                 benefits: productData.pricing?.rent?.benefits || []
             },
             requestQuotation: {
                 actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
-                discountPrice: productData.pricing?.requestQuotation?.discountPrice || 0
+                discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
             },
             service: {
                 ots: {
@@ -363,7 +366,7 @@ const CategoryBrandSelection = ({ category, brand, onChange }) => {
                     <label className="block text-sm font-medium text-gray-700">Brand*</label>
                     <select
                         value={brand || ""}
-                        onChange={(e) => onChange('brand', 'brand', e.target.value)} 
+                        onChange={(e) => onChange('brand', 'brand', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     >
                         <option value="">Select Brand</option>
@@ -482,7 +485,7 @@ const SellPricingForm = ({ data, onChange }) => {
                     : '';
             }
         }
-
+        console.log(updated, "ippp")
         setFormData(updated);
         onChange(updated);
     };
@@ -528,7 +531,7 @@ const SellPricingForm = ({ data, onChange }) => {
 
                 <div className="space-y-1">
                     <div className="flex space-x-4 mb-1">
-                    <label className="block text-sm font-medium text-gray-700">Discount</label>
+                        <label className="block text-sm font-medium text-gray-700">Discount</label>
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
@@ -685,7 +688,7 @@ const RentPricingForm = ({ data, onChange }) => {
 
                 <div className="space-y-1">
                     <div className="flex space-x-4 mb-1">
-                    <label className="block text-sm font-medium text-gray-700">Discount</label>
+                        <label className="block text-sm font-medium text-gray-700">Discount</label>
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
@@ -1100,6 +1103,10 @@ const ImageUploader = ({ images, onChange }) => {
     const resetImage = () => {
         setSelectedFiles([])
     }
+    const removeImage = (name) => {
+        const filterImages = selectedFiles.filter((e)=>e.name != name)
+        setSelectedFiles(filterImages)
+    }
     const handleUpload = async () => {
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
@@ -1154,20 +1161,28 @@ const ImageUploader = ({ images, onChange }) => {
 
                 {selectedFiles.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        {selectedFiles.map((file, index) => (
-                            <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm border">
-                                <img
-                                    src={URL.createObjectURL(file)}
-                                    alt={`Preview ${index + 1}`}
-                                    className="w-full h-full object-cover"
-                                />
-                                {index === 0 && (
-                                    <span className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                                        Main Image
+                        {selectedFiles.map((file, index) => {
+                            return (
+                                <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm border">
+                                    <img
+                                        src={URL.createObjectURL(file)}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {index === 0 && (
+                                        <span className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                                            Main Image
+                                        </span>
+                                    )}
+
+                                    <span onClick={() => removeImage(file.name)} className="absolute top-1 right-1  text-white text-xs px-2 py-1 rounded">
+                                        <RxCrossCircled className=' text-xl text-white' />
                                     </span>
-                                )}
-                            </div>
-                        ))}
+
+
+                                </div>
+                            )
+                        })}
                     </div>
                 )}
 
@@ -1188,6 +1203,9 @@ const ImageUploader = ({ images, onChange }) => {
                                                 Main Image
                                             </span>
                                         )}
+                                        <div>
+                                            <RxCrossCircled className='text-lg text-red-500' />
+                                        </div>
                                     </div>
                                 )
                             })}
