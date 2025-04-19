@@ -13,6 +13,8 @@ import { IoMdSave } from "react-icons/io";
 import useSpecificationFieldsStore from "../../Context/SpecificationFieldsContext"
 import useCategoryStore from "../../Context/CategoryContext"
 import useBrandStore from '../../Context/BrandContext'
+import useImageUploadStore from "../../Context/ImageUploadContext";
+import ImageUploader from "./imageDemo";
 
 
 const RenderServiceFields = ({
@@ -106,11 +108,12 @@ const RenderServiceFields = ({
 };
 
 export default function AddProduct() {
-  const {brands,getAllBrands}=useBrandStore()
+  const { brands, getAllBrands } = useBrandStore()
 
-  const {specificationFields, getAllSpecificationFields} = useSpecificationFieldsStore()
+  const { specificationFields, getAllSpecificationFields } = useSpecificationFieldsStore()
 
-  const {categoryList,getAllCategories} = useCategoryStore()
+  const { categoryList, getAllCategories, flatCategoryList, setSelectedCategory, subCategories } = useCategoryStore()
+  const { uploadImages, isLoading, error, uploadedFiles } = useImageUploadStore();
 
 
   useEffect(() => {
@@ -118,7 +121,7 @@ export default function AddProduct() {
     getAllCategories()
     getAllSpecificationFields()
 
-    console.log(categoryList,"from addproduct")
+    console.log(categoryList, "from addproduct")
   }, [])
 
   const {
@@ -138,9 +141,9 @@ export default function AddProduct() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubOpen, setSubIsOpen] = useState(false);
   const [isBrandOpen, setBrandOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  // const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState();
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isErrors, setErrors] = useState({});
   const [showRentForm, setShowRentForm] = useState(false);
@@ -275,6 +278,8 @@ export default function AddProduct() {
     { label: "Service", color: "text-red-600" },
   ];
 
+  console.log(flatCategoryList, 'Olkkk')
+
   const onOptionChange = (e) => {
     const value = e.value;
     const isChecked = e.checked;
@@ -347,12 +352,12 @@ export default function AddProduct() {
   //   "Culligen",
   // ];
 
-  const filteredCategories = categoryList?.filter((category) =>
+  const filteredCategories = flatCategoryList?.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const filteredSubCategories = categoryList?.subCategories?.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredSubCategories = categoryList?.subCategories?.filter((category) =>
+  //   category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
   const filteredBrand = brands.filter((brand) =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -373,9 +378,7 @@ export default function AddProduct() {
 
   const handleBrand = (brand) => {
     setSelectedBrand(brand);
-    setValue("brand", brand);
-    setBrandOpen(false);
-    setSearchTerm("");
+    
   };
 
   const fieldOptions = [
@@ -465,11 +468,9 @@ export default function AddProduct() {
     }
   };
 
-  // Add these to your component state
   const [sellDiscountType, setSellDiscountType] = useState("percentage"); // 'percentage' or 'aed'
   const [sellDiscountValue, setSellDiscountValue] = useState();
 
-  // Update the sell form discount handling
   const handleSellDiscountChange = (e) => {
     const value = parseFloat(e.target.value) || null;
     setSellDiscountValue(value);
@@ -509,155 +510,191 @@ export default function AddProduct() {
     handleDiscountChange({ target: { value: discountValue } });
   };
 
-  const onRentOptionChange = (e) => {
-    const value = e.value;
-    const selected = [...selectedOptions];
-    const index = selected.indexOf(value);
-    if (index === -1) {
-      selected.push(value);
-    } else {
-      selected.splice(index, 1);
-    }
-    setSelectedOptions(selected);
-  };
+  // const onRentOptionChange = (e) => {
+  //   const value = e.value;
+  //   const selected = [...selectedOptions];
+  //   const index = selected.indexOf(value);
+  //   if (index === -1) {
+  //     selected.push(value);
+  //   } else {
+  //     selected.splice(index, 1);
+  //   }
+  //   setSelectedOptions(selected);
+  // };
 
-  const toggleField = (fieldKey) => {
-    setFields((prev) =>
-      prev.includes(fieldKey)
-        ? prev.filter((f) => f !== fieldKey)
-        : [...prev, fieldKey]
-    );
-  };
+  // const toggleField = (fieldKey) => {
+  //   setFields((prev) =>
+  //     prev.includes(fieldKey)
+  //       ? prev.filter((f) => f !== fieldKey)
+  //       : [...prev, fieldKey]
+  //   );
+  // };
 
-  useEffect(() => {
-    const storedImages =
-      JSON.parse(localStorage.getItem("productImages")) || [];
-    setImages(storedImages);
-    const storedFileNames = JSON.parse(localStorage.getItem("fileName")) || [];
-    setFileNames(storedFileNames);
-  }, []);
+  // useEffect(() => {
+  //   const storedImages =
+  //     JSON.parse(localStorage.getItem("productImages")) || [];
+  //   setImages(storedImages);
+  //   const storedFileNames = JSON.parse(localStorage.getItem("fileName")) || [];
+  //   setFileNames(storedFileNames);
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("productImages", JSON.stringify(images));
-    localStorage.setItem("fileName", JSON.stringify(fileNames));
-  }, [images, fileNames]);
+  // useEffect(() => {
+  //   localStorage.setItem("productImages", JSON.stringify(images));
+  //   localStorage.setItem("fileName", JSON.stringify(fileNames));
+  // }, [images, fileNames]);
 
-  const onImageSelect = (event, index) => {
-    const selectedFiles = event.files;
-    const newImages = [...images];
-    const newFileNames = { ...fileNames };
+  // const onImageSelect = (event, index) => {
+  //   const selectedFiles = event.files;
+  //   const newImages = [...images];
+  //   const newFileNames = { ...fileNames };
 
-    for (let file of selectedFiles) {
-      const fileType = file.type;
-      const fileSize = file.size;
+  //   for (let file of selectedFiles) {
+  //     const fileType = file.type;
+  //     const fileSize = file.size;
 
-      const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(
-        fileType
-      );
-      const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
+  //     const isValidFormat = ["image/jpeg", "image/png", "image/webp"].includes(
+  //       fileType
+  //     );
+  //     const isValidSize = fileSize <= 1024 * 1024; // 1MB limit
 
-      if (!isValidFormat) {
-        alert("Select a proper format (JPEG, PNG, WEBP).");
-        setKey(!key);
-        setErrors(true);
-        return;
-      }
+  //     if (!isValidFormat) {
+  //       alert("Select a proper format (JPEG, PNG, WEBP).");
+  //       setKey(!key);
+  //       setErrors(true);
+  //       return;
+  //     }
 
-      if (!isValidSize) {
-        alert("File size exceeds 1MB. Please select a smaller file.");
-        setKey(!key);
-        setErrors(true);
-        return;
-      }
+  //     if (!isValidSize) {
+  //       alert("File size exceeds 1MB. Please select a smaller file.");
+  //       setKey(!key);
+  //       setErrors(true);
+  //       return;
+  //     }
 
-      if (newImages.length >= 10) {
-        alert("You can only upload up to 10 images.");
-        return;
-      }
+  //     if (newImages.length >= 10) {
+  //       alert("You can only upload up to 10 images.");
+  //       return;
+  //     }
 
-      const reader = new FileReader();
-      setErrors(false);
-      reader.onload = (e) => {
-        newImages[index] = e.target.result;
-        newFileNames[index] = file.name;
-        setImages(newImages);
-        setFileNames(newFileNames);
-      };
-      reader.readAsDataURL(file);
-      setKey(!key);
-    }
-  };
+  //     const reader = new FileReader();
+  //     setErrors(false);
+  //     reader.onload = (e) => {
+  //       newImages[index] = e.target.result;
+  //       newFileNames[index] = file.name;
+  //       setImages(newImages);
+  //       setFileNames(newFileNames);
+  //     };
+  //     reader.readAsDataURL(file);
+  //     setKey(!key);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (images.length > 0) {
-      setUploadSections(
-        Array.from({ length: images.length }, (_, index) => index)
-      );
-    }
-  }, [images]);
+  // useEffect(() => {
+  //   if (images.length > 0) {
+  //     setUploadSections(
+  //       Array.from({ length: images.length }, (_, index) => index)
+  //     );
+  //   }
+  // }, [images]);
 
-  const onRemoveImage = (index) => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
-    setImages(updatedImages);
+  // const onRemoveImage = (index) => {
+  //   const updatedImages = [...images];
+  //   updatedImages.splice(index, 1);
+  //   setImages(updatedImages);
 
-    const updatedFileNames = {};
-    Object.keys(fileNames).forEach((key) => {
-      const numKey = parseInt(key, 10);
-      if (numKey < index) {
-        updatedFileNames[numKey] = fileNames[numKey];
-      } else if (numKey > index) {
-        updatedFileNames[numKey - 1] = fileNames[numKey];
-      }
-    });
-    setFileNames(updatedFileNames);
-  };
+  //   const updatedFileNames = {};
+  //   Object.keys(fileNames).forEach((key) => {
+  //     const numKey = parseInt(key, 10);
+  //     if (numKey < index) {
+  //       updatedFileNames[numKey] = fileNames[numKey];
+  //     } else if (numKey > index) {
+  //       updatedFileNames[numKey - 1] = fileNames[numKey];
+  //     }
+  //   });
+  //   setFileNames(updatedFileNames);
+  // };
 
-  const addNewFileUpload = () => {
-    if (images.length < 10) {
-      setUploadSections((prev) => [...prev, prev.length]);
-      setFileNames((prev) => ({ ...prev, [uploadSections.length]: "Choose" }));
-    } else {
-      alert("Maximum 10 images allowed");
-    }
-  };
+  // const addNewFileUpload = () => {
+  //   if (images.length < 10) {
+  //     setUploadSections((prev) => [...prev, prev.length]);
+  //     setFileNames((prev) => ({ ...prev, [uploadSections.length]: "Choose" }));
+  //   } else {
+  //     alert("Maximum 10 images allowed");
+  //   }
+  // };
 
-  const removeFileUpload = (index) => {
-    if (uploadSections.length > 1) {
-      const updatedSections = uploadSections.filter((_, i) => i !== index);
-      setUploadSections(updatedSections);
-      onRemoveImage(index);
-    } else {
-      alert("You must have at least one file upload section.");
-    }
-  };
+  // const removeFileUpload = (index) => {
+  //   if (uploadSections.length > 1) {
+  //     const updatedSections = uploadSections.filter((_, i) => i !== index);
+  //     setUploadSections(updatedSections);
+  //     onRemoveImage(index);
+  //   } else {
+  //     alert("You must have at least one file upload section.");
+  //   }
+  // };
 
   const onSubmit = (data) => {
-    setProductFor({
-      rentFormData,
-      sellFormData,
-      selectedServices,
-    });
-    setSelectedServices({
-      oneTimeService,
-      mmcService,
-      amcBasicService,
-      amcGoldService,
-    });
-    console.log("Form Data:", {
-      ...data,
-      images,
-      productFor,
-      customFields,
-    });
+    // Extract specs (custom fields)
+    const specifications = customFields.map(field => ({
+      name: field.name,
+      value: field.value,
+    }));
+  
 
+    const payload = {
+      name: data.name || "",
+      description: data.description || "",
+      longDescription: data.longDescription || "",
+      brandId: selectedBrand, // assuming this is the ID
+      imageUrls: images, // full list of uploaded image URLs
+      specifications: specifications,
+      productFor: {
+        sell: {
+          actualPrice: parseFloat(sellFormData.price || 0),
+          discountPrice: parseFloat(sellFormData.discountedPrice || 0),
+        },
+        rent: {
+          monthlyPrice: parseFloat(rentFormData.price || 0),
+          discountPrice: parseFloat(rentFormData.discountedPrice || 0),
+        },
+        requestQuotation: {
+          actualPrice: 0.1,
+          discountPrice: 0.1,
+        },
+        service: {
+          ots: {
+            price: parseFloat(selectedServices.oneTimeService?.price || 0),
+            benefits: selectedServices.oneTimeService?.benefits || [],
+          },
+          mmc: {
+            price: parseFloat(selectedServices.mmcService?.price || 0),
+            benefits: selectedServices.mmcService?.benefits || [],
+          },
+          amcBasic: {
+            price: parseFloat(selectedServices.amcBasicService?.price || 0),
+            benefits: selectedServices.amcBasicService?.benefits || [],
+          },
+          amcGold: {
+            price: parseFloat(selectedServices.amcGoldService?.price || 0),
+            benefits: selectedServices.amcGoldService?.benefits || [],
+          },
+        },
+      },
+      categoryId: parseInt(data.categoryId || 0),
+      subCategoryId: parseInt(data.subCategoryId || 0),
+      inventory: {
+        quantity: parseInt(data.quantity || 0),
+        sku: data.sku || "",
+        stockStatus: data.stockStatus || "IN_STOCK", 
+      },
+    };
+  
+    console.log("Final Payload:", payload);
+    console.log(data,"poondf")
+  
     setImages([]);
-
     setFileNames([]);
     setSelectedOptions([]);
-    setSelectedCategory("");
-    setSelectedSubCategory("");
-    setSelectedBrand("");
     setCustomFields([]);
     setRentFormData({
       price: "",
@@ -671,9 +708,12 @@ export default function AddProduct() {
       vat: 5,
       discountedPrice: "",
     });
-    reset();
+  
+    // Optionally reset the form
+    // reset();
   };
-
+  
+  console.log(images, 'imagesssssss')
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -695,7 +735,7 @@ export default function AddProduct() {
           placeholder="Product Name"
           className="md:md:w-[70%] w-[100%]  p-2 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
         />
-       
+
       </div>
 
       {errors.productName && (
@@ -711,7 +751,8 @@ export default function AddProduct() {
           className="md:w-[70%] w-[100%] p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {selectedCategory || "Select Category"}
+          {/* {selectedCategory || "Select Category"} */}
+          select Category
         </div>
 
         {isOpen && (
@@ -719,35 +760,39 @@ export default function AddProduct() {
             <input
               type="text"
               className="w-full p-2 border-b bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              placeholder="Search category..."
+              placeholder="Search main categories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               autoFocus
             />
-
-            <div className="max-h-40 overflow-y-auto">
-              {filteredCategories?.map((category, index) => (
-                <div
-                  key={index}
-                  className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white"
-                  onClick={() => handleSelect(category)}
-                >
-                  {category.name}
-                </div>
-              ))}
+            <div className="max-h-40 overflow-y-auto z-50">
+              {filteredCategories
+                ?.filter(category =>
+                  // category.parentCategoryId === null && // Only main categories
+                  category.name.toLowerCase().includes(searchTerm.toLowerCase()) // Search filter
+                )
+                ?.map((category) => (
+                  <div
+                    key={category.categoryId}
+                    className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white"
+                    onClick={() => setSelectedCategory(category.categoryId)}
+                  >
+                    {category.name}
+                  </div>
+                ))}
             </div>
           </div>
         )}
 
-        <input
+        {/* <input
           type="hidden"
           {...register("mainCategory", { required: true })}
-        />
-        {errors.mainCategory && (
+        /> */}
+        {/* {errors.mainCategory && (
           <span className="text-red-500 dark:text-red-400">
             Category is required
           </span>
-        )}
+        )} */}
       </div>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
@@ -762,33 +807,24 @@ export default function AddProduct() {
 
         {isSubOpen && (
           <div className="absolute md:left-[30%] left-0 md:top-10 top-7 md:w-[70%] w-[100%] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded mt-1 z-10">
-            <input
-              type="text"
-              className="w-full p-2 border-b border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-              placeholder="Search category..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              autoFocus
-            />
-
-            <div className="max-h-40 overflow-y-auto">
-              {filteredSubCategories?.map((category, index) => (
+            <div className="max-h-40 overflow-y-auto z-50">
+              {subCategories?.map((subCategory) => (  // Use subCategories from Zustand
                 <div
-                  key={index}
+                  key={subCategory.categoryId}  // Use ID instead of index for key
                   className="p-2 cursor-pointer hover:bg-secondary dark:hover:bg-gray-700 hover:text-white"
-                  onClick={() => handleSubSelect(category)}
+                  onClick={() => handleSubSelect(subCategory)}
                 >
-                  {category.name}
+                  {subCategory.name}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <input type="hidden" {...register("subCatogery", { required: true })} />
+        {/* <input type="hidden" {...register("subCatogery", { required: true })} />
         {errors.mainCategory && (
           <span className="text-red-500">Category is required</span>
-        )}
+        )} */}
       </div>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
@@ -814,11 +850,11 @@ export default function AddProduct() {
 
             <div className="max-h-40 overflow-y-auto">
               {filteredBrand?.map((brand, index) => (
-            
+
                 <div
                   key={index}
                   className="p-2 cursor-pointer hover:bg-secondary dark:hover:bg-gray-700 hover:text-white"
-                  onClick={() => handleBrand(brand)}
+                  onClick={() => handleBrand(brand.brandId)}
                 >
                   {brand.name}
                 </div>
@@ -827,10 +863,10 @@ export default function AddProduct() {
           </div>
         )}
 
-        <input type="hidden" {...register("brand", { required: true })} />
+        {/* <input type="hidden" {...register("brand", { required: true })} />
         {errors.brand && (
           <span className="text-red-500">Brand is required</span>
-        )}
+        )} */}
       </div>
 
       <div className="flex flex-col md:flex-row md:justify-between md:items-start w-full py-2 gap-2 ">
@@ -924,14 +960,12 @@ export default function AddProduct() {
                     />
                   </div>
 
-                  {/* Show discount info */}
                   {sellDiscountType === "aed" && sellFormData.price > 0 && (
                     <div className="text-sm text-gray-600 dark:text-gray-300">
                       You're getting {sellFormData.discount}% discount
                     </div>
                   )}
 
-                  {/* Discounted Price */}
                   <div className="flex flex-col">
                     <label className="text-sm text-gray-700 dark:text-gray-200">
                       Discounted Price (AED)
@@ -974,7 +1008,7 @@ export default function AddProduct() {
               <Checkbox
                 inputId="Rent"
                 value="Rent"
-           
+
                 onChange={onOptionChange}
                 checked={selectedOptions.includes("Rent")}
                 className="border border-gray-300 dark:border-gray-600 rounded-md h-5 w-5"
@@ -1013,7 +1047,6 @@ export default function AddProduct() {
                     />
                   </div>
 
-                  {/* Discount Input */}
                   <div className="flex flex-col">
                     <div className="text-xs flex justify-between items-center my-1">
                       <label
@@ -1060,7 +1093,6 @@ export default function AddProduct() {
                     />
                   </div>
 
-                  {/* Show discount info */}
                   {discountType === "aed" && rentFormData.price > 0 && (
                     <div className="text-sm text-gray-600 dark:text-gray-300">
                       You're getting {rentFormData.discount}% discount
@@ -1125,7 +1157,6 @@ export default function AddProduct() {
               </label>
             </div>
 
-            {/* Sub-options under Service */}
           </div>
 
           <div className="flex flex-col gap-2 pr-4  border-gray-200 dark:border-gray-600 relative">
@@ -1293,7 +1324,7 @@ export default function AddProduct() {
           />
         </div>
       )}
-      {selectedServices.mmc &&  (
+      {selectedServices.mmc && (
         <div className="w-full">
           <h2 className="text-lg font-bold text-gray-800">MMC Service</h2>
           <RenderServiceFields
@@ -1303,7 +1334,7 @@ export default function AddProduct() {
             setServices={setMmcSetvice}
             serviceLable={"mmc"}
             setSelectedServices={setSelectedServices}
-           
+
           />
         </div>
       )}
@@ -1417,7 +1448,6 @@ export default function AddProduct() {
           </div>
         </div>
 
-        {/* Dynamic input fields for selected specs */}
         {customFields.length > 0 && (
           <div className="flex flex-col gap-3  w-full my-2">
             {customFields.map((field, index) => (
@@ -1453,37 +1483,31 @@ export default function AddProduct() {
         </p>
       </div>
 
-      {uploadSections.map((sectionIndex) => (
+      {/* {uploadSections.map((sectionIndex) => (
         <div key={sectionIndex} className="mb-4 relative">
           <div className="flex md:flex-row flex-row justify-between md:w-[70%] w-[100%] items-center gap-10">
             <label className="block text mb-2 font-bold text-black dark:text-white">
               {sectionIndex === 0 ? "Main Image" : `Image ${sectionIndex + 1}`}
             </label>
-           
+
             <div className="flex flex-col justify-start">
               <FileUpload
                 name={`demo-${sectionIndex}[]`}
-                key={key} // Force re-render on invalid file selection
+                key={key}
                 customUpload
                 mode="basic"
                 chooseOptions={{
                   className:
                     "bg-white border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-secondary ",
                 }}
-                uploadHandler={() => {}}
+                uploadHandler={() => { }}
                 onSelect={(e) => onImageSelect(e, sectionIndex)}
                 accept="image/png,image/jpeg,image/webp"
                 chooseLabel={fileNames[sectionIndex] || "Choose "}
                 multiple={false}
                 auto
               />
-              {/* {showError == true && (
-                <div>
-                  <span className="text-red-500 dark:text-red-400 text-sm">
-                    Check the image format or size
-                  </span>
-                </div>
-              )} */}
+
             </div>
 
             <div className="md:flex hidden justify-center">
@@ -1540,7 +1564,7 @@ export default function AddProduct() {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <h3 className="subheading my-6 mt-4 dark:text-gray-200">Inventory</h3>
 
@@ -1563,7 +1587,6 @@ export default function AddProduct() {
         />
       </div>
 
-      {/* Stock Status */}
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center">
         <label className="text mb-1 dark:text-gray-200">Stock Status</label>
         <select
@@ -1579,10 +1602,12 @@ export default function AddProduct() {
         </select>
       </div>
 
+      <ImageUploader setImage ={setImages} />
+
       <div className="flex justify-center items-center">
         <button
           type="submit"
-       
+
           className="mt-6 bg-secondary text-white py-2 px-4 my-4 rounded hover:bg-secondary-dark transition"
         >
           Submit Product
