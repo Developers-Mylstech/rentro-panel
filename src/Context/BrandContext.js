@@ -3,6 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 
 const useBrandStore = create((set) => ({
     brands: [],
+    image:[],
 
     addBrand: async (brand) => {
         try {
@@ -19,6 +20,15 @@ const useBrandStore = create((set) => ({
     },
 
     getAllBrands: async () => {
+        try {
+            const res = await axiosInstance.get('/brands');
+            set({ brands: res?.data || [] });
+        } catch (error) {
+            alert("Fetching data failed due to backend issue");
+        }
+    },
+
+    addBrandImage: async ()=>{
         try {
             const res = await axiosInstance.get('/brands');
             set({ brands: res?.data || [] });
