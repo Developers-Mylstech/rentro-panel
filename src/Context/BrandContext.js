@@ -3,7 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 
 const useBrandStore = create((set) => ({
     brands: [],
-    image:[],
+    image:"",
 
     addBrand: async (brand) => {
         try {
@@ -28,15 +28,33 @@ const useBrandStore = create((set) => ({
         }
     },
 
-    addBrandImage: async ()=>{
+    addBrandImage: async (file) => {
+console.log(file,'))))')
         try {
-            const res = await axiosInstance.get('/brands');
-            set({ brands: res?.data || [] });
+          const formData = new FormData();
+          formData.append('file', file); // Key must match the backend's expected key
+      
+          const response = await axiosInstance.post(
+            'product-images/product-images/upload?quality=80&fallbackToJpeg=true',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
+          );
+      
+          const formattedFiles = response.data.map((path) => ({ url: path }));
+          set({ image: formattedFiles });
+      
+          return formattedFiles;
         } catch (error) {
-            alert("Fetching data failed due to backend issue");
+          console.error('Upload error:', error);
+          set({ error: error.message });
+          throw error;
         }
-    },
-
+      },
+      
     removeBrand: async (id) => {
         try {
             await axiosInstance.delete(`/brands/${id}`);
