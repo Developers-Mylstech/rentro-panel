@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../systemdesign/CustomeButton";
 import BrandList from "../components/listing/BrandListing";
 import useBrandStore from "../Context/BrandContext";
-import ImageUploader from "../components/form/imageDemo";
+
 
 export default function Brand() {
   const navigate = useNavigate();
@@ -12,9 +12,9 @@ export default function Brand() {
     getAllBrands()
   }, [])
   return (
-    <div className="h-screen dark:bg-gray-900">
+    <div className="h-[100%] dark:bg-gray-900">
       <BrandList brands={brands} />
-      <ImageUploader/>
+
     </div>
   );
 }
