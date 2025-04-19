@@ -40,8 +40,8 @@ export default function ProductListing() {
   const handleConfirmDelete = async () => {
     if (selectedProduct) {
       const res = await deleteProduct(selectedProduct.id);
-  
-      if (res?.status === 200 || res?.status === 201 || res?.status === 204) {
+  console.log(res)
+      if (res?.data) {
         alert("Item Deleted");
         setVisible(false);
         setSelectedProduct(null);
