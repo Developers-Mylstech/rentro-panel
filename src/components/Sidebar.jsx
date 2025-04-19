@@ -163,6 +163,9 @@ function CustomSidebar({ isDarkMode }) {
             { name: "sale", icon: "pi pi-gift" },
             { name: "service", icon: "pi pi-cog" },
             { name: "about", icon: "pi pi-user-edit" },
+            { name: "career", icon: "pi pi-user" },
+      
+
           ].map((menu) => {
             const isActive = location.pathname.includes(menu.name);
             return (
@@ -190,6 +193,8 @@ function CustomSidebar({ isDarkMode }) {
                       : "pi-chevron-right"
                       }`}
                   ></i>
+
+                
                 </button>
 
                 {activeMenu === menu.name && (

@@ -26,6 +26,8 @@ import Login from "./pages/Login";
 import { useState } from "react";
 import AddAboutUs from "./components/form/AddAboutUs";
 import RequestQuotationListing from "./components/listing/RequestQuotationListing";
+import Career from "./pages/Career";
+import AddCareer from "./components/form/AddCareer";
 
 function App() {
   const [isTokenValid, setIsTokenValid] = useState(false)
@@ -66,6 +68,11 @@ function App() {
 
               <Route path="about" element={<AboutusListing />} />
               <Route path="about/add" element={<AddAboutUs />} />
+
+              <Route path="career" element={<Career/>} />
+              <Route  path="career/add" element = {<AddCareer/>} />
+
+
             </Route>
           </Routes>
         </>) : (<>

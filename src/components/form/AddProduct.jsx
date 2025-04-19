@@ -13,6 +13,7 @@ import { IoMdSave } from "react-icons/io";
 import useSpecificationFieldsStore from "../../Context/SpecificationFieldsContext"
 import useCategoryStore from "../../Context/CategoryContext"
 import useBrandStore from '../../Context/BrandContext'
+import SpecificationFields from  "./Specifications.jsx"
 
 
 const RenderServiceFields = ({
@@ -145,65 +146,74 @@ export default function AddProduct() {
   const [isErrors, setErrors] = useState({});
   const [showRentForm, setShowRentForm] = useState(false);
   const [showSellForm, setShowSellForm] = useState(false);
-  const [specifications, setSpecifications] = useState([
-    { name: "Material", code: "material" },
-    { name: "Color", code: "color" },
-    { name: "Size", code: "size" },
-    { name: "Weight", code: "weight" },
-  ]);
+  // const [specifications, setSpecifications] = useState([
+  //   { name: "Material", code: "material" },
+  //   { name: "Color", code: "color" },
+  //   { name: "Size", code: "size" },
+  //   { name: "Weight", code: "weight" },
+  // ]);
 
   const [visibleForm, setVisibleForm] = useState(null);
 
-  const [selectedSpecification, setSelectedSpecification] = useState([]);
-  const [customFields, setCustomFields] = useState([]);
-  const [showNewFieldInput, setShowNewFieldInput] = useState(false);
-  const [newFieldName, setNewFieldName] = useState("");
+  // const [selectedSpecification, setSelectedSpecification] = useState([]);
+  // const [customFields, setCustomFields] = useState([]);
+  // const [showNewFieldInput, setShowNewFieldInput] = useState(false);
+  // const [newFieldName, setNewFieldName] = useState("");
 
-  const handleAddNewField = () => {
-    if (!newFieldName.trim()) return;
-
-    const code = newFieldName.toLowerCase().replace(/\s+/g, "_");
-
-    const newSpec = { name: newFieldName, code };
-
-    // Add to specification list
-    setSpecifications([...specifications, newSpec]);
-
-    // Select this newly added spec automatically
-    const updatedSelected = [...selectedSpecification, newSpec];
-    setSelectedSpecification(updatedSelected);
-
-    // Add to custom fields if not present
-    setCustomFields((prev) =>
-      prev.find((f) => f.code === code)
-        ? prev
-        : [...prev, { label: newFieldName, code, value: "" }]
-    );
-
-    setNewFieldName("");
-    setShowNewFieldInput(false);
-  };
-
-  const handleSpecificationChange = (values) => {
-    setSelectedSpecification(values);
-
-    const selectedCodes = values.map((v) => v.code);
-
-    const updatedFields = values.map((spec) => {
-      const existing = customFields.find((f) => f.code === spec.code);
-      return existing || { label: spec.name, code: spec.code, value: "" };
-    });
-
-    setCustomFields(updatedFields);
-  };
-
-  const handleCustomFieldChange = (code, value) => {
-    const updated = customFields.map((field) =>
-      field.code === code ? { ...field, value } : field
-    );
-    setCustomFields(updated);
-  };
-
+  // const handleAddNewField = () => {
+  //   if (!newFieldName.trim()) return;
+  
+  //   const code = newFieldName.toLowerCase().replace(/\s+/g, "_");
+  //   const newSpec = { name: newFieldName, code };
+  
+  //   // Add to specification list if not already present
+  //   if (!specifications.some(spec => spec.code === code)) {
+  //     setSpecifications([...specifications, newSpec]);
+  //   }
+  
+  //   // Select this newly added spec automatically
+  //   const updatedSelected = [...selectedSpecification, newSpec];
+  //   setSelectedSpecification(updatedSelected);
+  
+  //   // Add to custom fields if not present
+  //   setCustomFields((prev) =>
+  //     prev.some(f => f.code === code)
+  //       ? prev
+  //       : [...prev, { label: newFieldName, code, value: "" }]
+  //   );
+  
+  //   setNewFieldName("");
+  //   setShowNewFieldInput(false);
+  // };
+  
+  // const handleSpecificationChange = (values) => {
+  //   setSelectedSpecification(values);
+  
+  //   // Create a map of existing fields for quick lookup
+  //   const existingFieldsMap = customFields.reduce((acc, field) => {
+  //     acc[field.code] = field;
+  //     return acc;
+  //   }, {});
+  
+  //   // Update fields based on selection
+  //   const updatedFields = values.map((spec) => {
+  //     return existingFieldsMap[spec.code] || { 
+  //       label: spec.name, 
+  //       code: spec.code, 
+  //       value: "" 
+  //     };
+  //   });
+  
+  //   setCustomFields(updatedFields);
+  // };
+  
+  // const handleCustomFieldChange = (code, value) => {
+  //   setCustomFields(prevFields =>
+  //     prevFields.map(field =>
+  //       field.code === code ? { ...field, value } : field
+  //     )
+  //   );
+  // };
   const [productFor, setProductFor] = useState();
 
   const [selectedServices, setSelectedServices] = useState({});
@@ -354,9 +364,7 @@ export default function AddProduct() {
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
-
-  console.log(filteredSubCategories,"sub category")
+ 
   const filteredBrand = brands.filter((brand) =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -636,18 +644,20 @@ export default function AddProduct() {
     }
   };
 
-  const onSubmit = (data) => {
-    setProductFor({
-      rentFormData,
-      sellFormData,
-      selectedServices,
-    });
+  const onSubmit = async  (data) => {
     setSelectedServices({
       oneTimeService,
       mmcService,
       amcBasicService,
       amcGoldService,
     });
+
+    setProductFor({
+      rentFormData,
+      sellFormData,
+      selectedServices,
+    });
+   
     console.log("Form Data:", {
       ...data,
       images,
@@ -789,10 +799,10 @@ export default function AddProduct() {
           </div>
         )}
 
-        <input type="hidden" {...register("subCatogery", { required: true })} />
-        {errors.mainCategory && (
+        <input type="hidden" {...register("subCatogery", )} />
+        {/* {errors.mainCategory && (
           <span className="text-red-500">Category is required</span>
-        )}
+        )} */}
       </div>
 
       <div className="mb-3 flex md:flex-row flex-col md:justify-between md:items-center relative">
@@ -822,7 +832,7 @@ export default function AddProduct() {
                 <div
                   key={index}
                   className="p-2 cursor-pointer hover:bg-secondary dark:hover:bg-gray-700 hover:text-white"
-                  onClick={() => handleBrand(brand)}
+                  onClick={() => handleBrand(brand.name)}
                 >
                   {brand.name}
                 </div>
@@ -1364,88 +1374,9 @@ export default function AddProduct() {
         />
       </div>
 
-      <div className="flex flex-col gap-4 ">
-        {/* Header section with MultiSelect and Add button */}
-        <div className="flex md:flex-row flex-col justify-between items-center w-full">
-          <label className="font-semibold text-gray-500 text-left w-full md:w-auto my-2">
-            Specifications
-          </label>
+          
 
-          <div className="flex flex-col md:flex-row justify-between gap-2 md:w-[70%] w-full">
-            <MultiSelect
-              value={selectedSpecification}
-              onChange={(e) => handleSpecificationChange(e.value)}
-              options={specificationFields}
-              optionLabel="name"
-              filter
-              placeholder="Select Specifications"
-              // maxSelectedLabels={3}
-              className="w-full md:w-[40%] border"
-              pt={{
-                item: {
-                  className: "flex items-center gap-2 p-2",
-                },
-                checkbox: {
-                  root: { className: "border border-gray-300 rounded-md" },
-                  box: { className: "border border-gray-300 rounded-md" },
-                },
-              }}
-            />
 
-            {showNewFieldInput == false ? (
-              <button
-                type="button"
-                onClick={() => setShowNewFieldInput(!showNewFieldInput)}
-                className=" flex justify-center items-center "
-              >
-                <FiPlus className="p-2 bg-secondary text-white rounded  text-4xl md:w-auto w-16" />
-              </button>
-            ) : (
-              <div className="flex gap-2  w-full ml-auto">
-                <input
-                  type="text"
-                  value={newFieldName}
-                  onChange={(e) => setNewFieldName(e.target.value)}
-                  className="p-2 border rounded w-full"
-                  placeholder="Enter new specification name"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddNewField}
-                  className="bg-secondary text-white rounded p-2 texl-2xl "
-                >
-                  <IoMdSave />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Dynamic input fields for selected specs */}
-        {customFields.length > 0 && (
-          <div className="flex flex-col gap-3  w-full my-2">
-            {customFields.map((field, index) => (
-              <div
-                key={field.code}
-                className="flex justify-between items-center "
-              >
-                <label className=" font-medium text-gray-500">
-                  {field.label}
-                </label>
-                <input
-                  type="text"
-                  value={field.value}
-                  onChange={(e) =>
-                    handleCustomFieldChange(field.code, e.target.value)
-                  }
-                  className="w-[70%] p-2 border rounded"
-                  placeholder={`Enter ${field.label} value`}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
 
       <div className="mb-4">
         <h4 className="font-semibold subheading dark:text-gray-200">
@@ -1592,6 +1523,7 @@ export default function AddProduct() {
           Submit Product
         </button>
       </div>
+      <SpecificationFields/>
     </form>
   );
 }
