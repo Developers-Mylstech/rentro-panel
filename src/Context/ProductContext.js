@@ -63,7 +63,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      await axios.delete(`https://your-api-endpoint.com/products/${id}`);
+      await axiosInstance.delete(`products/${id}`);
       set((state) => ({
         products: state.products.filter((product) => product.id !== id),
       }));
