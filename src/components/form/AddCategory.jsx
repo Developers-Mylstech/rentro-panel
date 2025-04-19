@@ -1,123 +1,115 @@
-import React, { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
+import React, { useEffect, useState } from 'react';
+import useCategoryStore from '../../Context/CategoryContext';
 
 export default function AddCategory() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const fileUploadRef = useRef();
-  const [key, setKey] = useState(0);
+  const [mainCategory, setMainCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [mainCategoryID, setMainCategoryID] = useState('');
+  const { getAllCategories, addCategory, flatCategoryList } = useCategoryStore();
 
-  // State to store form data
-  const [formData, setFormData] = useState(null);
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
-  // Handle form submission
-  const onSubmit = (data) => {
-    // Store form data in state
-    setFormData(data);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handleImageSelect = (event) => {
-    const file = event.files[0];
-    if (file) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        if (img.width !== 500 || img.height !== 500) {
-          alert('Image dimensions must be 500x500 pixels.');
-          setKey((prevKey) => prevKey + 1);
-        }
+    if (!mainCategory.trim() && !subCategory.trim()) {
+      alert("Please enter either a main or sub category name.");
+      return;
+    }
+
+    let payload;
+
+    if (subCategory.trim()) {
+      if (!mainCategoryID) {
+        alert("Please select a parent category for the subcategory.");
+        return;
+      }
+
+      payload = {
+        name: subCategory,
+        parentCategoryId: mainCategoryID,
       };
+    } else {
+      payload = {
+        name: mainCategory,
+        parentCategoryId: null,
+      };
+    }
+
+    try {
+      await addCategory(payload);
+      await getAllCategories();
+      alert('Added Category')
+
+      setMainCategory('');
+      setSubCategory('');
+      setMainCategoryID('');
+    } catch (error) {
+      console.error("Error adding category:", error);
+      alert("Failed to add category. Please try again.");
     }
   };
 
+  const isParentSelected = mainCategoryID !== '';
+  const isMainCategoryEntered = mainCategory.trim() !== '';
+
   return (
-    <div className="dark:bg-gray-900 h-screen dark:text-gray-200 md:p-6 p-2 rounded ">
-      <h1 className="heading mb-6 dark:text-gray-200">Add New Category</h1>
+    <div className="mx-auto max-w-lg p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Add Category</h2>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="mainCategory" className="block text-gray-700 mb-2">
+          Main Category:
+        </label>
+        <input
+          id="mainCategory"
+          type="text"
+          value={mainCategory}
+          onChange={(e) => setMainCategory(e.target.value)}
+          placeholder="Enter main category (leave empty if adding subcategory)"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          disabled={isParentSelected}
+        />
 
-      <div className="bg-white dark:bg-gray-800 p-12 rounded-lg shadow-md mb-6">
-        <h2 className="subheading mb-4">Category Information</h2>
+        <label htmlFor="parentCategory" className="block text-gray-700 mb-2">
+          Select Parent Category (for Subcategory):
+        </label>
+        <select
+          id="parentCategory"
+          value={mainCategoryID}
+          onChange={(e) => setMainCategoryID(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          disabled={isMainCategoryEntered}
+        >
+          <option value="">Select Category</option>
+          {flatCategoryList?.map((e) => (
+            <option key={e.categoryId} value={e.categoryId}>
+              {e.name}
+            </option>
+          ))}
+        </select>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex flex-col md:flex-row items-center md:items-start w-full">
-              <label className="w-full md:w-2/12 text-left text mb-2 dark:text-gray-300">
-                Main Category
-              </label>
-              <div className="w-full md:w-10/12">
-                <InputText
-                  {...register("mainCategory", { required: "Main Category is required" })}
-                  placeholder="Main Category"
-                  className="w-full text p-3 bg-gray-100 dark:bg-gray-700 border-none rounded-lg dark:text-white"
-                />
-                {errors.mainCategory && (
-                  <p className="text-red-500 text-sm mt-1">{errors.mainCategory.message}</p>
-                )}
-              </div>
-            </div>
+        <label htmlFor="subCategory" className="block text-gray-700 mb-2">
+          Subcategory:
+        </label>
+        <input
+          id="subCategory"
+          type="text"
+          value={subCategory}
+          onChange={(e) => setSubCategory(e.target.value)}
+          placeholder="Enter subcategory name"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+          disabled={isMainCategoryEntered}
+        />
 
-            <div className="flex flex-col md:flex-row items-center md:items-start w-full">
-              <label className="w-full md:w-2/12 text-left text mb-2 dark:text-gray-300">
-                Sub Category
-              </label>
-              <div className="w-full md:w-10/12">
-                <InputText
-                  {...register("subcategory")}
-                  placeholder="Sub Category"
-                  className="w-full text p-3 bg-gray-100 dark:bg-gray-700 border-none rounded-lg dark:text-white"
-                />
-                {errors.subcategory && (
-                  <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-6">
-            <Button label="Submit" icon="pi pi-save" type="submit" className="p-button-primary" />
-          </div>
-        </form>
-      </div>
-
-      {/* <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md">
-        <h2 className="subheading mb-4">Category Image</h2>
-
-        <div className="flex flex-col md:flex-row items-center justify-center w-full gap-2">
-          <label className="w-full md:w-2/12 text mb-2 dark:text-gray-300">
-            Main Category Image
-          </label>
-          <div className="w-full md:w-10/12">
-            <FileUpload
-              mode="basic"
-              key={key}
-              ref={fileUploadRef}
-              name="categoryImage"
-              chooseOptions={{
-                className: "bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 dark:border-gray-300",
-              }}
-              url="/api/upload"
-              className="md:w-[70%] w-full  dark:text-white"
-              chooseLabel="Choose File"
-              accept="image/*"
-              {...register("categoryImage", { required: "Image is required" })}
-              customUpload
-              onSelect={handleImageSelect}
-            />
-            {errors.categoryImage && (
-              <p className="text-red-500 text-sm mt-1">{errors.categoryImage.message}</p>
-            )}
-          </div>
-        </div>
-      </div> */}
-
-      {/* Display Form Data */}
-      {formData && (
-        <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md mt-6">
-          <h2 className="subheading mb-4">Form Data</h2>
-          <pre>{JSON.stringify(formData, null, 2)}</pre>
-        </div>
-      )}
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
+        >
+          Add Category
+        </button>
+      </form>
     </div>
   );
 }

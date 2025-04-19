@@ -197,8 +197,7 @@ const preparePayload = (productData) => {
         keyFeatures: productData.keyFeatures || []
     };
 
-    // Console log the payload
-    console.log('Prepared Payload:', payload);
+
 
     return payload;
 };
@@ -1104,7 +1103,7 @@ const ImageUploader = ({ images, onChange }) => {
         setSelectedFiles([])
     }
     const removeImage = (name) => {
-        const filterImages = selectedFiles.filter((e)=>e.name != name)
+        const filterImages = selectedFiles.filter((e) => e.name != name)
         setSelectedFiles(filterImages)
     }
     const handleUpload = async () => {
@@ -1176,7 +1175,7 @@ const ImageUploader = ({ images, onChange }) => {
                                     )}
 
                                     <span onClick={() => removeImage(file.name)} className="absolute top-1 right-1  text-white text-xs px-2 py-1 rounded">
-                                        <RxCrossCircled className=' text-xl text-white' />
+                                        <RxCrossCircled className=' text-xl text-red-500' />
                                     </span>
 
 
