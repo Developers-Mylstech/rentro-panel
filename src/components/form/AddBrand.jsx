@@ -160,7 +160,6 @@
 //   );
 // }
 
-
 import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { useForm } from 'react-hook-form';
@@ -171,17 +170,15 @@ export default function AddBrandWithImageUploader() {
     const { addBrand } = useBrandStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
-    const [uploadedUrl, setUploadedUrl] = useState("");
+    const [uploadedUrl, setUploadedUrl] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [message, setMessage] = useState("");
-   
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
-        getValues,
     } = useForm({
         defaultValues: {
             name: '',
@@ -194,7 +191,7 @@ export default function AddBrandWithImageUploader() {
         const previews = files.map(file => URL.createObjectURL(file));
         setPreviewUrls(previews);
         setMessage("");
-        setUploadedUrl(""); // Reset previous upload
+        setUploadedUrl([]); // Reset previous uploads
     };
 
     const handleImageUpload = async () => {
@@ -222,14 +219,13 @@ export default function AddBrandWithImageUploader() {
                 }
             );
 
-            const fileUrl = response.data[0]?.fileUrl;
+            const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
 
-            console.log(fileUrl,"product images all")
-            if (fileUrl) {
-                setUploadedUrl(fileUrl);
+            if (uploadedFiles.length > 0) {
+                setUploadedUrl(uploadedFiles);
                 setMessage("Image uploaded successfully.");
             } else {
-                setMessage("Image upload failed. No fileUrl returned.");
+                setMessage("Image upload failed. No file URLs returned.");
             }
 
         } catch (error) {
@@ -238,29 +234,26 @@ export default function AddBrandWithImageUploader() {
         } finally {
             setUploading(false);
         }
-
-       
     };
 
     const onSubmit = async (data) => {
-        if (!uploadedUrl) {
+        if (!uploadedUrl.length) {
             setMessage("Please upload an image before submitting.");
             return;
         }
-
-        const payload = {
-            name: data.name,
-            image: uploadedUrl, // Use the fileUrl directly
+        const payload ={
+         
+          name: data.name,
+          imageUrls: uploadedUrl
         };
-
-        addBrand(payload)
+        console.log(uploadedUrl)
 
         try {
             await addBrand(payload);
             setMessage("Brand added successfully!");
             setSelectedFiles([]);
             setPreviewUrls([]);
-            setUploadedUrl("");
+            setUploadedUrl([]);
             setValue('name', '');
         } catch (error) {
             console.error(error);
@@ -272,6 +265,7 @@ export default function AddBrandWithImageUploader() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white rounded-xl p-6 max-w-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Add New Brand</h2>
 
+            {/* Brand Name */}
             <div>
                 <label className="block font-medium mb-1">Brand Name</label>
                 <InputText
@@ -286,6 +280,7 @@ export default function AddBrandWithImageUploader() {
                 )}
             </div>
 
+            {/* Image Upload */}
             <div>
                 <label className="block font-medium mb-1">Brand Image</label>
                 <input
@@ -301,6 +296,7 @@ export default function AddBrandWithImageUploader() {
                 />
             </div>
 
+            {/* Previews */}
             {previewUrls.length > 0 && (
                 <div className="grid grid-cols-3 gap-3">
                     {previewUrls.map((src, idx) => (
@@ -320,7 +316,7 @@ export default function AddBrandWithImageUploader() {
                 </div>
             )}
 
-            {/* Upload Image Button */}
+            {/* Upload Button */}
             <button
                 type="button"
                 onClick={handleImageUpload}
@@ -330,7 +326,7 @@ export default function AddBrandWithImageUploader() {
                 {uploading ? 'Uploading Image...' : 'Upload Image'}
             </button>
 
-            {/* Submit Brand Button */}
+            {/* Submit Button */}
             <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
@@ -338,7 +334,7 @@ export default function AddBrandWithImageUploader() {
                 Submit Brand
             </button>
 
-            {/* Feedback Message */}
+            {/* Feedback */}
             {message && (
                 <p className={`text-center text-sm ${message.includes("failed") ? 'text-red-500' : 'text-green-600'}`}>
                     {message}

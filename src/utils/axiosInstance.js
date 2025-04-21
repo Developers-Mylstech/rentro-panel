@@ -2,10 +2,7 @@ import axios from 'axios';
 import { VITE_APP_KEY } from '../env';
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    headers: {
-        'skip_zrok_interstitial': 'true'
-    }
+    baseURL: "/api",
 });
 
 

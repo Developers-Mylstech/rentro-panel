@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useBrandStore = create((set) => ({
     brands: [],
