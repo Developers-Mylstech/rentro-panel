@@ -22,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axios.get('/api/api/v1/brands', {
+            const res = await axiosInstance.get('/brands', {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

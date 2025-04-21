@@ -29,10 +29,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  server: {
+  server: {  
     proxy: {
       '/api': {
-        target: 'http://demo.rentro.ae:8082/',
+        target: 'https://proud-expression-production-6ebc.up.railway.app/',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')
