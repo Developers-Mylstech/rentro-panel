@@ -12,7 +12,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.post('/products', newProduct);
+      const response = await axios.post('/api/api/v1/products', newProduct);
       set((state) => ({
         products: [...state.products, response.data],
       }));
@@ -29,7 +29,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axiosInstance.get('/products');
+      const response = await axios.get('/api/api/v1/products');
       set({ products: response.data });
 
     } catch (error) {

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useCategoryStore = create((set, get) => ({
   categoryList: [],
@@ -8,9 +9,9 @@ const useCategoryStore = create((set, get) => ({
   subCategories: [],
 
   addCategory: async (category) => {
-  
+  console.log(category,'OOOO')
     try {
-      const response = await axiosInstance.post('/categories', category);
+      const response = await axios.post('/api/api/v1/categories', category);
       const newCategory = response.data;
 
       set((state) => ({
@@ -37,7 +38,7 @@ const useCategoryStore = create((set, get) => ({
 
   getAllCategories: async () => {
     try {
-      const res = await axios.get('/api/v1/categories');
+      const res = await axios.get('/api/api/v1/categories');
       const allCategories = res?.data || [];
 
       const mainCats = allCategories.filter(cat => !cat.parentCategoryId);
