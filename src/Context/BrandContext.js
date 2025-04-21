@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useBrandStore = create((set) => ({
     brands: [],
@@ -21,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axiosInstance.get('/brands');
+            const res = await axios.get('https://demo.rentro.ae/api/v1/brands');
             set({ brands: res?.data || [] });
         } catch (error) {
             alert("Fetching data failed due to backend issue");

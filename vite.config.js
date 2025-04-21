@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_APP_KEY,
+          target: "http://demo.rentro.ae:8081/api/v1",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
