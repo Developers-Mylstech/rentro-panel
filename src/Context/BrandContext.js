@@ -8,7 +8,7 @@ const useBrandStore = create((set) => ({
 
     addBrand: async (brand) => {
         try {
-            const res = await axios.post('/api/api/v1/brands', brand);
+            const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', brand);
             set((state) => ({
                 brands: [...state.brands, res.data]
             }));
@@ -22,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await fetch('/api/api/v1/brands', {
+            const res = await fetch('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', {
                 method: 'GET',
                
             });
@@ -45,7 +45,7 @@ const useBrandStore = create((set) => ({
             formData.append('file', file); // Key must match the backend's expected key
 
             const response = await axios.post(
-                '/api/api/v1/product-images/product-images/upload?quality=80&fallbackToJpeg=true',
+                'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/product-images/upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
