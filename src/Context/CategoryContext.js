@@ -16,7 +16,7 @@ const useCategoryStore = create((set, get) => ({
   // Fetch all categories and organize them
   getAllCategories: async () => {
     try {
-      const res = await axiosInstance.get('/categories');
+      const res = await axios.get('http://demo.rentro.ae/api/v1/categories');
       const allCategories = res?.data || [];
       
       set({ 

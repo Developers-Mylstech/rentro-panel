@@ -20,7 +20,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   getAllSpecificationFields: async () => {
     try {
-      const res = await axiosInstance.get('/specification-fields');
+      const res = await axiosInstance.get('/api/v1/specification-fields');
       set({ specificationFields: res?.data || [] });
       return res.data
     } catch (error) {

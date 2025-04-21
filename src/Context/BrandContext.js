@@ -22,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axios.get('https://demo.rentro.ae/api/v1/brands');
+            const res = await axiosInstance.get('/api/v1/brands');
             set({ brands: res?.data || [] });
         } catch (error) {
             alert("Fetching data failed due to backend issue");
