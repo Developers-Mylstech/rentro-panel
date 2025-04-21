@@ -10,7 +10,7 @@ const Client = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://demo.rentro.ae:8082/api/v1/brands'); // Replace with your API
+      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands'); // Replace with your API
       setResponseData(response.data);
     } catch (err) {
       setError('Something went wrong!');
