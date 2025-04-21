@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useSpecificationFieldsStore = create((set) => ({
   specificationFields: [],
 
   addSpecificationField: async (fieldData) => {
     try {
-      const res = await axiosInstance.post('/specification-fields', fieldData);
+      const res = await axiosInstance.post('/api/v1/specification-fields', fieldData);
       set((state) => ({
         specificationFields: [...state.specificationFields, res.data]
       }));
@@ -20,7 +21,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   getAllSpecificationFields: async () => {
     try {
-      const res = await axiosInstance.get('/specification-fields');
+      const res = await axios.get('/api/api/v1/specification-fields');
       set({ specificationFields: res?.data || [] });
       return res.data
     } catch (error) {
