@@ -22,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axios.get('api/v1/brands', {
+            const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
