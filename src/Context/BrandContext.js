@@ -22,18 +22,22 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                withCredentials: true
+            const res = await fetch('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', {
+                method: 'GET',
+               
             });
-            set({ brands: res?.data || [] });
+    
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const data = await res.json();
+            set({ brands: data || [] });
         } catch (error) {
             alert("Fetching data failed due to backend issue");
         }
     },
-
+    
     addBrandImage: async (file) => {
         console.log(file, '))))')
         try {
