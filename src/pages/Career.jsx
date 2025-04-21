@@ -1,80 +1,9 @@
-// import React from 'react';
-// import { FaFilePdf } from "react-icons/fa6";
 
-// const careerData = [
-//   {
-//     id: 1,
-//     name: 'Ayesha Khan',
-//     resumeFile: 'https://cdn.create.microsoft.com/catalog-assets/en-us/4a338a41-94b9-4793-9854-c3ae1b34923f/thumbnails/616/modern-hospitality-resume-brown-modern-simple-1-1-a8a2b9b17cad.webp',
-//     email: 'ayesha.khan@example.com',
-//     contact: '+91-9876543210',
-//     details: 'Referred for React Native Developer role. 2+ years experience in mobile app development.',
-//   },
-//   {
-//     id: 2,
-//     name: 'Rahul Mehta',
-//     resumeFile: 'https://i.etsystatic.com/21042415/r/il/75cfac/2140916029/il_570xN.2140916029_2s0x.jpg',
-//     email: 'rahul.mehta@example.com',
-//     contact: '+91-9123456780',
-//     details: 'Applied for Backend Developer. Node.js and MongoDB expertise.',
-//   },
-//   {
-//     id: 3,
-//     name: 'Neha Sharma',
-//     resumeFile: 'https://masterbundles.com/wp-content/uploads/2023/03/01_modern-resume-template-cv-template-cover-letter-professional-teacher-resume_main-thumbnail-image--963.jpg',
-//     email: 'neha.sharma@example.com',
-//     contact: '+91-9988776655',
-//     details: 'Frontend Developer with strong UI/UX skills. Shared via LinkedIn.',
-//   },
-// ];
-
-// const Career = () => {
-//   return (
-//     <div className="overflow-x-auto mt-4">
-//       <table className="min-w-full divide-y divide-gray-200 border rounded shadow">
-//         <thead className="bg-gray-100">
-//           <tr>
-//             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">#</th>
-//             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Candidate Name</th>
-//             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Resume</th>
-//             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email / Contact</th>
-//             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Details</th>
-//           </tr>
-//         </thead>
-//         <tbody className="divide-y divide-gray-100 bg-white">
-//           {careerData.map((item, index) => (
-//             <tr key={item.id} className="hover:bg-gray-50">
-//               <td className="px-4 py-2 text-sm">{index + 1}</td>
-//               <td className="px-4 py-2 text-sm">{item.name}</td>
-//               <td className="px-4 py-2 text-secondary text-2xl">
-//                 <a
-//                   href={item.resumeFile}
-//                   download={`${item.name.replace(/\s/g, '_')}_Resume`}
-//                   className="hover:text-red-700"
-//                   target='_blank'
-//                 >
-//                   <FaFilePdf />
-//                 </a>
-//               </td>
-//               <td className="px-4 py-2 text-sm">
-//                 <div>{item.email}</div>
-//                 <div className="text-xs text-gray-500">{item.contact}</div>
-//               </td>
-//               <td className="px-4 py-2 text-sm">{item.details}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default Career;
 
 import React, { useState } from 'react';
 import { FaFilePdf, FaEdit, FaTrash, FaChevronLeft, FaChevronRight, FaTimes } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const jobRoles = [
   { 
@@ -141,7 +70,7 @@ const Career = () => {
   });
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
+const navigate = useNavigate()
   const scrollJobs = (direction) => {
     const container = document.getElementById('jobs-container');
     const scrollAmount = direction === 'left' ? -300 : 300;
@@ -202,7 +131,7 @@ const Career = () => {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Job Openings</h2>
           <button 
-            onClick={() => setShowAddForm(true)}
+            onClick={() => navigate('/career/add')}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
           >
             <FiPlus /> Add New Job

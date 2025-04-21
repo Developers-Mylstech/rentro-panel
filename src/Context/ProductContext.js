@@ -12,7 +12,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axiosInstance.post('/products', newProduct);
+      const response = await axios.post('https://yqndqaeqly2o.share.zrok.io/api/v1/products', newProduct);
       set((state) => ({
         products: [...state.products, response.data],
       }));
@@ -29,7 +29,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axiosInstance.get('/products');
+      const response = await axiosInstance.get('https://yqndqaeqly2o.share.zrok.io/api/v1/products');
       set({ products: response.data });
 
     } catch (error) {

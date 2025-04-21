@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import axiosInstance from '../../utils/axiosInstance';
+import useJobStore from '../../Context/JobContext';
+import axios from 'axios';
 
 function AddCareer() {
   const [formData, setFormData] = useState({
@@ -7,8 +10,10 @@ function AddCareer() {
     notes: '',
     image: null,
   });
+  const { createJob } = useJobStore();
 
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,34 +33,67 @@ function AddCareer() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitted Career Page Data:', formData);
+    setLoading(true);
 
-    // Here you could send the formData to a server using fetch or axios
-    alert('Career page data saved!');
+    try {
+      let imageUrl = '';
+
+      // Step 1: Upload the image
+      if (formData.image) {
+        const imageData = new FormData();
+        imageData.append('file', formData.image);
+
+        const uploadRes = await axios.post('https://demo.rentro.ae/api/v1/product-images/upload', imageData);
+        imageUrl = uploadRes?.data?.fileUrl;
+      }
+
+      // Step 2: Post job data
+      const payload = {
+        jobTitle: formData.heading,
+        jobDescription: formData.description,
+        requirements: formData.notes,
+        isActive: true,
+        image: imageUrl,
+      };
+
+      await createJob(payload);
+
+      alert('Career page data saved!');
+      setFormData({
+        heading: '',
+        description: '',
+        notes: '',
+        image: null,
+      });
+      setPreview(null);
+    } catch (error) {
+      console.error('Error submitting career data:', error);
+      alert('Failed to save career page data.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">Update Career Page</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Heading */}
         <div>
-          <label className="block text-gray-600 font-medium">Heading</label>
+          <label className="block text-gray-600 font-medium">Job Title</label>
           <input
             type="text"
             name="heading"
             value={formData.heading}
             onChange={handleChange}
             className="w-full border p-2 rounded"
-            placeholder="Enter career page heading"
+            placeholder="Enter Job Title"
             required
           />
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-gray-600 font-medium">Description</label>
           <textarea
@@ -69,20 +107,18 @@ function AddCareer() {
           />
         </div>
 
-        {/* Notes */}
         <div>
-          <label className="block text-gray-600 font-medium">Additional Notes</label>
+          <label className="block text-gray-600 font-medium">Job Requirements</label>
           <textarea
             name="notes"
             value={formData.notes}
             onChange={handleChange}
             rows="2"
             className="w-full border p-2 rounded"
-            placeholder="Any other information (optional)"
+            placeholder="Job Details "
           />
         </div>
 
-        {/* Image Upload */}
         <div>
           <label className="block text-gray-600 font-medium">Career Page Image</label>
           <input
@@ -93,7 +129,6 @@ function AddCareer() {
           />
         </div>
 
-        {/* Preview */}
         {preview && (
           <div className="mt-4">
             <p className="text-sm text-gray-500 mb-1">Preview Image:</p>
@@ -103,9 +138,10 @@ function AddCareer() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          disabled={loading}
+          className={`px-4 py-2 rounded text-white transition ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
-          Save Changes
+          {loading ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
     </div>
