@@ -171,33 +171,32 @@ const preparePayload = (productData) => {
                 actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
                 discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
             },
-            service: {
-                ots: {
-                    price: productData.pricing?.services?.oneTime?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.oneTime?.benefits)
-                        ? productData.pricing?.services?.oneTime?.benefits
-                        : []
-                },
-                mmc: {
-                    price: productData.pricing?.services?.mmc?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
-                        ? productData.pricing?.services?.mmc?.benefits
-                        : []
-                },
-                amcBasic: {
-                    price: productData.pricing?.services?.amcBasic?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
-                        ? productData.pricing?.services?.amcBasic?.benefits
-                        : []
-                },
-                amcGold: {
-                    price: productData.pricing?.services?.amcGold?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
-                        ? productData.pricing?.services?.amcGold?.benefits
-                        : []
-                }
-            }
-
+            // service: {
+            //     ots: {
+            //         price: productData.pricing?.services?.oneTime?.price || 0,
+            //         benefits: Array.isArray(productData.pricing?.services?.oneTime?.benefits)
+            //             ? productData.pricing?.services?.oneTime?.benefits
+            //             : []
+            //     },
+            //     mmc: {
+            //         price: productData.pricing?.services?.mmc?.price || 0,
+            //         benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
+            //             ? productData.pricing?.services?.mmc?.benefits
+            //             : []
+            //     },
+            //     amcBasic: {
+            //         price: productData.pricing?.services?.amcBasic?.price || 0,
+            //         benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
+            //             ? productData.pricing?.services?.amcBasic?.benefits
+            //             : []
+            //     },
+            //     amcGold: {
+            //         price: productData.pricing?.services?.amcGold?.price || 0,
+            //         benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
+            //             ? productData.pricing?.services?.amcGold?.benefits
+            //             : []
+            //     },
+            // }
         },
         categoryId: +productData.category.main.categoryId,
         subCategoryId: +productData.category.sub || "",
@@ -1204,11 +1203,11 @@ const ImageUploader = ({ images, onChange }) => {
     const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files);
         const validImages = [];
-    
+
         for (const file of files) {
             const image = new Image();
             const objectUrl = URL.createObjectURL(file);
-    
+
             const isValid = await new Promise((resolve) => {
                 image.onload = () => {
                     const is500x500 = image.width === 500 && image.height === 500;
@@ -1219,7 +1218,7 @@ const ImageUploader = ({ images, onChange }) => {
                 image.onerror = () => resolve(false);
                 image.src = objectUrl;
             });
-    
+
             if (isValid) {
                 validImages.push(file);
             } else {
@@ -1227,10 +1226,10 @@ const ImageUploader = ({ images, onChange }) => {
                 alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
             }
         }
-    
+
         setSelectedFiles(validImages);
     };
-    
+
 
     const resetImage = () => {
         setSelectedFiles([])
@@ -1254,7 +1253,7 @@ const ImageUploader = ({ images, onChange }) => {
 
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
-               
+
 
                     <label
                         htmlFor="file-upload"
@@ -1283,8 +1282,8 @@ const ImageUploader = ({ images, onChange }) => {
                     </button>
 
                     <p className="text-sm text-gray-500 italic mt-2">
-    Only 500x500 pixel images are allowed. size should be 500kb
-</p>
+                        Only 500x500 pixel images are allowed. size should be 500kb
+                    </p>
                     <input
                         id="file-upload"
                         type="file"
