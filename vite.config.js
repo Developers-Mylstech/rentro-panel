@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: "https://proud-expression-production-6ebc.up.railway.app/",
+          target: "http://demo.rentro.ae:8082/api/v1/",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

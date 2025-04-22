@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import axiosInstance from '../utils/axiosInstance';
 
 const useImageUploadStore = create((set) => ({
     uploadedFiles: [], 
@@ -19,7 +18,7 @@ const useImageUploadStore = create((set) => ({
             }
 
             const response = await axios.post(
-                'https://proud-expression-production-6ebc.up.railway.app//api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+                'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
