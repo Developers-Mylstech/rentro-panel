@@ -4,19 +4,19 @@ import axios from 'axios';
 
 const useBrandStore = create((set) => ({
     brands: [],
-    image:"",
+    image: "",
 
     addBrand: async (brand) => {
         try {
             const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', brand); 
             set((state) => ({
-                brands: [...state.brands, res.data] 
+                brands: [...state.brands, res.data]
             }));
             alert('Brand added successfully');
             return res.data;
         } catch (error) {
             alert("Adding brand failed due to backend issue");
-            throw error; 
+            throw error;
         }
     },
 
@@ -30,7 +30,6 @@ const useBrandStore = create((set) => ({
     },
 
     addBrandImage: async (file) => {
-console.log(file,'))))')
         try {
           const formData = new FormData();
           formData.append('file', file); // Key must match the backend's expected key
@@ -50,12 +49,12 @@ console.log(file,'))))')
       
           return formattedFiles;
         } catch (error) {
-          console.error('Upload error:', error);
-          set({ error: error.message });
-          throw error;
+            console.error('Upload error:', error);
+            set({ error: error.message });
+            throw error;
         }
-      },
-      
+    },
+
     removeBrand: async (id) => {
         try {
             await axiosInstance.delete(`/brands/${id}`);

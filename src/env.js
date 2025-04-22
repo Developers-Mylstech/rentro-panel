@@ -1,0 +1,1 @@
+export const VITE_APP_KEY = "http://java.backend.rentro.ae:8081/api/v1"

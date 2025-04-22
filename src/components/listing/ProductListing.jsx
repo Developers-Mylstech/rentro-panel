@@ -1,390 +1,156 @@
-// import React, { useState } from 'react';
-// import { DataTable } from 'primereact/datatable';
-// import { Column } from 'primereact/column';
-// import { InputText } from 'primereact/inputtext';
-// import { Button } from 'primereact/button';
-// import { Dialog } from 'primereact/dialog';
-// import { useNavigate } from 'react-router-dom';
-// import CustomButton from '../../systemdesign/CustomeButton';
+import { useEffect, useState } from "react";
+import useProductStore from "../../Context/ProductContext";
+import { useNavigate } from "react-router-dom";
+import { Dialog } from "primereact/dialog";
 
-// export default function ProductListing({ products, handleEdit, handleDelete }) {
-//   const [search, setSearch] = useState('');
-//   const [visible, setVisible] = useState(false);
-//   const [selectedProduct, setSelectedProduct] = useState(null);
-//   const navigate = useNavigate();
-
-//   const filteredProducts = products.filter((product) =>
-//     product.name.toLowerCase().includes(search.toLowerCase())
-//   );
-
-//   // Handle Delete Confirmation
-//   const confirmDelete = (product) => {
-//     setSelectedProduct(product);
-//     setVisible(true);
-//   };
-
-//   const handleConfirmDelete = () => {
-//     handleDelete(selectedProduct.sku);
-//     setVisible(false);
-//   };
-
-//   // Table Image Template
-//   const imageBodyTemplate = (rowData) => (
-//     <img
-//       src={rowData.image}
-//       alt={rowData.name}
-//       className="w-20 h-20 object-cover rounded"
-//     />
-//   );
-
-//   // Table Action Template
-//   const actionBodyTemplate = (rowData) => (
-//     <div className="flex gap-2">
-//       <Button
-//         icon="pi pi-pencil"
-//         className="p-button-rounded text-blue-600"
-//         onClick={() => handleEdit(rowData.sku)}
-//       />
-//       <Button
-//         icon="pi pi-trash"
-//         className="p-button-rounded text-red-600"
-//         onClick={() => confirmDelete(rowData)}
-//       />
-//     </div>
-//   );
-
-//   return (
-//     <div>
-//       {/* Header Section */}
-//       <div className="flex justify-between mb-4">
-//         <div className="flex items-center w-full justify-between">
-//           <h2 className="text-xl font-semibold text-gray-700">Products List</h2>
-//           <div className="flex gap-3">
-//             {/* Search Bar */}
-//             <InputText
-//               value={search}
-//               onChange={(e) => setSearch(e.target.value)}
-//               placeholder="Search..."
-//               className="border px-3 py-2 rounded-md focus:outline-none"
-//             />
-//             <CustomButton
-//               title="Add"
-//               onClick={() => navigate('/products/add')}
-//               icon={'pi pi-plus'}
-//             />
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Table Section */}
-//       <div className="hidden lg:block overflow-x-auto border rounded-lg shadow-md">
-//         <DataTable
-//           value={filteredProducts}
-//           paginator
-//           rows={10}
-//           stripedRows
-//           className="w-full"
-//         >
-//           <Column
-//             field="image"
-//             header="Product Image"
-//             body={imageBodyTemplate}
-//             headerClassName="bg-secondary text-white border-r"
-//           />
-//           <Column field="sku" header="SKU" headerClassName="bg-secondary text-white border-r" />
-//           <Column field="name" header="Product Name" headerClassName="bg-secondary text-white border-r" />
-//           <Column field="category" header="Main Category" headerClassName="bg-secondary text-white border-r" />
-//           <Column field="quantity" header="Quantity" headerClassName="bg-secondary text-white border-r" />
-//           <Column field="monthlyPrice" header="Monthly Price" headerClassName="bg-secondary text-white border-r" />
-//           <Column field="yearlyPrice" header="Yearly Price" headerClassName="bg-secondary text-white border-r" />
-//           <Column
-//             header="Options"
-//             body={actionBodyTemplate}
-//             headerClassName="bg-secondary text-white"
-//           />
-//         </DataTable>
-//       </div>
-
-//       {/* Card View Section */}
-//       <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4 px-6">
-//         {filteredProducts.map((product) => (
-//           <div
-//             key={product.sku}
-//             className="bg-white shadow-md rounded-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg"
-//           >
-//             {/* Product Image */}
-//             <img
-//               src={product.image}
-//               alt={product.name}
-//               className="w-full h-48 object-cover"
-//             />
-
-//             {/* Product Details */}
-//             <div className="p-4">
-//               <h3 className="text-lg font-semibold text-gray-800">
-//                 {product.name}
-//               </h3>
-//               <p className="text-gray-500 text-sm">
-//                 Category: {product.category}
-//               </p>
-//               <p className="text-gray-500 text-sm">
-//                 Quantity: {product.quantity}
-//               </p>
-//               <p className="text-gray-500 text-sm">
-//                 Monthly Price: ${product.monthlyPrice}
-//               </p>
-//               <p className="text-gray-500 text-sm">
-//                 Yearly Price: ${product.yearlyPrice}
-//               </p>
-
-//               {/* Edit & Delete Buttons */}
-//               <div className="flex justify-center mt-4 gap-3">
-//                 <Button
-//                   icon="pi pi-pencil"
-//                   className="p-button-sm text-white w-full bg-secondary p-2"
-//                   onClick={() => handleEdit(product.sku)}
-//                 />
-//                 <Button
-//                   icon="pi pi-trash"
-//                   className="p-button-sm text-white w-full bg-secondary p-2"
-//                   onClick={() => confirmDelete(product)}
-//                 />
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Delete Confirmation Dialog */}
-//       <Dialog
-//         header="Confirmation"
-//         visible={visible}
-//         draggable={false}
-//         position="top"
-//         onHide={() => setVisible(false)}
-//       >
-//         <p className="mb-6">Do you want to delete this product?</p>
-//         <div className="flex justify-between">
-//           <CustomButton
-//             title="Yes"
-//             icon="pi pi-check"
-//             onClick={handleConfirmDelete}
-//           />
-//           <CustomButton
-//             title="No"
-//             icon="pi pi-times"
-//             onClick={() => setVisible(false)}
-//           />
-//         </div>
-//       </Dialog>
-//     </div>
-//   );
-// }import React, { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { useNavigate } from 'react-router-dom';
-import CustomButton from '../../systemdesign/CustomeButton';
-import { useState } from 'react';
-
-export default function ProductListing({ products, handleEdit, handleDelete }) {
+export default function ProductListing() {
   const [search, setSearch] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
+  const { getProducts, products , deleteProduct} = useProductStore();
+  
+  useEffect(() => {
+    getProducts();
+  }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
+  // Transform product data for table display
+  const tableData = products.map(product => ({
+    id: product.productId,
+    image: product.imageUrls?.[0] || '',
+    name: product.name,
+    sku: product.inventory?.sku || 'N/A',
+    category: product.category?.name || 'N/A',
+    quantity: product.inventory?.quantity || 0,
+    monthlyPrice: product.productFor?.rent?.monthlyPrice || 0,
+    yearlyPrice: product.productFor?.rent?.discountPrice || 0
+  }));
+
+  // Filter products based on search
+  const filteredProducts = tableData.filter(product => 
+    product.name.toLowerCase().includes(search.toLowerCase()) ||
+    product.sku.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Handle Delete Confirmation
   const confirmDelete = (product) => {
     setSelectedProduct(product);
-    setVisible(true);
+    setVisible(true); // Show dialog
   };
-
-  const handleConfirmDelete = () => {
-    handleDelete(selectedProduct.sku);
-    setVisible(false);
+  
+  const handleConfirmDelete = async () => {
+    if (selectedProduct) {
+      const res = await deleteProduct(selectedProduct.id);
+  console.log(res)
+      if (res?.data) {
+        alert("Item Deleted");
+        setVisible(false);
+        setSelectedProduct(null);
+        getProducts(); // Refresh the list
+      } else {
+        alert("Failed to delete item");
+      }
+    }
   };
+  
 
-  // Table Image Template
-  const imageBodyTemplate = (rowData) => (
-    <img
-      src={rowData.image}
-      alt={rowData.name}
-      className="w-16 h-16 object-cover rounded"
-    />
-  );
-
-  // Table Action Template
-  const actionBodyTemplate = (rowData) => (
-    <div className="flex gap-2">
-      <Button
-        icon="pi pi-pencil"
-        className=" rounded-lg text-white bg-blue-500 p-2 "
-        onClick={() => handleEdit(rowData.sku)}
-      />
-      <Button
-        icon="pi pi-trash"
-        className=" rounded-lg text-white bg-red-500 p-2 "
-        onClick={() => confirmDelete(rowData)}
-      />
-    </div>
-  );
-
-  const quantityBodyTemplate = (rowData) => {
-    return (
-     <div className={`${rowData.quantity<10?"bg-orange-400 ":"bg-green-500"}  text-white font-bold py-1 w-12 flex justify-center items-center rounded`}>
-       <span className={`${rowData.quantity<10?"":""}  `} >
-        {rowData.quantity}
-      </span>
-     </div>
-    );
-  };
   return (
-    <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-2">
+    <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-4">
       {/* Header Section */}
-      <div className="flex  justify-between mb-4">
-        <div className="flex items-center md:flex-row flex-col w-full justify-between">
-          <h2 className="text-xl mb-4 font-semibold text-gray-700 dark:text-gray-100">
-            Products List
-          </h2>
-          <div className="flex gap-3 md:flex-row ">
-            {/* Search Bar */}
-            <InputText
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="border px-2 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 w-[70%]"
-            />
-            <CustomButton
-              title="Add"
-              onClick={() => navigate('/products/add')}
-              icon={'pi pi-plus'}
-              className="dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white"
-            />
-          </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold">Products List</h2>
+        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products..."
+            className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          />
+          <button
+            onClick={() => navigate('/products/add')}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 justify-center"
+          >
+            <i className="pi pi-plus"></i>
+            <span>Add Product</span>
+          </button>
         </div>
       </div>
 
-      {/* Table Section */}
-      <div className="hidden lg:block overflow-x-auto border rounded shadow-md dark:border-gray-700">
-        <DataTable
-          value={filteredProducts}
-          paginator
-          rows={10}
-          stripedRows={true}
-          className="w-full dark:bg-gray-800 dark:text-gray-100"
-          paginatorClassName='dark:bg-gray-800 dark:text-gray-100 border'
-        
-        >
-          <Column
-            field="image"
-            header="Product_Image"
-            body={imageBodyTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border  dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 border '
-
-            
-          />
-          <Column
-            field="sku"
-            header="SKU"
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
-          />
-          <Column
-            field="name"
-            header="Product_Name"
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
-          />
-          <Column
-            field="category"
-            header="Main_Category"
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
-          />
-          <Column
-            field="quantity"
-            header="Quantity"
-            body={quantityBodyTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100 "
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b   font-semibold  '
-            
-          />
-          <Column
-            field="monthlyPrice"
-            header="Monthly_Price"
-            // body={monthlyPriceBodyTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
-          />
-          <Column
-            field="yearlyPrice"
-            header="Yearly_Price"
-            // body={yearlyPriceBodyTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm  border dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800 dark:text-gray-100 text-sm border-b font-semibold'
-          />
-          <Column
-            header="Options"
-            body={actionBodyTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border  dark:bg-gray-800 dark:text-gray-100"
-            className='dark:bg-gray-800  dark:text-gray-100 border-b border-r text-sm'
-          />
-        </DataTable>
+      {/* HTML Table */}
+      <div className="overflow-x-auto rounded-lg border dark:border-gray-700 shadow">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SKU</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Monthly Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Yearly Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {filteredProducts.map((product) => (
+              <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {product.image && (
+                    <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  {product.sku}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  {product.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  {product.category}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
+                  }`}>
+                    {product.quantity}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  AED {product.monthlyPrice.toFixed(2)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  AED {product.yearlyPrice.toFixed(2)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => navigate(`/products/edit/${product.id}`)}
+                      className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                      title="Edit"
+                    >
+                      <i className="pi pi-pencil"></i>
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(product)}
+                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                      title="Delete"
+                    >
+                      <i className="pi pi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Card View Section */}
-      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-        {filteredProducts.map((product) => (
-          <div
-            key={product.sku}
-            className="bg-white shadow-md rounded-lg  overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg 
-                       dark:bg-gray-800 dark:text-gray-100"
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                {product.name}
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                Category: {product.category}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400">
-                Quantity: {product.quantity}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400">
-                Monthly Price: ${product.monthlyPrice}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400">
-                Yearly Price: ${product.yearlyPrice}
-              </p>
-
-              <div className="flex justify-center mt-4 gap-3">
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-sm text-white bg-green-300 p-2"
-                  onClick={() => handleEdit(product.sku)}
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white bg-red-400"
-                  onClick={() => confirmDelete(product)}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Empty State */}
+      {filteredProducts.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">No products found</p>
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -397,18 +163,18 @@ export default function ProductListing({ products, handleEdit, handleDelete }) {
       >
         <p className="mb-6">Do you want to delete this product?</p>
         <div className="flex justify-between">
-          <CustomButton
-            title="Yes"
-            icon="pi pi-check"
-            onClick={handleConfirmDelete}
-            className="dark:bg-green-500 dark:hover:bg-green-600"
-          />
-          <CustomButton
-            title="No"
-            icon="pi pi-times"
+          <button
             onClick={() => setVisible(false)}
-            className="dark:bg-red-500 dark:hover:bg-red-600"
-          />
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirmDelete}
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+          >
+            Delete
+          </button>
         </div>
       </Dialog>
     </div>

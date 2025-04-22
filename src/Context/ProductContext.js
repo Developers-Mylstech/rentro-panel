@@ -16,7 +16,7 @@ const useProductStore = create((set) => ({
       set((state) => ({
         products: [...state.products, response.data],
       }));
-
+      return response.data
     } catch (error) {
       set({ error: error.message });
     } finally {
@@ -24,7 +24,6 @@ const useProductStore = create((set) => ({
     }
   },
 
-  // Get products
   getProducts: async () => {
     try {
       set({ loading: true, error: null });

@@ -76,12 +76,25 @@ const DemoProduct = () => {
     };
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
 
-        createProduct(payload)
+        if (payload?.categoryId && payload?.brandId) {
+            try {
+                const response = await createProduct(payload);
+                if (response.name) {
+                    alert("Product created successfully!");
+                }
+            } catch (error) {
+                alert("Error occurred while creating the product.");
+            }
+        } else {
+            alert('Please make sure Category and Brand fields are filled.');
+        }
     };
+
+
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -132,7 +145,6 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
-    console.log(productData, 'OUUu')
     const payload = {
         name: productData.basicInfo.name,
         description: productData.basicInfo.shortDescription,
@@ -183,12 +195,11 @@ const preparePayload = (productData) => {
                     benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
                         ? productData.pricing?.services?.amcGold?.benefits
                         : []
-                }
+                },
             }
-
         },
         categoryId: +productData.category.main.categoryId,
-        subCategoryId: +productData.category.sub,
+        subCategoryId: +productData.category.sub || "",
         inventory: {
             quantity: productData.inventory.quantity || 0,
             sku: productData.inventory.sku || '',
@@ -197,8 +208,7 @@ const preparePayload = (productData) => {
         keyFeatures: productData.keyFeatures || []
     };
 
-    // Console log the payload
-    console.log('Prepared Payload:', payload);
+
 
     return payload;
 };
@@ -431,6 +441,16 @@ const PricingOptions = ({ pricing, onChange }) => {
                     />
                     <span className="ml-2 text-sm text-gray-700">Service</span>
                 </label>
+
+                <label className="inline-flex items-center">
+                    <input
+                        type="checkbox"
+                        checked={selectedOptions.includes('quotation')}
+                        onChange={() => handleOptionChange('quotation')}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">Request a Quotation</span>
+                </label>
             </div>
 
             <div className="space-y-6">
@@ -454,12 +474,97 @@ const PricingOptions = ({ pricing, onChange }) => {
                         onChange={(data) => onChange('pricing', 'services', data)}
                     />
                 )}
+
+                {selectedOptions.includes('quotation') && (
+                    <QuotationForm
+                        data={pricing.quotation}
+                        onChange={(data) => onChange('pricing', 'quotation', data)}
+                    />
+                )}
             </div>
         </div>
     );
 };
 
+const QuotationForm = ({ data, onChange }) => {
+    const [formData, setFormData] = useState(data || {
+        name: '',
+        mobile: '',
+        companyName: '',
+        location: ''
+    });
 
+    const handleChange = (field, value) => {
+        const updated = { ...formData, [field]: value };
+        setFormData(updated);
+        onChange(updated);
+    };
+
+    return (
+        <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">Request a Quotation</h3>
+
+            <div className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
+                    <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                        placeholder="Enter your name"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile*</label>
+                    <input
+                        type="tel"
+                        value={formData.mobile}
+                        onChange={(e) => handleChange('mobile', e.target.value)}
+                        placeholder="Enter your mobile number"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name (if any)</label>
+                    <input
+                        type="text"
+                        value={formData.companyName}
+                        onChange={(e) => handleChange('companyName', e.target.value)}
+                        placeholder="Enter company name"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => handleChange('location', e.target.value)}
+                        placeholder="Enter location"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+                    <div className="mt-1 flex items-center">
+                        <label className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Choose File
+                            <input type="file" className="sr-only" />
+                        </label>
+                        <span className="ml-2 text-sm text-gray-500">No file chosen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const SellPricingForm = ({ data, onChange }) => {
     const [formData, setFormData] = useState(data || {
@@ -1095,16 +1200,42 @@ const ImageUploader = ({ images, onChange }) => {
     const { uploadFiles, isLoading } = useImageUploadStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
 
-    const handleChooseFiles = (e) => {
+    const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files);
-        setSelectedFiles(files);
+        const validImages = [];
+
+        for (const file of files) {
+            const image = new Image();
+            const objectUrl = URL.createObjectURL(file);
+
+            const isValid = await new Promise((resolve) => {
+                image.onload = () => {
+                    const is500x500 = image.width === 500 && image.height === 500;
+                    const isUnder500KB = file.size <= 500 * 1024; // 500KB in bytes
+                    URL.revokeObjectURL(objectUrl);
+                    resolve(is500x500 && isUnder500KB);
+                };
+                image.onerror = () => resolve(false);
+                image.src = objectUrl;
+            });
+
+            if (isValid) {
+                validImages.push(file);
+            } else {
+                const sizeKB = (file.size / 1024).toFixed(2);
+                alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
+            }
+        }
+
+        setSelectedFiles(validImages);
     };
+
 
     const resetImage = () => {
         setSelectedFiles([])
     }
     const removeImage = (name) => {
-        const filterImages = selectedFiles.filter((e)=>e.name != name)
+        const filterImages = selectedFiles.filter((e) => e.name != name)
         setSelectedFiles(filterImages)
     }
     const handleUpload = async () => {
@@ -1122,6 +1253,8 @@ const ImageUploader = ({ images, onChange }) => {
 
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
+
+
                     <label
                         htmlFor="file-upload"
                         className="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
@@ -1148,7 +1281,9 @@ const ImageUploader = ({ images, onChange }) => {
                         Reset Images
                     </button>
 
-
+                    <p className="text-sm text-gray-500 italic mt-2">
+                        Only 500x500 pixel images are allowed. size should be 500kb
+                    </p>
                     <input
                         id="file-upload"
                         type="file"
@@ -1176,7 +1311,7 @@ const ImageUploader = ({ images, onChange }) => {
                                     )}
 
                                     <span onClick={() => removeImage(file.name)} className="absolute top-1 right-1  text-white text-xs px-2 py-1 rounded">
-                                        <RxCrossCircled className=' text-xl text-white' />
+                                        <RxCrossCircled className=' text-xl text-red-500' />
                                     </span>
 
 
