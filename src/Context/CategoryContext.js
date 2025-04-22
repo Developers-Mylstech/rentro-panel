@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useCategoryStore = create((set, get) => ({
   categoryList: [],
@@ -16,7 +17,7 @@ const useCategoryStore = create((set, get) => ({
   // Fetch all categories and organize them
   getAllCategories: async () => {
     try {
-      const res = await axios.get('http://demo.rentro.ae/api/v1/categories');
+      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/categories');
       const allCategories = res?.data || [];
       
       set({ 
@@ -44,7 +45,7 @@ const useCategoryStore = create((set, get) => ({
   // Remove a category
   removeCategory: async (id) => {
     try {
-      await axiosInstance.delete(`/categories/${id}`);
+      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`);
       set((state) => ({
         flatCategoryList: state.flatCategoryList.filter((cat) => cat.categoryId !== id),
         categoryList: state.categoryList.filter((cat) => cat.categoryId !== id),

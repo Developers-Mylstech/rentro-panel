@@ -18,7 +18,7 @@ const useImageUploadStore = create((set) => ({
                 formData.append('files', files);
             }
 
-            const response = await axiosInstance.post(
+            const response = await axios.post(
                 'product-images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {

@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const useSpecificationFieldsStore = create((set) => ({
   specificationFields: [],
 
   addSpecificationField: async (fieldData) => {
     try {
-      const res = await axiosInstance.post('/specification-fields', fieldData);
+      const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/specification-fields', fieldData);
       set((state) => ({
         specificationFields: [...state.specificationFields, res.data]
       }));
@@ -20,7 +21,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   getAllSpecificationFields: async () => {
     try {
-      const res = await axiosInstance.get('/api/v1/specification-fields');
+      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields');
       set({ specificationFields: res?.data || [] });
       return res.data
     } catch (error) {
@@ -30,7 +31,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   removeSpecificationField: async (id) => {
     try {
-      await axiosInstance.delete(`/specification-fields/${id}`);
+      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`);
       set((state) => ({
         specificationFields: state.specificationFields.filter(field => field.id !== id)
       }));
@@ -43,7 +44,7 @@ const useSpecificationFieldsStore = create((set) => ({
   // Update specification field
   updateSpecificationField: async (id, updatedData) => {
     try {
-      await axiosInstance.put(`/specification-fields/${id}`, updatedData);
+      await axios.put(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`, updatedData);
       set((state) => ({
         specificationFields: state.specificationFields.map((field) =>
           field.id === id ? { ...field, ...updatedData } : field

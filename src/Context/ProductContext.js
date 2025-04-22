@@ -12,7 +12,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axiosInstance.post('/products', newProduct);
+      const response = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/products', newProduct);
       set((state) => ({
         products: [...state.products, response.data],
       }));
@@ -29,7 +29,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.get('https://your-api-endpoint.com/products');
+      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/pi/v1/products');
       set({ products: response.data });
 
     } catch (error) {
@@ -44,7 +44,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.put(`https://your-api-endpoint.com/products/${id}`, updatedProduct);
+      const response = await axios.put(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`, updatedProduct);
       set((state) => ({
         products: state.products.map((product) =>
           product.id === id ? { ...product, ...response.data } : product
@@ -63,7 +63,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      await axios.delete(`https://your-api-endpoint.com/products/${id}`);
+      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`);
       set((state) => ({
         products: state.products.filter((product) => product.id !== id),
       }));

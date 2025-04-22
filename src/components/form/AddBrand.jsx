@@ -165,6 +165,7 @@ import { InputText } from 'primereact/inputtext';
 import { useForm } from 'react-hook-form';
 import useBrandStore from '../../Context/BrandContext';
 import axiosInstance from '../../utils/axiosInstance';
+import axios from 'axios';
 
 export default function AddBrandWithImageUploader() {
     const { addBrand } = useBrandStore();
@@ -209,8 +210,8 @@ export default function AddBrandWithImageUploader() {
             setUploading(true);
             setMessage("");
 
-            const response = await axiosInstance.post(
-                'product-images/batch-upload?quality=80&fallbackToJpeg=true',
+            const response = await axios.post(
+                'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
