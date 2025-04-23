@@ -19,17 +19,26 @@ export default function CategoryList({ categoryList, removeCategory }) {
     category.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  // ✅ Called after confirmation
   const handleDelete = () => {
     if (categoryToDelete) {
       removeCategory(categoryToDelete);
+
+    
+
       setVisible(false);
       setCategoryToDelete(null);
     }
   };
 
+  // ✅ Just opens the confirmation dialog
   const showDeleteDialog = (id) => {
     setCategoryToDelete(id);
     setVisible(true);
+  };
+
+  const editCategory = (category) => {
+    navigate("/categories/add", { state: { category } });
   };
 
   const imageTemplate = (rowData) => {
@@ -53,6 +62,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
     <div className="flex gap-2">
       <Button
         icon="pi pi-pencil"
+        onClick={() => editCategory(rowData)}
         className="rounded-lg text-white bg-blue-500 p-2"
       />
       <Button
@@ -65,7 +75,6 @@ export default function CategoryList({ categoryList, removeCategory }) {
 
   return (
     <div className="dark:text-gray-200 p-6 w-full h-full">
-      {/* Header Section */}
       <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
         <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
           Category List
@@ -88,7 +97,6 @@ export default function CategoryList({ categoryList, removeCategory }) {
         </div>
       </div>
 
-      {/* Table Section */}
       <DataTable
         value={filteredCategories}
         paginator
@@ -124,7 +132,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
         />
       </DataTable>
 
-      {/* Mobile Grid Section */}
+      {/* Mobile Version */}
       <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
         {filteredCategories.map((category) => (
           <div
@@ -136,7 +144,6 @@ export default function CategoryList({ categoryList, removeCategory }) {
               alt={category.name}
               className="w-full h-36 object-cover"
             />
-
             <div className="p-4">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                 {category.name}
@@ -146,11 +153,11 @@ export default function CategoryList({ categoryList, removeCategory }) {
                   ? category.subCategories.map((sub) => sub.name || sub).join(", ")
                   : "No Subcategories"}
               </p>
-
               <div className="flex justify-center mt-4 gap-3">
                 <Button
                   icon="pi pi-pencil"
                   className="p-button-sm text-white p-2 w-full bg-green-300"
+                  onClick={() => editCategory(category)}
                 />
                 <Button
                   icon="pi pi-trash"

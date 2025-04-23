@@ -10,7 +10,7 @@ const useCategoryStore = create((set, get) => ({
 
   addCategory: async (category) => {
     try {
-      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/categories');
+      const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/categories',category);
       const allCategories = res?.data || [];
       
       set({ 
@@ -55,7 +55,13 @@ const useCategoryStore = create((set, get) => ({
 
   removeCategory: async (id) => {
     try {
-      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`);
+      const res = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`);
+
+      if(res.status==204){
+        alert(`Category  Deleted with Id ${id}`)
+      }
+
+    
       set((state) => ({
         flatCategoryList: state.flatCategoryList.filter(cat => cat._id !== id),
         categoryList: state.categoryList.filter(cat => cat._id !== id),
@@ -66,18 +72,32 @@ const useCategoryStore = create((set, get) => ({
     }
   },
 
-  editCategory: (id, updatedCategory) =>
-    set((state) => ({
-      flatCategoryList: state.flatCategoryList.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-      categoryList: state.categoryList.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-      subCategories: state.subCategories.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-    })),
-}));
+  handleEditCategory : async (id, updatedCategory) => {
+    try {
+      const response = await axios.put(
+        `https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`,
+        updatedCategory
+      );
+  
+      const updatedData = response.data;
+  
+      set((state) => ({
+        flatCategoryList: state.flatCategoryList.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+        categoryList: state.categoryList.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+        subCategories: state.subCategories.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update category:', error);
+    }
+  }
+} ))
+
+;
 
 export default useCategoryStore;

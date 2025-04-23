@@ -28,7 +28,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/pi/v1/products');
+      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/products');
       set({ products: response.data });
 
     } catch (error) {
