@@ -15,7 +15,7 @@ const useCategoryStore = create((set, get) => ({
       
       set({ 
         flatCategoryList: allCategories,
-        categoryList: allCategories.filter(cat => !cat.parentCategoryId), // Main categories only
+        categoryList: allCategories.filter(cat => !cat.parentCategoryId),
       });
     } catch (error) {
       console.error("Failed to add category:", error);
@@ -46,7 +46,7 @@ const useCategoryStore = create((set, get) => ({
         categoryList: mainCats,
       });
 
-      return mainCats; // ✅ return for use in components
+      return mainCats; 
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];
