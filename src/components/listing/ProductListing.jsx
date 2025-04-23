@@ -214,7 +214,7 @@ export default function ProductListing() {
 
         </div>
       </Dialog>
-      <PdfUploader/>
+      {/* <PdfUploader/> */}
     </div>
   );
 }
