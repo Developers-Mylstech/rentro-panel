@@ -17,6 +17,7 @@ import { FaSpinner } from "react-icons/fa";
 
 const DemoProduct = () => {
     const { createProduct } = useProductStore()
+    const [loading, setLoading]= useState(false)
     const [productData, setProductData] = useState({
         basicInfo: {
             name: '',
@@ -86,8 +87,10 @@ const DemoProduct = () => {
 
         if (payload?.categoryId && payload?.brandId) {
             try {
+                setLoading(true)
                 const response = await createProduct(payload);
                 if (response.name) {
+                    setLoading(false)
                     alert("Product created successfully!");
                 }
             } catch (error) {
@@ -140,7 +143,7 @@ const DemoProduct = () => {
                             type="submit"
                             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                         >
-                            Submit Product
+                           {loading ? <FaSpinner className='animate-spin'/> :'Add New Product '}
                         </button>
                     </div>
                 </form>
@@ -305,24 +308,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
                         rows={5}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition duration-150"
                     />
-                    <div className="flex justify-between items-center">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Supports basic HTML formatting</p>
-                        <button
-                            type="button"
-                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center"
-                            onClick={() => {
-                                onChange('basicInfo', 'longDescription',
-                                    (data.longDescription || '') +
-                                    '\n\n<ul>\n  <li>Feature 1</li>\n  <li>Feature 2</li>\n  <li>Feature 3</li>\n</ul>'
-                                );
-                            }}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Insert features template
-                        </button>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -1345,7 +1331,6 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
     }, []);
 
     useEffect(() => {
-        // Filter out empty strings before sending to parent
         const nonEmptyFeatures = keyFeatures.filter(feature => feature.trim() !== '');
         onChange('keyFeatures', null, nonEmptyFeatures);
     }, [keyFeatures ]);
