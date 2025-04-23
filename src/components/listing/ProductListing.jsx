@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useProductStore from "../../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import { Skeleton } from 'primereact/skeleton';
+import { Toast } from "primereact/toast";
+import PdfUploader from "../widget/PdfUploader";
 
 export default function ProductListing() {
   const [search, setSearch] = useState('');
@@ -10,13 +12,23 @@ export default function ProductListing() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
+  const toast = useRef(null);
+
   const { getProducts, products, deleteProduct, loading } = useProductStore();
 
   useEffect(() => {
     getProducts();
   }, []);
 
-  // Transform product data for table display
+  const showToast = (severity, summary, detail) => {
+    toast.current.show({ 
+      severity, 
+      summary, 
+      detail, 
+      life: 3000 
+    });
+  };
+
   const tableData = products.map(product => ({
     id: product.productId,
     image: product.imageUrls?.[0] || '',
@@ -28,7 +40,6 @@ export default function ProductListing() {
     yearlyPrice: product.productFor?.rent?.discountPrice || 0
   }));
 
-  // Filter products based on search
   const filteredProducts = tableData.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
     product.sku.toLowerCase().includes(search.toLowerCase())
@@ -36,21 +47,27 @@ export default function ProductListing() {
 
   const confirmDelete = (product) => {
     setSelectedProduct(product);
-    setVisible(true); // Show dialog
+    setVisible(true);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedProduct) {
       setDeleting(true);
-      const res = await deleteProduct(selectedProduct.id);
-      setDeleting(false);
-      if (res?.success) {
-        alert("Item Deleted");
+      try {
+        const res = await deleteProduct(selectedProduct.id);
+        if (res?.success) {
+          showToast('success', 'Success', 'Product deleted successfully');
+          getProducts();
+        } else {
+          showToast('error', 'Error', 'Failed to delete product');
+        }
+      } catch (error) {
+        showToast('error', 'Error', 'An error occurred while deleting');
+        console.error('Delete error:', error);
+      } finally {
+        setDeleting(false);
         setVisible(false);
         setSelectedProduct(null);
-        getProducts();
-      } else {
-        alert("Failed to delete item");
       }
     }
   };
@@ -58,6 +75,7 @@ export default function ProductListing() {
 
   return (
     <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-4">
+      <Toast ref={toast} position="top-right" />
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold">Products List</h2>
@@ -84,6 +102,7 @@ export default function ProductListing() {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SKU</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
@@ -98,7 +117,7 @@ export default function ProductListing() {
             {loading ? (
               [...Array(5)].map((_, i) => (
                 <tr key={i}>
-                  {[...Array(8)].map((_, j) => (
+                  {[...Array(9)].map((_, j) => (
                     <td key={j} className="px-6 py-4">
                       <Skeleton width="100%" height="2rem" className="rounded" />
                     </td>
@@ -106,64 +125,66 @@ export default function ProductListing() {
                 </tr>
               ))
             ) : (
-              filteredProducts.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {product.image && (
-                      <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    {product.sku}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {product.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {product.category}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
-                      }`}>
-                      {product.quantity}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    AED {product.monthlyPrice.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    AED {product.yearlyPrice.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => navigate(`/products/edit/${product.id}`)}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                        title="Edit"
-                      >
-                        <i className="pi pi-pencil"></i>
-                      </button>
-                      <button
-                        onClick={() => confirmDelete(product)}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                        title="Delete"
-                      >
-                        <i className="pi pi-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+              filteredProducts.map((product) => {
+                return (
+                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.id}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.image && (
+                        <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                      {product.sku}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {product.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {product.category}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
+                        }`}>
+                        {product.quantity}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      AED {product.monthlyPrice.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      AED {product.yearlyPrice.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => navigate(`/products/edit/${product.id}`)}
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                          title="Edit"
+                        >
+                          <i className="pi pi-pencil"></i>
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(product)}
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                          title="Delete"
+                        >
+                          <i className="pi pi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
             )}
           </tbody>
 
         </table>
-            {filteredProducts.length === 0 && !loading && <p className="text-center p-5 font-semibold uppercase w-full text-xs">No Product</p>}
+        {filteredProducts.length === 0 && !loading && <p className="text-center p-5 font-semibold uppercase w-full text-xs">No Product</p>}
       </div>
 
-
-
-      {/* Delete Confirmation Dialog */}
       <Dialog
         header="Confirmation"
         visible={visible}
@@ -193,6 +214,7 @@ export default function ProductListing() {
 
         </div>
       </Dialog>
+      <PdfUploader/>
     </div>
   );
 }

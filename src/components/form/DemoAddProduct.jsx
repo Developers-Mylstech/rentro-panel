@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useCategoryStore from '../../Context/CategoryContext';
 import useImageUploadStore from '../../Context/ImageUploadContext';
 import useBrandStore from '../../Context/BrandContext';
@@ -12,12 +12,15 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { FiSend, FiTrash2, FiUpload, FiUploadCloud, FiX } from 'react-icons/fi';
 import { FaSpinner } from "react-icons/fa";
+import { Toast } from 'primereact/toast';
 
 
 
 const DemoProduct = () => {
     const { createProduct } = useProductStore()
-    const [loading, setLoading]= useState(false)
+    const [loading, setLoading] = useState(false)
+    const toast = useRef(null);
+
     const [productData, setProductData] = useState({
         basicInfo: {
             name: '',
@@ -80,6 +83,14 @@ const DemoProduct = () => {
         });
     };
 
+    const showToast = (severity, summary, detail) => {
+        toast.current.show({
+            severity: severity,
+            summary: summary,
+            detail: detail,
+            life: 3000
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -91,13 +102,17 @@ const DemoProduct = () => {
                 const response = await createProduct(payload);
                 if (response.name) {
                     setLoading(false)
-                    alert("Product created successfully!");
+                    showToast('success', 'Success', 'Product created successfully!');
+                    
+                    // alert("Product created successfully!");
                 }
             } catch (error) {
-                alert("Error occurred while creating the product.");
+                setLoading(false);
+                showToast('error', 'Error', 'Failed to create product. Please try again.');
+                console.error('Error creating product:', error);
             }
         } else {
-            alert('Please make sure Category and Brand fields are filled.');
+            showToast('warn', 'Warning', 'Please make sure Category and Brand fields are filled.');
         }
     };
 
@@ -105,6 +120,8 @@ const DemoProduct = () => {
 
     return (
         <div className="mx-auto px-4 py-8">
+                        <Toast ref={toast} position="top-right" />
+
             <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
                     Add New Product
@@ -143,7 +160,7 @@ const DemoProduct = () => {
                             type="submit"
                             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                         >
-                           {loading ? <FaSpinner className='animate-spin'/> :'Add New Product '}
+                            {loading ? <FaSpinner className='animate-spin' /> : 'Add New Product '}
                         </button>
                     </div>
                 </form>
@@ -308,7 +325,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
                         rows={5}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition duration-150"
                     />
-                    
+
                 </div>
             </div>
         </div>
@@ -1311,7 +1328,7 @@ const InventorySection = ({ inventory, onChange }) => {
                 <div className={`px-3 py-1.5 rounded-full text-xs font-medium ${inventory.stockStatus === 'OUT_OF_STOCK' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
                     Out of Stock
                 </div>
-                
+
             </div>
         </div>
     );
@@ -1333,7 +1350,7 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
     useEffect(() => {
         const nonEmptyFeatures = keyFeatures.filter(feature => feature.trim() !== '');
         onChange('keyFeatures', null, nonEmptyFeatures);
-    }, [keyFeatures ]);
+    }, [keyFeatures]);
 
     const handleFeatureChange = (index, value) => {
         const updatedFeatures = [...keyFeatures];
@@ -1380,7 +1397,7 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
                                 onChange={(e) => handleFeatureChange(index, e.target.value)}
                                 placeholder={`Describe feature #${index + 1}...`}
                                 rows={2}
-                                
+
                                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all resize-y"
                             />
                         </div>
@@ -1417,247 +1434,244 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
 
 
 
-  
-  const ImageUploader = ({ images, onChange }) => {
-      const { uploadFiles, isLoading } = useImageUploadStore();
-      const [selectedFiles, setSelectedFiles] = useState([]);
-      const [isDragging, setIsDragging] = useState(false);
-  
-      const handleChooseFiles = async (e) => {
-          const files = Array.from(e.target.files || e.dataTransfer.files);
-          await validateAndSetFiles(files);
-      };
-  
-      const validateAndSetFiles = async (files) => {
-          const validImages = [];
-  
-          for (const file of files) {
-              const image = new Image();
-              const objectUrl = URL.createObjectURL(file);
-  
-              const isValid = await new Promise((resolve) => {
-                  image.onload = () => {
-                      const is500x500 = image.width === 500 && image.height === 500;
-                      const isUnder500KB = file.size <= 500 * 1024;
-                      URL.revokeObjectURL(objectUrl);
-                      resolve(is500x500 && isUnder500KB);
-                  };
-                  image.onerror = () => resolve(false);
-                  image.src = objectUrl;
-              });
-  
-              if (isValid) {
-                  validImages.push(file);
-              } else {
-                  const sizeKB = (file.size / 1024).toFixed(2);
-                  alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
-              }
-          }
-  
-          setSelectedFiles(prev => [...prev, ...validImages]);
-      };
-  
-      const handleDragOver = (e) => {
-          e.preventDefault();
-          setIsDragging(true);
-      };
-  
-      const handleDragLeave = () => {
-          setIsDragging(false);
-      };
-  
-      const handleDrop = (e) => {
-          e.preventDefault();
-          setIsDragging(false);
-          handleChooseFiles(e);
-      };
-  
-      const resetImage = () => {
-          setSelectedFiles([]);
-      };
-  
-      const removeImage = (name) => {
-          setSelectedFiles(prev => prev.filter((e) => e.name !== name));
-      };
-  
-      const removeUploadedImage = (index) => {
-          const newImages = [...images];
-          newImages.splice(index, 1);
-          onChange(newImages);
-      };
-  
-      const handleUpload = async () => {
-          if (selectedFiles.length === 0) return;
-          const uploaded = await uploadFiles(selectedFiles);
-          if (uploaded) {
-              onChange([...images, ...uploaded]);
-              setSelectedFiles([]);
-          }
-      };
-  
-      return (
-          <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
-                  Product Images
-              </h2>
-  
-              <div className="space-y-4">
-                  {/* Upload Area */}
-                  <div 
-                      className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${
-                          isDragging 
-                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-                      }`}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                  >
-                      <div className="flex flex-col items-center justify-center space-y-3">
-                          <FiUploadCloud className="h-10 w-10 text-gray-400 dark:text-gray-500" />
-                          <div className="flex flex-col items-center">
-                              <p className="text-sm text-gray-600 dark:text-gray-300">
-                                  <span className="font-medium text-blue-600 dark:text-blue-400">
-                                      Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  Only 500×500px images (max 500KB)
-                              </p>
-                          </div>
-                          <label
-                              htmlFor="file-upload"
-                              className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition dark:bg-blue-700 dark:hover:bg-blue-800"
-                          >
-                              <FiUpload className="h-4 w-4 mr-2" />
-                              Select Files
-                          </label>
-                          <input
-                              id="file-upload"
-                              type="file"
-                              multiple
-                              accept="image/*"
-                              onChange={handleChooseFiles}
-                              className="hidden"
-                          />
-                      </div>
-                  </div>
-  
-                  {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center gap-3">
-                      <button
-                          onClick={handleUpload}
-                          disabled={isLoading || selectedFiles.length === 0}
-                          className={`flex items-center px-4 py-2 rounded-md text-white transition ${
-                              selectedFiles.length === 0 || isLoading
-                                  ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
-                                  : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
-                          }`}
-                      >
-                          {isLoading ? (
-                              <>
-                                  <FaSpinner className="h-4 w-4 mr-2 animate-spin" />
-                                  Uploading...
-                              </>
-                          ) : (
-                              <>
-                                  <FiSend className="h-4 w-4 mr-2" />
-                                  Upload {selectedFiles.length > 0 && `(${selectedFiles.length})`}
-                              </>
-                          )}
-                      </button>
-                      
-                      <button
-                          onClick={resetImage}
-                          disabled={isLoading || selectedFiles.length === 0}
-                          className={`flex items-center px-4 py-2 rounded-md transition ${
-                              selectedFiles.length === 0 || isLoading
-                                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                                  : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
-                          }`}
-                      >
-                          <FiTrash2 className="h-4 w-4 mr-2" />
-                          Clear Selection
-                      </button>
-                  </div>
-  
-                  {/* Selected Files Preview */}
-                  {selectedFiles.length > 0 && (
-                      <div className="space-y-3">
-                          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                              Selected Images ({selectedFiles.length})
-                          </h3>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                              {selectedFiles.map((file, index) => (
-                                  <div 
-                                      key={index} 
-                                      className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
-                                  >
-                                      <img
-                                          src={URL.createObjectURL(file)}
-                                          alt={`Preview ${index + 1}`}
-                                          className="w-full h-full object-cover"
-                                      />
-                                      {index === 0 && (
-                                          <span className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md shadow">
-                                              Main
-                                          </span>
-                                      )}
-                                      <button
-                                          onClick={() => removeImage(file.name)}
-                                          className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
-                                      >
-                                          <FiX className="h-4 w-4 text-red-500" />
-                                      </button>
-                                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                                          <p className="text-xs text-white truncate">{file.name}</p>
-                                          <p className="text-xs text-white/80">{(file.size / 1024).toFixed(1)}KB</p>
-                                      </div>
-                                  </div>
-                              ))}
-                          </div>
-                      </div>
-                  )}
-  
-                  {/* Uploaded Images */}
-                  {images.length > 0 && (
-                      <div className="space-y-3">
-                          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                              Uploaded Images ({images.length})
-                          </h3>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                              {images.map((img, index) => (
-                                  <div 
-                                      key={index} 
-                                      className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
-                                  >
-                                      <img
-                                          src={img?.url?.fileUrl}
-                                          alt={`Product ${index + 1}`}
-                                          className="w-full h-full object-cover"
-                                      />
-                                      {index === 0 && (
-                                          <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
-                                              Main
-                                          </span>
-                                      )}
-                                      <button
-                                          onClick={() => removeUploadedImage(index)}
-                                          className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
-                                      >
-                                          <FiX className="h-4 w-4 text-red-500" />
-                                      </button>
-                                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                                          <p className="text-xs text-white truncate">Uploaded {index + 1}</p>
-                                      </div>
-                                  </div>
-                              ))}
-                          </div>
-                      </div>
-                  )}
-              </div>
-          </section>
-      );
-  };
+
+const ImageUploader = ({ images, onChange }) => {
+    const { uploadFiles, isLoading } = useImageUploadStore();
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleChooseFiles = async (e) => {
+        const files = Array.from(e.target.files || e.dataTransfer.files);
+        await validateAndSetFiles(files);
+    };
+
+    const validateAndSetFiles = async (files) => {
+        const validImages = [];
+
+        for (const file of files) {
+            const image = new Image();
+            const objectUrl = URL.createObjectURL(file);
+
+            const isValid = await new Promise((resolve) => {
+                image.onload = () => {
+                    const is500x500 = image.width === 500 && image.height === 500;
+                    const isUnder500KB = file.size <= 500 * 1024;
+                    URL.revokeObjectURL(objectUrl);
+                    resolve(is500x500 && isUnder500KB);
+                };
+                image.onerror = () => resolve(false);
+                image.src = objectUrl;
+            });
+
+            if (isValid) {
+                validImages.push(file);
+            } else {
+                const sizeKB = (file.size / 1024).toFixed(2);
+                alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
+            }
+        }
+
+        setSelectedFiles(prev => [...prev, ...validImages]);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        handleChooseFiles(e);
+    };
+
+    const resetImage = () => {
+        setSelectedFiles([]);
+    };
+
+    const removeImage = (name) => {
+        setSelectedFiles(prev => prev.filter((e) => e.name !== name));
+    };
+
+    const removeUploadedImage = (index) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
+        onChange(newImages);
+    };
+
+    const handleUpload = async () => {
+        if (selectedFiles.length === 0) return;
+        const uploaded = await uploadFiles(selectedFiles);
+        if (uploaded) {
+            onChange([...images, ...uploaded]);
+            setSelectedFiles([]);
+        }
+    };
+
+    return (
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
+                Product Images
+            </h2>
+
+            <div className="space-y-4">
+                {/* Upload Area */}
+                <div
+                    className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${isDragging
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                        }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                >
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                        <FiUploadCloud className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+                        <div className="flex flex-col items-center">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                <span className="font-medium text-blue-600 dark:text-blue-400">
+                                    Click to upload
+                                </span>{' '}
+                                or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Only 500×500px images (max 500KB)
+                            </p>
+                        </div>
+                        <label
+                            htmlFor="file-upload"
+                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition dark:bg-blue-700 dark:hover:bg-blue-800"
+                        >
+                            <FiUpload className="h-4 w-4 mr-2" />
+                            Select Files
+                        </label>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleChooseFiles}
+                            className="hidden"
+                        />
+                    </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-3">
+                    <button
+                        onClick={handleUpload}
+                        disabled={isLoading || selectedFiles.length === 0}
+                        className={`flex items-center px-4 py-2 rounded-md text-white transition ${selectedFiles.length === 0 || isLoading
+                                ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                                : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                            }`}
+                    >
+                        {isLoading ? (
+                            <>
+                                <FaSpinner className="h-4 w-4 mr-2 animate-spin" />
+                                Uploading...
+                            </>
+                        ) : (
+                            <>
+                                <FiSend className="h-4 w-4 mr-2" />
+                                Upload {selectedFiles.length > 0 && `(${selectedFiles.length})`}
+                            </>
+                        )}
+                    </button>
+
+                    <button
+                        onClick={resetImage}
+                        disabled={isLoading || selectedFiles.length === 0}
+                        className={`flex items-center px-4 py-2 rounded-md transition ${selectedFiles.length === 0 || isLoading
+                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
+                            }`}
+                    >
+                        <FiTrash2 className="h-4 w-4 mr-2" />
+                        Clear Selection
+                    </button>
+                </div>
+
+                {/* Selected Files Preview */}
+                {selectedFiles.length > 0 && (
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Selected Images ({selectedFiles.length})
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {selectedFiles.map((file, index) => (
+                                <div
+                                    key={index}
+                                    className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
+                                >
+                                    <img
+                                        src={URL.createObjectURL(file)}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {index === 0 && (
+                                        <span className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md shadow">
+                                            Main
+                                        </span>
+                                    )}
+                                    <button
+                                        onClick={() => removeImage(file.name)}
+                                        className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
+                                    >
+                                        <FiX className="h-4 w-4 text-red-500" />
+                                    </button>
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                                        <p className="text-xs text-white truncate">{file.name}</p>
+                                        <p className="text-xs text-white/80">{(file.size / 1024).toFixed(1)}KB</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Uploaded Images */}
+                {images.length > 0 && (
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Uploaded Images ({images.length})
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {images.map((img, index) => (
+                                <div
+                                    key={index}
+                                    className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
+                                >
+                                    <img
+                                        src={img?.url?.fileUrl}
+                                        alt={`Product ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {index === 0 && (
+                                        <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
+                                            Main
+                                        </span>
+                                    )}
+                                    <button
+                                        onClick={() => removeUploadedImage(index)}
+                                        className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
+                                    >
+                                        <FiX className="h-4 w-4 text-red-500" />
+                                    </button>
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                                        <p className="text-xs text-white truncate">Uploaded {index + 1}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
+};
 
