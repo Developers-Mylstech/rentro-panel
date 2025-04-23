@@ -14,9 +14,8 @@ const SpecificationFields = ({ specs, onChange }) => {
 
   useEffect(() => {
     getAllSpecificationFields();
-  }, [getAllSpecificationFields]);
+  }, []);
 
-console.log(customFields)
   const handleAddNewField = () => {
     if (!newFieldName.trim()) return;
 
@@ -26,14 +25,9 @@ console.log(customFields)
     };
 
     setSelectedSpecification(prev => [...prev, newSpec]);
-
     setCustomFields(prev => [
       ...prev,
-      { 
-        specificationFieldId: newSpec.specificationFieldId,
-        name: newSpec.name,
-        value: '' 
-      }
+      { specificationFieldId: newSpec.specificationFieldId, name: newSpec.name, value: '' }
     ]);
 
     setNewFieldName('');
@@ -46,31 +40,23 @@ console.log(customFields)
         name: f.name,
         value: f.value
       }));
-  
-      // Call with correct shape — don't use 'specifications' as field name
       onChange('specifications', null, formattedFields);
     }
   }, [customFields]);
-  
-  
-  
 
   const handleSpecificationChange = (selectedValues) => {
     setSelectedSpecification(selectedValues);
-
     const existingFieldsMap = customFields.reduce((acc, field) => {
       acc[field.specificationFieldId] = field;
       return acc;
     }, {});
-
-    const updatedFields = selectedValues.map(spec => {
-      return existingFieldsMap[spec.specificationFieldId] || { 
+    const updatedFields = selectedValues.map(spec => (
+      existingFieldsMap[spec.specificationFieldId] || {
         specificationFieldId: spec.specificationFieldId,
         name: spec.name,
-        value: '' 
-      };
-    });
-
+        value: ''
+      }
+    ));
     setCustomFields(updatedFields);
   };
 
@@ -85,13 +71,13 @@ console.log(customFields)
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex md:flex-row flex-col justify-between items-center w-full">
-        <label className="font-semibold text-gray-500 text-left w-full md:w-auto my-2">
+    <div className="flex flex-col gap-6 w-full text-gray-800 dark:text-gray-200">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
+        <label className="font-semibold text-gray-700 dark:text-gray-300 text-left w-full md:w-auto">
           Specifications
         </label>
 
-        <div className="flex flex-col md:flex-row justify-between gap-2 md:w-[70%] w-full">
+        <div className="flex flex-col md:flex-row gap-3 md:w-[70%] w-full">
           <MultiSelect
             value={selectedSpecification}
             onChange={(e) => handleSpecificationChange(e.value)}
@@ -99,30 +85,30 @@ console.log(customFields)
             optionLabel="name"
             filter
             placeholder="Select Specifications"
-            className="w-full md:w-[40%] border"
+            className="w-full md:w-[60%] border dark:bg-gray-800 dark:text-white dark:border-gray-600"
           />
 
           {!showNewFieldInput ? (
             <button
               type="button"
               onClick={() => setShowNewFieldInput(true)}
-              className="flex justify-center items-center"
+              className="flex justify-center items-center p-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition"
             >
-              <FiPlus className="p-2 bg-secondary text-white rounded text-4xl md:w-auto w-16" />
+              <FiPlus className="text-2xl" />
             </button>
           ) : (
-            <div className="flex gap-2 w-full ml-auto">
+            <div className="flex gap-2 w-full md:w-[40%]">
               <input
                 type="text"
                 value={newFieldName}
                 onChange={(e) => setNewFieldName(e.target.value)}
-                className="p-2 border rounded w-full"
-                placeholder="Enter new specification name"
+                className="p-2 border rounded-md w-full dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                placeholder="New specification name"
               />
               <button
                 type="button"
                 onClick={handleAddNewField}
-                className="bg-secondary text-white rounded p-2"
+                className="bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition"
               >
                 <IoMdSave />
               </button>
@@ -132,13 +118,13 @@ console.log(customFields)
       </div>
 
       {customFields.length > 0 && (
-        <div className="flex flex-col gap-3 w-full my-2">
+        <div className="flex flex-col gap-4 w-full mt-4">
           {customFields.map((field) => (
             <div
               key={field.specificationFieldId}
-              className="flex justify-between items-center"
+              className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2"
             >
-              <label className="font-medium text-gray-500">
+              <label className="font-medium text-gray-600 dark:text-gray-300">
                 {field.name}
               </label>
               <input
@@ -147,7 +133,7 @@ console.log(customFields)
                 onChange={(e) =>
                   handleCustomFieldChange(field.specificationFieldId, e.target.value)
                 }
-                className="w-[70%] p-2 border rounded"
+                className="w-full md:w-[70%] p-2 border rounded-md dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                 placeholder={`Enter ${field.name} value`}
               />
             </div>

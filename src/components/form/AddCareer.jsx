@@ -40,7 +40,6 @@ function AddCareer() {
     try {
       let imageUrl = '';
 
-      // Step 1: Upload the image
       if (formData.image) {
         const imageData = new FormData();
         imageData.append('file', formData.image);
@@ -49,7 +48,7 @@ function AddCareer() {
         imageUrl = uploadRes?.data?.fileUrl;
       }
 
-      // Step 2: Post job data
+
       const payload = {
         jobTitle: formData.heading,
         jobDescription: formData.description,

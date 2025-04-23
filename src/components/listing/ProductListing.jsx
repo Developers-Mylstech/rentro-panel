@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import useProductStore from "../../Context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
+import { Skeleton } from 'primereact/skeleton';
 
 export default function ProductListing() {
   const [search, setSearch] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
-  const { getProducts, products , deleteProduct} = useProductStore();
-  
+  const { getProducts, products, deleteProduct, loading } = useProductStore();
+
   useEffect(() => {
     getProducts();
   }, []);
@@ -27,7 +29,7 @@ export default function ProductListing() {
   }));
 
   // Filter products based on search
-  const filteredProducts = tableData.filter(product => 
+  const filteredProducts = tableData.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
     product.sku.toLowerCase().includes(search.toLowerCase())
   );
@@ -36,26 +38,27 @@ export default function ProductListing() {
     setSelectedProduct(product);
     setVisible(true); // Show dialog
   };
-  
+
   const handleConfirmDelete = async () => {
     if (selectedProduct) {
+      setDeleting(true);
       const res = await deleteProduct(selectedProduct.id);
-  console.log(res)
-      if (res?.data) {
+      setDeleting(false);
+      if (res?.success) {
         alert("Item Deleted");
         setVisible(false);
         setSelectedProduct(null);
-        getProducts(); // Refresh the list
+        getProducts();
       } else {
         alert("Failed to delete item");
       }
     }
   };
-  
+
 
   return (
     <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-4">
-      {/* Header Section */}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold">Products List</h2>
         <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
@@ -92,65 +95,73 @@ export default function ProductListing() {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredProducts.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {product.image && (
-                    <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                  {product.sku}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                  {product.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                  {product.category}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
-                  }`}>
-                    {product.quantity}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                  AED {product.monthlyPrice.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                  AED {product.yearlyPrice.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => navigate(`/products/edit/${product.id}`)}
-                      className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                      title="Edit"
-                    >
-                      <i className="pi pi-pencil"></i>
-                    </button>
-                    <button
-                      onClick={() => confirmDelete(product)}
-                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                      title="Delete"
-                    >
-                      <i className="pi pi-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              [...Array(5)].map((_, i) => (
+                <tr key={i}>
+                  {[...Array(8)].map((_, j) => (
+                    <td key={j} className="px-6 py-4">
+                      <Skeleton width="100%" height="2rem" className="rounded" />
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              filteredProducts.map((product) => (
+                <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {product.image && (
+                      <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {product.sku}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    {product.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    {product.category}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                      {product.quantity}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    AED {product.monthlyPrice.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                    AED {product.yearlyPrice.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => navigate(`/products/edit/${product.id}`)}
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                        title="Edit"
+                      >
+                        <i className="pi pi-pencil"></i>
+                      </button>
+                      <button
+                        onClick={() => confirmDelete(product)}
+                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                        title="Delete"
+                      >
+                        <i className="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
+
         </table>
+            {filteredProducts.length === 0 && !loading && <p className="text-center p-5 font-semibold uppercase w-full text-xs">No Product</p>}
       </div>
 
-      {/* Empty State */}
-      {filteredProducts.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">No products found</p>
-        </div>
-      )}
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -171,10 +182,15 @@ export default function ProductListing() {
           </button>
           <button
             onClick={handleConfirmDelete}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+            disabled={deleting}
+            className={`px-4 py-2 text-white rounded-md ${deleting ? 'bg-red-300' : 'bg-red-500 hover:bg-red-600'}`}
           >
-            Delete
+            {deleting ? (
+              <i className="pi pi-spin pi-spinner mr-2"></i>
+            ) : null}
+            {deleting ? 'Deleting...' : 'Delete'}
           </button>
+
         </div>
       </Dialog>
     </div>

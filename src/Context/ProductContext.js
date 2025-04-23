@@ -28,7 +28,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.get('/api/api/v1/products');
+      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/products');
       set({ products: response.data });
 
     } catch (error) {
@@ -58,21 +58,25 @@ const useProductStore = create((set) => ({
   },
 
   // Delete product
-  deleteProduct: async (id) => {
-    try {
-      set({ loading: true, error: null });
+  // Delete product
+deleteProduct: async (id) => {
+  try {
+    set({ loading: true, error: null });
 
-      await axiosInstance.delete(`products/${id}`);
-      set((state) => ({
-        products: state.products.filter((product) => product.id !== id),
-      }));
+    const response = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`);
+    set((state) => ({
+      products: state.products.filter((product) => product.productId !== id), // Ensure you're matching the correct key (e.g., productId)
+    }));
 
-    } catch (error) {
-      set({ error: error.message });
-    } finally {
-      set({ loading: false });
-    }
-  },
+    return { success: true }; // ✅ return something so you can check success
+  } catch (error) {
+    set({ error: error.message });
+    return { success: false, error: error.message }; // ✅ also return failure info
+  } finally {
+    set({ loading: false });
+  }
+},
+
 }));
 
 export default useProductStore;

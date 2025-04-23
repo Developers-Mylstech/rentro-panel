@@ -14,7 +14,8 @@ const SpecificationFields = () => {
 
   useEffect(() => {
     getAllSpecificationFields();
-  }, [getAllSpecificationFields]);
+  }, []);
+  
 
   const handleAddNewField = () => {
     if (!newFieldName.trim()) return;

@@ -40,8 +40,8 @@ export default function AddCategory() {
 
     try {
       await addCategory(payload);
-      await getAllCategories();
       alert('Added Category')
+      await getAllCategories();
 
       setMainCategory('');
       setSubCategory('');
