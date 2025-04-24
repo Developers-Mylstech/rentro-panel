@@ -23,10 +23,8 @@ const useBrandStore = create((set) => ({
     getAllBrands: async () => {
         try {
             const res = await axios.get('/api/brands');
-            if (!res.ok) {
-                throw new Error('Network response was not ok');
-            }
-            set({ brands: data || [] });
+           
+            set({ brands: res?.data || [] });
         } catch (error) {
             alert("Fetching data  due to backend issue");
         }
