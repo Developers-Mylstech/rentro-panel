@@ -2,7 +2,7 @@ import axios from 'axios';
 import { VITE_APP_KEY } from '../env';
 
 const axiosInstance = axios.create({
-    baseURL: "/api/api/v1",
+    baseURL: "/api",
 });
 
 

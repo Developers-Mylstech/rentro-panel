@@ -10,7 +10,7 @@ const useCategoryStore = create((set, get) => ({
 
   addCategory: async (category) => {
     try {
-      const response = await axios.post(' https://proud-expression-production-6ebc.up.railway.app/api/v1/categories', category);
+      const response = await axios.post('/api/categories', category);
       const newCategory = response.data;
 
       set((state) => ({
@@ -38,7 +38,11 @@ const useCategoryStore = create((set, get) => ({
  
   getAllCategories: async () => {
     try {
-      const res = await axios.get(' https://proud-expression-production-6ebc.up.railway.app/api/v1/categories');
+      const res = await axios.get(' /api/categories',{
+        headers: {
+          'skip_zrok_interstitial': 'true'
+      },
+      });
       const allCategories = res?.data || [];
 
       const mainCats = allCategories.filter(cat => !cat.parentCategoryId);

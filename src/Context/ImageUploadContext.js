@@ -18,11 +18,12 @@ const useImageUploadStore = create((set) => ({
             }
 
             const response = await axios.post(
-                'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+                '/api/product-images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
+                        'skip_zrok_interstitial': 'true'
                     },
                 }
             );

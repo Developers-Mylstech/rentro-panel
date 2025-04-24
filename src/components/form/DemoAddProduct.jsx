@@ -27,7 +27,10 @@ const DemoProduct = () => {
             description: '',
             shortDescription: '',
             longDescription: '',
-            manufacturer: ''
+            manufacturer: '',
+            supplierName: '',
+            supplierCode: '',
+            modelNo: '',
         },
         category: {
             main: null,
@@ -95,7 +98,6 @@ const DemoProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
-
         if (payload?.categoryId && payload?.brandId) {
             try {
                 setLoading(true)
@@ -103,8 +105,6 @@ const DemoProduct = () => {
                 if (response.name) {
                     setLoading(false)
                     showToast('success', 'Success', 'Product created successfully!');
-                    
-                    // alert("Product created successfully!");
                 }
             } catch (error) {
                 setLoading(false);
@@ -120,7 +120,7 @@ const DemoProduct = () => {
 
     return (
         <div className="mx-auto px-4 py-8">
-                        <Toast ref={toast} position="top-right" />
+            <Toast ref={toast} position="top-right" />
 
             <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
@@ -183,6 +183,9 @@ const preparePayload = (productData) => {
             name: spec.name,
             value: spec.value
         })),
+        modelNo: productData.basicInfo.modelNo,
+        supplierName: productData.basicInfo.supplierName,
+        supplierCode: productData.basicInfo.supplierCode,
         productFor: {
             sell: {
                 actualPrice: productData.pricing?.sell?.price || 0,
@@ -255,7 +258,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Product Name */}
+
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Name</label>
@@ -272,8 +275,20 @@ const ProductBasicInfo = ({ data, onChange }) => {
                         <p className="text-xs text-red-500 mt-1">Product name is required</p>
                     )}
                 </div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
+                    </div>
+                    <input
+                        value={data.modelNo}
+                        onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
+                        required
+                        placeholder="Enter Model No."
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition duration-150"
+                    />
 
-                {/* Manufacturer */}
+                </div>
+
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
                     <div className="relative">
@@ -297,7 +312,51 @@ const ProductBasicInfo = ({ data, onChange }) => {
                     </div>
                 </div>
 
-                {/* Short Description */}
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
+                    <div className="relative">
+                        <input
+                            value={data.supplierName}
+                            onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
+                            placeholder="Enter Supplier Name"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition duration-150"
+                        />
+                        {data.supplierName && (
+                            <button
+                                onClick={() => onChange('basicInfo', 'supplierName', '')}
+                                className="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                aria-label="Clear manufacturer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
+                    <div className="relative">
+                        <input
+                            value={data.supplierCode}
+                            onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
+                            placeholder="Enter Supplier Code"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition duration-150"
+                        />
+                        {data.supplierCode && (
+                            <button
+                                onClick={() => onChange('basicInfo', 'supplierCode', '')}
+                                className="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                aria-label="Clear manufacturer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
                 <div className="space-y-2 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                     <div className="relative">
@@ -354,8 +413,8 @@ const CategoryBrandSelection = ({ category, brand, onChange }) => {
     const [selectedBrand, setSelectedBrand] = useState(null);
 
     useEffect(() => {
-        getAllBrands();
         getAllCategories();
+        getAllBrands();
     }, []);
 
     const filteredCategories = flatCategoryList.filter(cat =>
@@ -1522,8 +1581,8 @@ const ImageUploader = ({ images, onChange }) => {
                 {/* Upload Area */}
                 <div
                     className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${isDragging
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                         }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -1566,8 +1625,8 @@ const ImageUploader = ({ images, onChange }) => {
                         onClick={handleUpload}
                         disabled={isLoading || selectedFiles.length === 0}
                         className={`flex items-center px-4 py-2 rounded-md text-white transition ${selectedFiles.length === 0 || isLoading
-                                ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
-                                : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                            ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                            : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
                             }`}
                     >
                         {isLoading ? (
@@ -1587,8 +1646,8 @@ const ImageUploader = ({ images, onChange }) => {
                         onClick={resetImage}
                         disabled={isLoading || selectedFiles.length === 0}
                         className={`flex items-center px-4 py-2 rounded-md transition ${selectedFiles.length === 0 || isLoading
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
+                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
                             }`}
                     >
                         <FiTrash2 className="h-4 w-4 mr-2" />

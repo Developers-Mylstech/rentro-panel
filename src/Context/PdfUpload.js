@@ -12,16 +12,13 @@ const usePdfUploadStore = create((set) => ({
         try {
             set({ isUploading: true, error: null });
 
-            const response = await axios.post(
-                "api/files/upload-pdf",
-                formData,
+            const response = await axios.post("/api/files/upload-pdf",formData,
                 {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        'skip_zrok_interstitial' : 'true'
-                    },
-                }
-            );
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    'skip_zrok_interstitial' : 'true'
+                },
+            });
 
             const fileUrl = response.data.url;
             set({ uploadedUrl: fileUrl, isUploading: false });

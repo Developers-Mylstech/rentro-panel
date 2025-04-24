@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: "https://dcojdc0xteqm.share.zrok.io/api/v1",
+          target: "https://proud-expression-production-6ebc.up.railway.app/api/v1",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

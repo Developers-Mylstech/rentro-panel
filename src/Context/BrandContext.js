@@ -8,7 +8,7 @@ const useBrandStore = create((set) => ({
 
     addBrand: async (brand) => {
         try {
-            const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', brand);
+            const res = await axios.post('/api/brands', brand);
             set((state) => ({
                 brands: [...state.brands, res.data]
             }));
@@ -22,18 +22,13 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await fetch('https://proud-expression-production-6ebc.up.railway.app/api/v1/brands', {
-                method: 'GET',
-            });
-
+            const res = await axios.get('/api/brands');
             if (!res.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            const data = await res.json();
             set({ brands: data || [] });
         } catch (error) {
-            alert("Fetching data failed due to backend issue");
+            alert("Fetching data  due to backend issue");
         }
     },
 
@@ -43,7 +38,7 @@ const useBrandStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axios.post(
-                '/v1/product-images/upload?quality=80&fallbackToJpeg=true',
+                'api/v1/product-images/upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {

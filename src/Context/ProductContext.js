@@ -7,12 +7,15 @@ const useProductStore = create((set) => ({
   loading: false,
   error: null,
 
-  // Create product
   createProduct: async (newProduct) => {
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/products', newProduct);
+      const response = await axios.post('/api/products', newProduct,{
+        headers: {
+          'skip_zrok_interstitial': 'true'
+      },
+      });
       set((state) => ({
         products: [...state.products, response.data],
       }));
@@ -28,7 +31,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/products');
+      const response = await axios.get('/api/products');
       set({ products: response.data });
 
     } catch (error) {

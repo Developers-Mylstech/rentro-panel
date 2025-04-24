@@ -7,7 +7,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   addSpecificationField: async (fieldData) => {
     try {
-      const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields', fieldData);
+      const res = await axios.post('/api/specification-fields', fieldData);
       set((state) => ({
         specificationFields: [...state.specificationFields, res.data]
       }));
@@ -21,7 +21,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   getAllSpecificationFields: async () => {
     try {
-      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields');
+      const res = await axios.get('/api/specification-fields');
       set({ specificationFields: res?.data || [] });
       return res.data
     } catch (error) {
