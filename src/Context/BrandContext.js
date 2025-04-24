@@ -36,7 +36,7 @@ const useBrandStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axios.post(
-                'api/v1/product-images/upload?quality=80&fallbackToJpeg=true',
+                '/api/v1/product-images/upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
@@ -58,7 +58,7 @@ const useBrandStore = create((set) => ({
 
     removeBrand: async (id) => {
         try {
-            await axiosInstance.delete(`/brands/${id}`);
+            await axios.delete(`/api/brands/${id}`);
             set((state) => ({
                 brands: state.brands.filter(brand => brand.id !== id)
             }));
@@ -70,7 +70,7 @@ const useBrandStore = create((set) => ({
 
     editBrand: async (id, updatedBrand) => {
         try {
-            await axiosInstance.put(`/brands/${id}`, updatedBrand);
+            await axios.put(`/api/brands/${id}`, updatedBrand);
             set((state) => ({
                 brands: state.brands.map((b) =>
                     b.id === id ? { ...b, ...updatedBrand } : b

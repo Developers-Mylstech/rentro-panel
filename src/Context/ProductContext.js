@@ -46,7 +46,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.put(`https://your-api-endpoint.com/products/${id}`, updatedProduct);
+      const response = await axios.put(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`, updatedProduct);
       set((state) => ({
         products: state.products.map((product) =>
           product.id === id ? { ...product, ...response.data } : product

@@ -52,7 +52,7 @@ const useCategoryStore = create((set, get) => ({
         categoryList: mainCats,
       });
 
-      return mainCats; // ✅ return for use in components
+      return mainCats; 
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];
@@ -61,7 +61,13 @@ const useCategoryStore = create((set, get) => ({
 
   removeCategory: async (id) => {
     try {
-      await axiosInstance.delete(`/categories/${id}`);
+      const res = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`);
+
+      if(res.status==204){
+        alert(`Category  Deleted with Id ${id}`)
+      }
+
+    
       set((state) => ({
         flatCategoryList: state.flatCategoryList.filter(cat => cat._id !== id),
         categoryList: state.categoryList.filter(cat => cat._id !== id),
@@ -72,18 +78,32 @@ const useCategoryStore = create((set, get) => ({
     }
   },
 
-  editCategory: (id, updatedCategory) =>
-    set((state) => ({
-      flatCategoryList: state.flatCategoryList.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-      categoryList: state.categoryList.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-      subCategories: state.subCategories.map(cat =>
-        cat._id === id ? { ...cat, ...updatedCategory } : cat
-      ),
-    })),
-}));
+  handleEditCategory : async (id, updatedCategory) => {
+    try {
+      const response = await axios.put(
+        `https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`,
+        updatedCategory
+      );
+  
+      const updatedData = response.data;
+  
+      set((state) => ({
+        flatCategoryList: state.flatCategoryList.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+        categoryList: state.categoryList.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+        subCategories: state.subCategories.map(cat =>
+          cat._id === id ? { ...cat, ...updatedData } : cat
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update category:', error);
+    }
+  }
+} ))
+
+;
 
 export default useCategoryStore;

@@ -5,31 +5,45 @@ import axios from 'axios';
 const useCareerStore = create((set, get) => ({
   careersPosts: [],
   jobApplicants: [],
- 
-  // Add a new category
-//   addCategory: (category) =>
-//     set((state) => ({
-//       flatCategoryList: [...state.flatCategoryList, { categoryId: Date.now(), ...category }],
-//     })),
+  ploadedFiles: [], 
 
-  // Fetch all categories and organize them
+ 
+
   getAllCareer: async () => {
     try {
-      const res = await axiosInstance.get('/job-posts');
+      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/job-posts');
      
       
       set({ 
        
-        careersPosts:res.data, // Main categories only
+        careersPosts:res.data, 
       });
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     }
   },
 
+
+
+
+
+  createJobPost : async (job) =>{
+
+      try{
+
+        const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/job-posts',job);
+
+        set((state) => ({
+          careersPosts: [...state.careersPosts, {  ...job }],
+        }));
+      }catch{
+        console.error("Failed to add jobpost:", error);
+      }
+  },
+
   getJobApplicants: async (id) => {
     try {
-      const res = await axiosInstance.get(`job-applicants/job-post/${id}`);
+      const res = await axios.get(`https://proud-expression-production-6ebc.up.railway.app/api/v1/job-applicants/job-post/${id}`);
      
       
       set({ 
@@ -40,6 +54,8 @@ const useCareerStore = create((set, get) => ({
       console.error("Failed to fetch categories:", error);
     }
   },
+
+  
 
   // Set the selected category and filter its subcategories
 //   setSelectedCategory: (categoryId) => {

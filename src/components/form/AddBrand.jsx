@@ -1,203 +1,606 @@
-// import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+// // import React, { useState } from 'react';
+// // import { InputText } from 'primereact/inputtext';
+// // import { useForm } from 'react-hook-form';
+// // import useBrandStore from '../../Context/BrandContext';
+// // import axios from 'axios';
+
+// // export default function AddBrandWithImageUploader() {
+// //     const { addBrand } = useBrandStore();
+// //     const [selectedFiles, setSelectedFiles] = useState([]);
+// //     const [previewUrls, setPreviewUrls] = useState([]);
+// //     const [uploadedUrl, setUploadedUrl] = useState([]);
+// //     const [uploading, setUploading] = useState(false);
+// //     const [message, setMessage] = useState("");
+
+// //     const {
+// //         register,
+// //         handleSubmit,
+// //         formState: { errors },
+// //         setValue,
+// //         reset
+// //     } = useForm({
+// //         defaultValues: {
+// //             name: '',
+// //         },
+// //     });
+
+// //     const handleFileChange = (e) => {
+// //         const files = Array.from(e.target.files);
+// //         if (files.length > 5) {
+// //             setMessage("Maximum 5 images allowed");
+// //             return;
+// //         }
+// //         setSelectedFiles(files);
+// //         const previews = files.map(file => URL.createObjectURL(file));
+// //         setPreviewUrls(previews);
+// //         setMessage("");
+// //         setUploadedUrl([]);
+// //     };
+
+// //     const handleImageUpload = async () => {
+// //         if (!selectedFiles.length) {
+// //             setMessage("Please select at least one image");
+// //             return;
+// //         }
+
+// //         const formData = new FormData();
+// //         selectedFiles.forEach(file => {
+// //             formData.append('files', file);
+// //         });
+
+// //         try {
+// //             setUploading(true);
+// //             setMessage("Uploading images...");
+
+// //             const response = await axios.post(
+// //                 'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+// //                 formData,
+// //                 {
+// //                     headers: {
+// //                         'Content-Type': 'multipart/form-data',
+// //                     },
+// //                 }
+// //             );
+
+// //             const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
+// //             setUploadedUrl(uploadedFiles);
+// //             setMessage(uploadedFiles.length ? "Images uploaded successfully" : "Upload completed but no URLs returned");
+
+// //         } catch (error) {
+// //             console.error(error);
+// //             setMessage("Image upload failed. Please try again.");
+// //         } finally {
+// //             setUploading(false);
+// //         }
+// //     };
+
+// //     const onSubmit = async (data) => {
+// //         if (!uploadedUrl.length) {
+// //             setMessage("Please upload images before submitting");
+// //             return;
+// //         }
+
+// //         try {
+// //             const payload = {
+// //                 name: data.name,
+// //                 imageUrls: uploadedUrl
+// //             };
+
+// //             await addBrand(payload);
+// //             setMessage("Brand created successfully!");
+            
+// //             // Reset form
+// //             reset();
+// //             setSelectedFiles([]);
+// //             setPreviewUrls([]);
+// //             setUploadedUrl([]);
+            
+// //             // Revoke object URLs
+// //             previewUrls.forEach(url => URL.revokeObjectURL(url));
+            
+// //         } catch (error) {
+// //             console.error(error);
+// //             setMessage("Failed to create brand. Please try again.");
+// //         }
+// //     };
+
+// //     return (
+// //         <div className=" h-screen flex items-center justify-center bg-gray-50 p-4 dark:bg-gray-900 dark:text-gray-100">
+// //             <form 
+// //                 onSubmit={handleSubmit(onSubmit)} 
+// //                 className="w-full max-w-2xl bg-white rounded-xl  overflow-hidden border border-gray-300 transition-all hover:shadow-md dark:bg-gray-900 dark:text-gray-100"
+// //             >
+// //                 {/* Header */}
+// //                 <div className="  dark:bg-gray-900 dark:text-gray-100  bg-indigo-50 p-6 border-b border-gray-100 ">
+// //                     <div className="flex items-center space-x-3">
+// //                         <div className="p-3 rounded-lg bg-white shadow-sm border border-gray-100">
+// //                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// //                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+// //                             </svg>
+// //                         </div>
+// //                         <div>
+// //                             <h2 className="text-2xl font-light text-gray-800 dark:text-gray-100">Add New Brand</h2>
+// //                             <p className="text-sm text-gray-500">Add new brand with logo and details</p>
+// //                         </div>
+// //                     </div>
+// //                 </div>
+
+// //                 {/* Form Content */}
+// //                 <div className="p-6 space-y-6">
+// //                     {/* Brand Name */}
+// //                     <div className="space-y-2">
+// //                         <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider">Brand Name</label>
+// //                         <InputText
+// //                             className={`w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100  bg-gray-50 rounded-t transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
+// //                             placeholder="e.g. Apple, Nike"
+// //                             {...register('name', {
+// //                                 required: 'Brand name is required',
+// //                                 minLength: {
+// //                                     value: 2,
+// //                                     message: 'Minimum 2 characters required'
+// //                                 }
+// //                             })}
+// //                         />
+// //                         {errors.name && (
+// //                             <p className="text-xs text-red-500 mt-1 animate-fade-in">{errors.name.message}</p>
+// //                         )}
+// //                     </div>
+
+// //                     {/* Image Upload */}
+// //                     <div className="space-y-4">
+// //                         <div>
+// //                             <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider mb-2 dark:text-gray-100">Brand Images</label>
+// //                             <div className="flex items-center justify-center w-full">
+// //                                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition dark:bg-gray-900 dark:text-gray-100 ">
+// //                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
+// //                                         <svg className="w-8 h-8 mb-3 text-gray-400 " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+// //                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+// //                                         </svg>
+// //                                         <p className="text-xs text-gray-500">
+// //                                             <span className="font-semibold">Click to upload</span> or drag and drop
+// //                                         </p>
+// //                                         <p className="text-xs text-gray-400">PNG, JPG, WEBP (MAX. 5 images)</p>
+// //                                     </div>
+// //                                     <input 
+// //                                         type="file" 
+// //                                         multiple 
+// //                                         onChange={handleFileChange} 
+// //                                         accept="image/*" 
+// //                                         className="hidden" 
+// //                                     />
+// //                                 </label>
+// //                             </div>
+// //                         </div>
+
+// //                         {/* Image Previews */}
+// //                         {previewUrls.length > 0 && (
+// //                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+// //                                 {previewUrls.map((src, idx) => (
+// //                                     <div key={idx} className="relative group">
+// //                                         <div className="aspect-square overflow-hidden rounded-lg border border-gray-200">
+// //                                             <img
+// //                                                 src={src}
+// //                                                 alt={`preview-${idx}`}
+// //                                                 className="w-full h-full object-cover transition-transform group-hover:scale-105"
+// //                                             />
+// //                                         </div>
+// //                                         {idx === 0 && (
+// //                                             <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
+// //                                                 Primary
+// //                                             </span>
+// //                                         )}
+// //                                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg"></div>
+// //                                     </div>
+// //                                 ))}
+// //                             </div>
+// //                         )}
+// //                     </div>
+
+// //                     {/* Action Buttons */}
+// //                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
+// //                         <button
+// //                             type="button"
+// //                             onClick={handleImageUpload}
+// //                             disabled={uploading || !selectedFiles.length}
+// //                             className={`flex-1 flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${uploading || !selectedFiles.length ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm'}`}
+// //                         >
+// //                             {uploading ? (
+// //                                 <>
+// //                                     <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+// //                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+// //                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+// //                                     </svg>
+// //                                     Uploading...
+// //                                 </>
+// //                             ) : (
+// //                                 <>
+// //                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// //                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+// //                                     </svg>
+// //                                     Upload Images
+// //                                 </>
+// //                             )}
+// //                         </button>
+// //                         <button
+// //                             type="submit"
+// //                             disabled={!uploadedUrl.length}
+// //                             className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${!uploadedUrl.length ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}
+// //                         >
+// //                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+// //                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+// //                             </svg>
+// //                             Create Brand
+// //                         </button>
+// //                     </div>
+
+// //                     {/* Status Message */}
+// //                     {message && (
+// //                         <div className={`p-3 rounded-lg text-sm ${message.includes("success") ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} animate-fade-in`}>
+// //                             {message}
+// //                         </div>
+// //                     )}
+// //                 </div>
+// //             </form>
+// //         </div>
+// //     );
+// // }
+
+
+
+
+// import React, { useState, useEffect } from 'react';
 // import { InputText } from 'primereact/inputtext';
 // import { useForm } from 'react-hook-form';
 // import useBrandStore from '../../Context/BrandContext';
-// import useImageUploadStore from '../../Context/ImageUploadContext';
+// import axios from 'axios';
+// import { useLocation, useNavigate } from 'react-router-dom';
 
-// export default function AddBrand() {
-//   const navigate = useNavigate();
-//   const { addBrand, addBrandImage } = useBrandStore();
-//   const [selectedFile, setSelectedFile] = useState(null);
-//   const [imagePreview, setImagePreview] = useState('');
-// const { uploadFiles} = useImageUploadStore()
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm({
-//     defaultValues: {
-//       name: '',
-//     },
-//   });
-
-//   const validateFile = (file) => {
-//     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-//     const maxSize = 1 * 1024 * 1024; // 1 MB
-
-//     if (!allowedTypes.includes(file.type)) {
-//       return 'Only JPEG, PNG, and WEBP files are allowed.';
-//     }
-//     if (file.size > maxSize) {
-//       return 'File size should be less than 1 MB.';
-//     }
-//     return true;
-//   };
-
-//   const handleFileChange = (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     const validationResult = validateFile(file);
-//     if (validationResult !== true) {
-//       alert(validationResult);
-//       return;
-//     }
-
-//     setSelectedFile(file);
+// export default function AddBrandWithImageUploader() {
+//     const { addBrand, editBrand } = useBrandStore();
+//     const [selectedFiles, setSelectedFiles] = useState([]);
+//     const [previewUrls, setPreviewUrls] = useState([]);
+//     const [uploadedUrl, setUploadedUrl] = useState([]);
+//     const [uploading, setUploading] = useState(false);
+//     const [message, setMessage] = useState("");
+//     const [isEditMode, setIsEditMode] = useState(false);
+//     const [currentBrandId, setCurrentBrandId] = useState(null);
     
-//     // Create preview URL
-//     const previewUrl = URL.createObjectURL(file);
-//     setImagePreview(previewUrl);
-//   };
+//     const location = useLocation();
+//     const navigate = useNavigate();
 
-//   const onSubmit = async (data) => {
-//     try {
-//       let imageUrl = '';
-//       // console.log(se)
-//       if (selectedFile) {
-//         const formData = new FormData();
-//         formData.append('file', selectedFile);
-//         console.log(formData,'oo')
-//         const uploadResponse = await uploadFiles(formData);
-//         if (!uploadResponse || !uploadResponse.url) {
-//           throw new Error('Image upload failed');
+//     const {
+//         register,
+//         handleSubmit,
+//         formState: { errors },
+//         setValue,
+//         reset
+//     } = useForm({
+//         defaultValues: {
+//             name: '',
+//         },
+//     });
+
+//     useEffect(() => {
+//         if (location.state?.brand) {
+//             const { brandId, name, images } = location.state.brand;
+//             setIsEditMode(true);
+//             setCurrentBrandId(brandId);
+//             setValue('name', name);
+//             setUploadedUrl(images);
+//             setPreviewUrls(images); // Show existing images as previews
 //         }
-//         imageUrl = uploadResponse.url;
-//       }
+//     }, [location.state, setValue]);
 
-//       const payload = {
-//         name: data.name,
-//         image: imageUrl,
-//       };
+//     const handleFileChange = (e) => {
+//         const files = Array.from(e.target.files);
+//         if (files?.length > 5) {
+//             setMessage("Maximum 5 images allowed");
+//             return;
+//         }
+//         setSelectedFiles(files);
+//         const previews = files.map(file => URL.createObjectURL(file));
+//         setPreviewUrls([...previews, ...uploadedUrl]); // Combine new previews with existing URLs
+//         setMessage("");
+//     };
 
-//       // Call your API to add the brand
-//       await addBrand(payload);
-      
-//       alert('Brand added successfully!');
-//       navigate('/brands');
-//     } catch (error) {
-//       console.error('Error adding brand:', error);
-//       alert('Failed to add brand: ' + error.message);
-//     } finally {
-//       // Clean up the object URL
-//       if (imagePreview) {
-//         URL.revokeObjectURL(imagePreview);
-//       }
-//     }
-//   };
+//     const handleImageUpload = async () => {
+//         if (!selectedFiles?.length) {
+//             setMessage("Please select at least one image");
+//             return;
+//         }
 
-//   return (
-//     <form onSubmit={handleSubmit(onSubmit)} className="h-screen">
-//       <h3 className="heading mb-6 text-gray-900 dark:text-white">Add New Brand</h3>
+//         const formData = new FormData();
+//         selectedFiles.forEach(file => {
+//             formData.append('files', file);
+//         });
 
-//       <div className="border p-6 rounded-lg shadow bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white mb-6">
-//         <h4 className="font-semibold mb-4">Brand Information</h4>
+//         try {
+//             setUploading(true);
+//             setMessage("Uploading images...");
 
-//         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-//           <label className="block text-gray-600 dark:text-gray-300 mb-2">Brand Name</label>
-//           <InputText
-//             className="w-[70%] p-2 border rounded bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-//             placeholder="Enter Brand Name"
-//             {...register('name', {
-//               required: 'Brand Name is required',
-//             })}
-//           />
-//           {errors.name && (
-//             <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-//               {errors.name.message}
-//             </p>
-//           )}
-//         </div>
+//             const response = await axios.post(
+//                 'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+//                 formData,
+//                 {
+//                     headers: {
+//                         'Content-Type': 'multipart/form-data',
+//                     },
+//                 }
+//             );
 
-//         <h4 className="font-semibold mb-4">Brand Image</h4>
-//         <div className="flex flex-col md:flex-row justify-between md:items-center">
-//           <div className="mb-4">
-//             <h4 className="font-semibold subheading">Brand Image</h4>
-//             <p className="text-yellow-500 dark:text-gray-400 opacity-70 text-sm mt-1">
-//               **Image should be below 1 MB and should have dimensions of 500x600 and type of .png / .jpeg / .webp**
-//             </p>
-//           </div>
+//             const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
+//             setUploadedUrl( [ ...uploadedFiles]); // Append new URLs to existing ones
+//             setMessage(uploadedFiles?.length ? "Images uploaded successfully" : "Upload completed but no URLs returned");
 
-//           <div className="flex flex-col items-end">
-//             <div className="flex flex-col gap-4">
-//               <input 
-//                 type="file" 
-//                 onChange={handleFileChange}
-//                 accept="image/jpeg, image/png, image/webp"
-//                 className="block w-full text-sm text-gray-500
-//                   file:mr-4 file:py-2 file:px-4
-//                   file:rounded-md file:border-0
-//                   file:text-sm file:font-semibold
-//                   file:bg-primary file:text-white
-//                   hover:file:bg-primary-dark"
-//               />
-              
-//               {imagePreview && (
-//                 <div className="mt-4">
-//                   <img 
-//                     src={imagePreview} 
-//                     alt="Brand preview" 
-//                     className="h-20 w-20 object-cover rounded"
-//                   />
-//                   <p className="text-sm mt-1">{selectedFile?.name}</p>
+//         } catch (error) {
+//             console.error(error);
+//             setMessage("Image upload failed. Please try again.");
+//         } finally {
+//             setUploading(false);
+//         }
+//     };
+
+//     const onSubmit = async (data) => {
+//         if (!uploadedUrl?.length && !isEditMode) {
+//             setMessage("Please upload images before submitting");
+//             return;
+//         }
+
+//         try {
+//             const payload = {
+//                 name: data.name,
+//                 imageUrls: uploadedUrl
+//             };
+
+//             if (isEditMode) {
+//                 await editBrand(currentBrandId, payload);
+//                 setMessage("Brand updated successfully!");
+//                 navigate(-1); // Go back to previous screen after update
+//             } else {
+//                 await addBrand(payload);
+//                 setMessage("Brand created successfully!");
+                
+//                 // Reset form only for create mode
+//                 reset();
+//                 setSelectedFiles([]);
+//                 setPreviewUrls([]);
+//                 setUploadedUrl([]);
+                
+//                 // Revoke object URLs
+//                 previewUrls.forEach(url => URL.revokeObjectURL(url));
+//             }
+            
+//         } catch (error) {
+//             console.error(error);
+//             setMessage(`Failed to ${isEditMode ? 'update' : 'create'} brand. Please try again.`);
+//         }
+//     };
+
+//     const handleRemoveImage = (index) => {
+//         const newUrls = [...uploadedUrl];
+//         newUrls.splice(index, 1);
+//         setUploadedUrl(newUrls);
+        
+//         const newPreviews = [...previewUrls];
+//         newPreviews.splice(index, 1);
+//         setPreviewUrls(newPreviews);
+//     };
+
+//     return (
+//         <div className="h-screen flex items-center justify-center bg-gray-50 p-4 dark:bg-gray-900 dark:text-gray-100">
+//             <form 
+//                 onSubmit={handleSubmit(onSubmit)} 
+//                 className="w-full max-w-2xl bg-white rounded-xl overflow-hidden border border-gray-300 transition-all hover:shadow-md dark:bg-gray-900 dark:text-gray-100"
+//             >
+//                 {/* Header */}
+//                 <div className="dark:bg-gray-900 dark:text-gray-100 bg-indigo-50 p-6 border-b border-gray-100">
+//                     <div className="flex items-center space-x-3">
+//                         <div className="p-3 rounded-lg bg-white shadow-sm border border-gray-100">
+//                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+//                             </svg>
+//                         </div>
+//                         <div>
+//                             <h2 className="text-2xl font-light text-gray-800 dark:text-gray-100">
+//                                 {isEditMode ? 'Edit Brand' : 'Add New Brand'}
+//                             </h2>
+//                             <p className="text-sm text-gray-500">
+//                                 {isEditMode ? 'Update brand details and logo' : 'Add new brand with logo and details'}
+//                             </p>
+//                         </div>
+//                     </div>
 //                 </div>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
 
-//       <div className="w-full flex justify-center items-center">
-//         <button
-//           type="submit"
-//           className="px-4 py-2 bg-primary rounded dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-//         >
-//           Submit
-//         </button>
-//       </div>
-//     </form>
-//   );
+//                 {/* Form Content */}
+//                 <div className="p-6 space-y-6">
+//                     {/* Brand Name */}
+//                     <div className="space-y-2">
+//                         <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider">Brand Name</label>
+//                         <InputText
+//                             className={`w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50 rounded-t transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
+//                             placeholder="e.g. Apple, Nike"
+//                             {...register('name', {
+//                                 required: 'Brand name is required',
+//                                 minLength: {
+//                                     value: 2,
+//                                     message: 'Minimum 2 characters required'
+//                                 }
+//                             })}
+//                         />
+//                         {errors.name && (
+//                             <p className="text-xs text-red-500 mt-1 animate-fade-in">{errors.name.message}</p>
+//                         )}
+//                     </div>
+
+//                     {/* Image Upload */}
+//                     <div className="space-y-4">
+//                         <div>
+//                             <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider mb-2 dark:text-gray-100">Brand Images</label>
+//                             <div className="flex items-center justify-center w-full">
+//                                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition dark:bg-gray-900 dark:text-gray-100">
+//                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
+//                                         <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+//                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+//                                         </svg>
+//                                         <p className="text-xs text-gray-500">
+//                                             <span className="font-semibold">Click to upload</span> or drag and drop
+//                                         </p>
+//                                         <p className="text-xs text-gray-400">PNG, JPG, WEBP (MAX. 5 images)</p>
+//                                     </div>
+//                                     <input 
+//                                         type="file" 
+//                                         multiple 
+//                                         onChange={handleFileChange} 
+//                                         accept="image/*" 
+//                                         className="hidden" 
+//                                     />
+//                                 </label>
+//                             </div>
+//                         </div>
+
+//                         {/* Image Previews */}
+//                         {(previewUrls?.length > 0 || uploadedUrl?.length > 0) && (
+//                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+//                                 {(previewUrls?.length > 0 ? previewUrls : uploadedUrl).map((src, idx) => (
+//                                     <div key={idx} className="relative group">
+//                                         <div className="aspect-square overflow-hidden rounded-lg border border-gray-200">
+//                                             <img
+//                                                 src={src}
+//                                                 alt={`preview-${idx}`}
+//                                                 className="w-full h-full object-cover transition-transform group-hover:scale-105"
+//                                             />
+//                                         </div>
+//                                         {idx === 0 && (
+//                                             <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
+//                                                 Primary
+//                                             </span>
+//                                         )}
+//                                         <button
+//                                             type="button"
+//                                             onClick={() => handleRemoveImage(idx)}
+//                                             className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+//                                         >
+//                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+//                                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+//                                             </svg>
+//                                         </button>
+//                                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg"></div>
+//                                     </div>
+//                                 ))}
+//                             </div>
+//                         )}
+//                     </div>
+
+//                     {/* Action Buttons */}
+//                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
+//                         <button
+//                             type="button"
+//                             onClick={handleImageUpload}
+//                             disabled={uploading || !selectedFiles?.length}
+//                             className={`flex-1 flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${uploading || !selectedFiles?.length ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm'}`}
+//                         >
+//                             {uploading ? (
+//                                 <>
+//                                     <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+//                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+//                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+//                                     </svg>
+//                                     Uploading...
+//                                 </>
+//                             ) : (
+//                                 <>
+//                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+//                                     </svg>
+//                                     Upload Images
+//                                 </>
+//                             )}
+//                         </button>
+//                         <button
+//                             type="submit"
+//                             disabled={!uploadedUrl?.length && !isEditMode}
+//                             className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${(!uploadedUrl?.length && !isEditMode) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}
+//                         >
+//                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+//                             </svg>
+//                             {isEditMode ? 'Update Brand' : 'Create Brand'}
+//                         </button>
+//                     </div>
+
+//                     {/* Status Message */}
+//                     {message && (
+//                         <div className={`p-3 rounded-lg text-sm ${message.includes("success") ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} animate-fade-in`}>
+//                             {message}
+//                         </div>
+//                     )}
+//                 </div>
+//             </form>
+//         </div>
+//     );
 // }
 
-import React, { useState } from 'react';
+
+
+import React, { useState, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { useForm } from 'react-hook-form';
 import useBrandStore from '../../Context/BrandContext';
-import axiosInstance from '../../utils/axiosInstance';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function AddBrandWithImageUploader() {
-    const { addBrand } = useBrandStore();
+    const { addBrand, editBrand } = useBrandStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
     const [uploadedUrl, setUploadedUrl] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [message, setMessage] = useState("");
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [currentBrandId, setCurrentBrandId] = useState(null);
+    
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
+        reset
     } = useForm({
         defaultValues: {
             name: '',
         },
     });
 
+    useEffect(() => {
+        if (location.state?.brand) {
+            const { brandId, name, images } = location.state.brand;
+            setIsEditMode(true);
+            setCurrentBrandId(brandId);
+            setValue('name', name);
+            setUploadedUrl(images || []);
+            setPreviewUrls(images || []); // Show existing images as previews
+        }
+    }, [location.state, setValue]);
+
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
+        // if (files.length > 5) {
+        //     setMessage("Maximum 5 images allowed");
+        //     return;
+        // }
         setSelectedFiles(files);
         const previews = files.map(file => URL.createObjectURL(file));
-        setPreviewUrls(previews);
+        setPreviewUrls(previews); // Only show new previews, remove old ones
         setMessage("");
-        setUploadedUrl([]); // Reset previous uploads
+        setUploadedUrl([]); // Clear previously uploaded URLs when new files are selected
     };
 
     const handleImageUpload = async () => {
         if (!selectedFiles.length) {
-            setMessage("Please select an image to upload.");
+            setMessage("Please select at least one image");
             return;
         }
 
@@ -208,7 +611,7 @@ export default function AddBrandWithImageUploader() {
 
         try {
             setUploading(true);
-            setMessage("");
+            setMessage("Uploading images...");
 
             const response = await axios.post(
                 'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
@@ -221,126 +624,216 @@ export default function AddBrandWithImageUploader() {
             );
 
             const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
-
-            if (uploadedFiles.length > 0) {
-                setUploadedUrl(uploadedFiles);
-                setMessage("Image uploaded successfully.");
-            } else {
-                setMessage("Image upload failed. No file URLs returned.");
-            }
+            setUploadedUrl(uploadedFiles); // Replace with new URLs only
+            setMessage(uploadedFiles.length ? "Images uploaded successfully" : "Upload completed but no URLs returned");
 
         } catch (error) {
             console.error(error);
-            setMessage("Image upload failed.");
+            setMessage("Image upload failed. Please try again.");
         } finally {
             setUploading(false);
         }
     };
 
     const onSubmit = async (data) => {
-        if (!uploadedUrl.length) {
-            setMessage("Please upload an image before submitting.");
+        if (!uploadedUrl?.length && !isEditMode) {
+            setMessage("Please upload images before submitting");
             return;
         }
-        const payload ={
-         
-          name: data.name,
-          imageUrls: uploadedUrl
-        };
-        console.log(uploadedUrl)
 
         try {
-            await addBrand(payload);
-            setMessage("Brand added successfully!");
-            setSelectedFiles([]);
-            setPreviewUrls([]);
-            setUploadedUrl([]);
-            setValue('name', '');
+            const payload = {
+                name: data.name,
+                imageUrls: uploadedUrl
+            };
+
+            if (isEditMode) {
+                await editBrand(currentBrandId, payload);
+                setMessage("Brand updated successfully!");
+                navigate(-1); // Go back to previous screen after update
+            } else {
+                await addBrand(payload);
+                setMessage("Brand created successfully!");
+                
+                // Reset form only for create mode
+                reset();
+                setSelectedFiles([]);
+                setPreviewUrls([]);
+                setUploadedUrl([]);
+                
+                // Revoke object URLs
+                previewUrls.forEach(url => URL.revokeObjectURL(url));
+            }
+            
         } catch (error) {
             console.error(error);
-            setMessage("Failed to submit brand.");
+            setMessage(`Failed to ${isEditMode ? 'update' : 'create'} brand. Please try again.`);
         }
     };
 
+    const handleRemoveImage = (index) => {
+        const newUrls = [...uploadedUrl];
+        newUrls.splice(index, 1);
+        setUploadedUrl(newUrls);
+        
+        const newPreviews = [...previewUrls];
+        newPreviews.splice(index, 1);
+        setPreviewUrls(newPreviews);
+    };
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white rounded-xl p-6 max-w-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Add New Brand</h2>
-
-            {/* Brand Name */}
-            <div>
-                <label className="block font-medium mb-1">Brand Name</label>
-                <InputText
-                    className="w-full p-2 border rounded bg-gray-50"
-                    placeholder="Enter Brand Name"
-                    {...register('name', {
-                        required: 'Brand Name is required',
-                    })}
-                />
-                {errors.name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-                )}
-            </div>
-
-            {/* Image Upload */}
-            <div>
-                <label className="block font-medium mb-1">Brand Image</label>
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      hover:file:bg-blue-100"
-                />
-            </div>
-
-            {/* Previews */}
-            {previewUrls.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                    {previewUrls.map((src, idx) => (
-                        <div key={idx} className="relative">
-                            <img
-                                src={src}
-                                alt={`preview-${idx}`}
-                                className="w-full h-28 object-cover rounded border"
-                            />
-                            {idx === 0 && (
-                                <span className="absolute top-1 left-1 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">
-                                    Main
-                                </span>
-                            )}
+        <div className="h-screen flex items-center justify-center bg-gray-50 p-4 dark:bg-gray-900 dark:text-gray-100">
+            <form 
+                onSubmit={handleSubmit(onSubmit)} 
+                className="w-full max-w-2xl bg-white rounded-xl overflow-hidden border border-gray-300 transition-all hover:shadow-md dark:bg-gray-900 dark:text-gray-100"
+            >
+                {/* Header */}
+                <div className="dark:bg-gray-900 dark:text-gray-100 bg-indigo-50 p-6 border-b border-gray-100">
+                    <div className="flex items-center space-x-3">
+                        <div className="p-3 rounded-lg bg-white shadow-sm border border-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
                         </div>
-                    ))}
+                        <div>
+                            <h2 className="text-2xl font-light text-gray-800 dark:text-gray-100">
+                                {isEditMode ? 'Edit Brand' : 'Add New Brand'}
+                            </h2>
+                            <p className="text-sm text-gray-500">
+                                {isEditMode ? 'Update brand details and logo' : 'Add new brand with logo and details'}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            )}
 
-            {/* Upload Button */}
-            <button
-                type="button"
-                onClick={handleImageUpload}
-                disabled={uploading || !selectedFiles.length}
-                className="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition"
-            >
-                {uploading ? 'Uploading Image...' : 'Upload Image'}
-            </button>
+                {/* Form Content */}
+                <div className="p-6 space-y-6">
+                    {/* Brand Name */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider">Brand Name</label>
+                        <InputText
+                            className={`w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50 rounded-t transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
+                            placeholder="e.g. Apple, Nike"
+                            {...register('name', {
+                                required: 'Brand name is required',
+                                minLength: {
+                                    value: 2,
+                                    message: 'Minimum 2 characters required'
+                                }
+                            })}
+                        />
+                        {errors.name && (
+                            <p className="text-xs text-red-500 mt-1 animate-fade-in">{errors.name.message}</p>
+                        )}
+                    </div>
 
-            {/* Submit Button */}
-            <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-            >
-                Submit Brand
-            </button>
+                    {/* Image Upload */}
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider mb-2 dark:text-gray-100">Brand Images</label>
+                            <div className="flex items-center justify-center w-full">
+                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition dark:bg-gray-900 dark:text-gray-100">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <p className="text-xs text-gray-500">
+                                            <span className="font-semibold">Click to upload</span> or drag and drop
+                                        </p>
+                                        <p className="text-xs text-gray-400">PNG, JPG, WEBP (MAX. 5 images)</p>
+                                    </div>
+                                    <input 
+                                        type="file" 
+                                        multiple 
+                                        onChange={handleFileChange} 
+                                        accept="image/*" 
+                                        className="hidden" 
+                                    />
+                                </label>
+                            </div>
+                        </div>
 
-            {/* Feedback */}
-            {message && (
-                <p className={`text-center text-sm ${message.includes("failed") ? 'text-red-500' : 'text-green-600'}`}>
-                    {message}
-                </p>
-            )}
-        </form>
+                        {/* Image Previews */}
+                        {(previewUrls.length > 0 || uploadedUrl.length > 0) && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {(previewUrls.length > 0 ? previewUrls : uploadedUrl).map((src, idx) => (
+                                    <div key={idx} className="relative group">
+                                        <div className="aspect-square overflow-hidden rounded-lg border border-gray-200">
+                                            <img
+                                                src={src}
+                                                alt={`preview-${idx}`}
+                                                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                                                onError={(e) => {
+                                                    e.target.src = '/default-image.png';
+                                                }}
+                                            />
+                                        </div>
+                                        {idx === 0 && (
+                                            <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
+                                                Primary
+                                            </span>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveImage(idx)}
+                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button
+                            type="button"
+                            onClick={handleImageUpload}
+                            disabled={uploading || !selectedFiles.length}
+                            className={`flex-1 flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${uploading || !selectedFiles.length ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm'}`}
+                        >
+                            {uploading ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Uploading...
+                                </>
+                            ) : (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    Upload Images
+                                </>
+                            )}
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={!uploadedUrl.length && !isEditMode}
+                            className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${(!uploadedUrl.length && !isEditMode) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            {isEditMode ? 'Update Brand' : 'Create Brand'}
+                        </button>
+                    </div>
+
+                    {/* Status Message */}
+                    {message && (
+                        <div className={`p-3 rounded-lg text-sm ${message.includes("success") ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} animate-fade-in`}>
+                            {message}
+                        </div>
+                    )}
+                </div>
+            </form>
+        </div>
     );
 }

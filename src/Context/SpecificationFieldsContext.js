@@ -31,7 +31,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   removeSpecificationField: async (id) => {
     try {
-      await axiosInstance.delete(`/specification-fields/${id}`);
+      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`);
       set((state) => ({
         specificationFields: state.specificationFields.filter(field => field.id !== id)
       }));
@@ -44,7 +44,7 @@ const useSpecificationFieldsStore = create((set) => ({
   // Update specification field
   updateSpecificationField: async (id, updatedData) => {
     try {
-      await axiosInstance.put(`/specification-fields/${id}`, updatedData);
+      await axios.put(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`, updatedData);
       set((state) => ({
         specificationFields: state.specificationFields.map((field) =>
           field.id === id ? { ...field, ...updatedData } : field
