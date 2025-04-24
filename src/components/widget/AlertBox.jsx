@@ -1,28 +1,29 @@
-import { useState } from 'react';
-import { FaInfo } from 'react-icons/fa';
-import { FiXCircle } from 'react-icons/fi';
+import React from 'react';
 
-export default function AlertBox({title, message}) {
-  const [visible, setVisible] = useState(true);
-
-  if (!visible) return null;
-
+const AlertBox = () => {
   return (
-    <div className="flex items-start p-4 mb-4 text-green-900 bg-green-50 border border-green-200 rounded-2xl shadow-lg max-w-md mx-auto animate-fade-in">
-      <FaInfo className="w-6 h-6 mt-1 mr-3 text-green-500" />
-      <div className="flex-1">
-        <h3 className="font-semibold text-lg">{title}</h3>
-        <p className="text-sm text-green-800 mt-1">
-         {message}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
+        <h1 className="text-2xl font-bold text-center mb-4">Congratulations</h1>
+        <p className="text-gray-600 text-center mb-6">
+          You've just displayed this awesome Pop Up View
         </p>
+        
+        <div className="space-y-3 mb-6">
+          <button className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition duration-200">
+            First Button
+          </button>
+          <button className="w-full py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md transition duration-200">
+            Second Button
+          </button>
+        </div>
+        
+        <button className="w-full py-2 px-4 border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition duration-200">
+          Done
+        </button>
       </div>
-      <button
-        onClick={() => setVisible(false)}
-        className="ml-4 text-green-500 hover:text-green-700"
-        aria-label="Close"
-      >
-        <FiXCircle className="w-5 h-5" />
-      </button>
     </div>
   );
-}
+};
+
+export default AlertBox;
