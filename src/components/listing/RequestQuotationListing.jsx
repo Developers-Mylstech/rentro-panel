@@ -14,7 +14,7 @@ export default function RequestQuotationListing() {
   const [alertData, setAlertData] = useState({
     title: '',
     message: '',
-    isSuccess : true
+    isSuccess: true
   });
   useEffect(() => {
     fetchQuotations();
@@ -45,22 +45,22 @@ export default function RequestQuotationListing() {
         setAlertData({
           title: 'Status Updated',
           message: `Changed to: ${newStatus}`,
-          isSuccess : true
+          isSuccess: true
         });
         setShowAlert(true);
 
         setTimeout(() => setShowAlert(false), 5000);
+        fetchQuotations()
       } catch (error) {
         setAlertData({
           title: 'Update Failed',
           message: 'Could not update status',
-          isSuccess : false
+          isSuccess: false
 
         });
         setShowAlert(true);
       } finally {
         setLoading(false);
-        fetchQuotations()
       }
     };
 
@@ -101,7 +101,7 @@ export default function RequestQuotationListing() {
           ) : (
             <>
               <span className={`w-2 h-2 rounded-full animate-pulse ${currentStatus?.color || 'bg-blue-400'}`}></span>
-              <span>{currentStatus?.label.slice(0,10) || 'Sent Quotation'}</span>
+              <span>{currentStatus?.label.slice(0, 10) || 'Sent Quotation'}</span>
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
               </svg>
@@ -188,7 +188,7 @@ export default function RequestQuotationListing() {
                   <tr
                     key={quotation.requestQuotationId}
                     className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
-                    // onClick={() => setSelectedQuotation(quotation)}
+                  // onClick={() => setSelectedQuotation(quotation)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {quotation.requestQuotationId}
