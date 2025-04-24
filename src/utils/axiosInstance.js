@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { VITE_APP_KEY } from '../env';
+
+// Use Vite environment variable
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const axiosInstance = axios.create({
-    baseURL: "/api",
+    baseURL,
 });
-
 
 axiosInstance.defaults.headers.common['skip_zrok_interstitial'] = 'true';
 
 export default axiosInstance;
-

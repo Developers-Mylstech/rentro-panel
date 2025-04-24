@@ -8,7 +8,7 @@ const useBrandStore = create((set) => ({
 
     addBrand: async (brand) => {
         try {
-            const res = await axios.post('/api/brands', brand);
+            const res = await axiosInstance.post('/brands', brand);
             set((state) => ({
                 brands: [...state.brands, res.data]
             }));
@@ -22,7 +22,7 @@ const useBrandStore = create((set) => ({
 
     getAllBrands: async () => {
         try {
-            const res = await axios.get('/api/brands');
+            const res = await axiosInstance.get('/brands');
            
             set({ brands: res?.data || [] });
         } catch (error) {
@@ -35,7 +35,7 @@ const useBrandStore = create((set) => ({
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 '/api/v1/product-images/upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {

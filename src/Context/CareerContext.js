@@ -11,7 +11,7 @@ const useCareerStore = create((set, get) => ({
 
   getAllCareer: async () => {
     try {
-      const res = await axios.get('https://proud-expression-production-6ebc.up.railway.app/api/v1/job-posts');
+      const res = await axiosInstance.get('job-posts');
      
       
       set({ 

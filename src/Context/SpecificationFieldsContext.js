@@ -7,7 +7,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   addSpecificationField: async (fieldData) => {
     try {
-      const res = await axios.post('/api/specification-fields', fieldData);
+      const res = await axiosInstance.post('/specification-fields', fieldData);
       set((state) => ({
         specificationFields: [...state.specificationFields, res.data]
       }));
@@ -21,7 +21,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   getAllSpecificationFields: async () => {
     try {
-      const res = await axios.get('/api/specification-fields');
+      const res = await axiosInstance.get('/specification-fields');
       set({ specificationFields: res?.data || [] });
       return res.data
     } catch (error) {
@@ -31,7 +31,7 @@ const useSpecificationFieldsStore = create((set) => ({
 
   removeSpecificationField: async (id) => {
     try {
-      await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`);
+      await axiosInstance.delete(`/specification-fields/${id}`);
       set((state) => ({
         specificationFields: state.specificationFields.filter(field => field.id !== id)
       }));
@@ -44,7 +44,7 @@ const useSpecificationFieldsStore = create((set) => ({
   // Update specification field
   updateSpecificationField: async (id, updatedData) => {
     try {
-      await axios.put(`https://proud-expression-production-6ebc.up.railway.app/api/v1/specification-fields/${id}`, updatedData);
+      await axiosInstance.put(`/specification-fields/${id}`, updatedData);
       set((state) => ({
         specificationFields: state.specificationFields.map((field) =>
           field.id === id ? { ...field, ...updatedData } : field

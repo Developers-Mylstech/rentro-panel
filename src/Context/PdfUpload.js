@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 
 const usePdfUploadStore = create((set) => ({
     uploadedUrl: null,
@@ -12,7 +13,7 @@ const usePdfUploadStore = create((set) => ({
         try {
             set({ isUploading: true, error: null });
 
-            const response = await axios.post("/api/files/upload-pdf",formData,
+            const response = await axiosInstance.post("/files/upload-pdf",formData,
                 {
                 headers: {
                     "Content-Type": "multipart/form-data",

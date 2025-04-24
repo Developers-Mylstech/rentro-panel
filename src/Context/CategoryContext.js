@@ -10,7 +10,7 @@ const useCategoryStore = create((set, get) => ({
 
   addCategory: async (category) => {
     try {
-      const response = await axios.post('/api/categories', category);
+      const response = await axiosInstance.post('/categories', category);
       const newCategory = response.data;
 
       set((state) => ({
@@ -38,7 +38,7 @@ const useCategoryStore = create((set, get) => ({
  
   getAllCategories: async () => {
     try {
-      const res = await axios.get(' /api/categories',{
+      const res = await axiosInstance.get(' /categories',{
         headers: {
           'skip_zrok_interstitial': 'true'
       },

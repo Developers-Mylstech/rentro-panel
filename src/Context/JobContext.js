@@ -20,7 +20,7 @@ const useJobStore = create((set, get) => ({
 
   createJob: async (jobData) => {
     try {
-      const response = await axios.post("https://demo.rentro.ae/api/v1/job-posts", jobData);
+      const response = await axiosInstance.post("/job-posts", jobData);
       set((state) => ({
         jobs: [...state.jobs, response.data],
       }));
