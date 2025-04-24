@@ -1,24 +1,30 @@
 import React from 'react';
+import { IoShieldCheckmarkSharp } from "react-icons/io5";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
-const AlertBox = () => {
+const AlertBox = ({ title, message, onClose, isSuccess }) => {
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
-        <h1 className="text-2xl font-bold text-center mb-4">Congratulations</h1>
-        <p className="text-gray-600 text-center mb-6">
-          You've just displayed this awesome Pop Up View
-        </p>
-        
-        <div className="space-y-3 mb-6">
-          <button className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition duration-200">
-            First Button
-          </button>
-          <button className="w-full py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md transition duration-200">
-            Second Button
-          </button>
+    <div className="fixed inset-0 bg-black/10 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 relative">
+        <div className='flex justify-center items-center'>
+          {!isSuccess ? (
+            <IoCloseCircleSharp className='text-7xl text-red-500 -mt-14 bg-white rounded-full p-2' />
+          ) : (
+            <IoShieldCheckmarkSharp className='text-7xl text-green-500 -mt-14 bg-white rounded-full p-2' />
+          )}
         </div>
-        
-        <button className="w-full py-2 px-4 border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium rounded-md transition duration-200">
+        <h1 className={`text-2xl font-bold text-center mb-4 ${!isSuccess ? 'text-red-500' : 'text-green-500'}`}>
+          {title}
+        </h1>
+        <p className="text-gray-600 text-center mb-6">
+          {message}
+        </p>
+
+        <button 
+          onClick={onClose}
+          className={`w-full py-2 px-4 border ${!isSuccess ? 'border-red-300 hover:bg-red-50 text-red-500' : 'border-green-300 hover:bg-green-50 text-green-500'} font-medium rounded-md transition duration-200`}
+        >
           Done
         </button>
       </div>

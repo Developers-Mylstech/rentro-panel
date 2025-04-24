@@ -54,13 +54,11 @@ export const useRequestQuotationStore = create((set, get) => ({
         }
     },
 
-    // Update quotation
+
     updateQuotation: async (id, updatedData  ) => {
-        console.log(updatedData,'pppp')
         set({ loading: true, error: null });
         try {
             const response = await axiosInstance.put(`/request-quotations/${id}`, updatedData)
-            
             return response.data;
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });

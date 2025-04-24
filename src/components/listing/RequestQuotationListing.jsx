@@ -1,34 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Dialog } from "primereact/dialog";
-import CustomButton from "../../systemdesign/CustomeButton";
+
 import { FaFileImage } from "react-icons/fa6";
 import { Toast } from 'primereact/toast';
 import { useRequestQuotationStore } from "../../Context/RequestQoutation";
 import { Menu } from "primereact/menu";
-
+import AlertBox from "../widget/AlertBox";
 export default function RequestQuotationListing() {
   const { quotations, loading, fetchQuotations, updateQuotation } = useRequestQuotationStore();
   const [search, setSearch] = useState("");
-  const [visible, setVisible] = useState(false);
-  const [selectedQuotation, setSelectedQuotation] = useState(null);
-  const toast = useRef(null);
 
+  const toast = useRef(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertData, setAlertData] = useState({
+    title: '',
+    message: '',
+    isSuccess : true
+  });
   useEffect(() => {
     fetchQuotations();
   }, []);
-
-  const handleDelete = () => {
-    console.log(`Deleted quotation ID: ${selectedQuotation?.requestQuotationId}`);
-    setVisible(false);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Quotation deleted successfully',
-      life: 3000
-    });
-  };
-
-
 
 
   const StatusDropdown = ({ rowData }) => {
@@ -36,6 +26,7 @@ export default function RequestQuotationListing() {
     const [loading, setLoading] = useState(false);
     const toast = useRef(null);
     const menuRef = useRef(null);
+
 
     const statusOptions = [
       { value: 'SENT_QUOTATION', label: 'Sent Quotation', color: 'bg-blue-400' },
@@ -51,19 +42,22 @@ export default function RequestQuotationListing() {
         const res = await updateQuotation(rowData?.requestQuotationId, { status: newStatus });
         setStatus(newStatus);
 
-        toast.current.show({
-          severity: 'success',
-          summary: 'Status Updated',
-          detail: `Changed to: ${newStatus}`,
-          life: 3000,
+        setAlertData({
+          title: 'Status Updated',
+          message: `Changed to: ${newStatus}`,
+          isSuccess : true
         });
+        setShowAlert(true);
+
+        setTimeout(() => setShowAlert(false), 5000);
       } catch (error) {
-        toast.current.show({
-          severity: 'error',
-          summary: 'Update Failed',
-          detail: 'Could not update status',
-          life: 3000,
+        setAlertData({
+          title: 'Update Failed',
+          message: 'Could not update status',
+          isSuccess : false
+
         });
+        setShowAlert(true);
       } finally {
         setLoading(false);
         fetchQuotations()
@@ -106,8 +100,8 @@ export default function RequestQuotationListing() {
             </svg>
           ) : (
             <>
-              <span className={`w-2 h-2 rounded-full animate-pulse ${currentStatus?.color || 'bg-gray-400'}`}></span>
-              <span>{currentStatus?.label || 'Pending'}</span>
+              <span className={`w-2 h-2 rounded-full animate-pulse ${currentStatus?.color || 'bg-blue-400'}`}></span>
+              <span>{currentStatus?.label.slice(0,10) || 'Sent Quotation'}</span>
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
               </svg>
@@ -125,6 +119,7 @@ export default function RequestQuotationListing() {
       </div>
     )
   };
+
 
   const filteredQuotations = quotations?.filter(quotation => {
     const searchTerm = search.toLowerCase();
@@ -193,7 +188,7 @@ export default function RequestQuotationListing() {
                   <tr
                     key={quotation.requestQuotationId}
                     className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
-                    onClick={() => setSelectedQuotation(quotation)}
+                    // onClick={() => setSelectedQuotation(quotation)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {quotation.requestQuotationId}
@@ -261,31 +256,16 @@ export default function RequestQuotationListing() {
         )}
       </div>
 
-      <Dialog
-        header="Confirmation"
-        position="top"
-        draggable={false}
-        visible={visible}
-        onHide={() => setVisible(false)}
-      >
-        <p className="mb-10">
-          Do you want to delete this quotation with ID{" "}
-          <strong>{selectedQuotation?.requestQuotationId}</strong>?
-        </p>
-        <div className="flex justify-between">
-          <CustomButton
-            title={"Yes"}
-            icon={"pi pi-check"}
-            onClick={handleDelete}
-          />
-          <CustomButton
-            title={"No"}
-            icon={"pi pi-times"}
-            onClick={() => setVisible(false)}
-          />
-        </div>
-      </Dialog>
 
+
+      {showAlert && (
+        <AlertBox
+          title={alertData?.title}
+          message={alertData?.message}
+          isSuccess={alertData?.isSuccess}
+          onClose={() => setShowAlert(false)}
+        />
+      )}
 
     </div>
   );
