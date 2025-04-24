@@ -14,7 +14,6 @@ export default function LoginForm({isTokenValid}) {
     const onSubmit = (data) => {
         isTokenValid(true)
         navigate('/')
-        console.log('Form Data:', data);
     };
 
     return (

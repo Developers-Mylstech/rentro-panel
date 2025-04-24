@@ -86,7 +86,6 @@ export default function AddRent() {
     if (formData.image2) formDataToSend.append('image2', formData.image2);
     if (formData.image3) formDataToSend.append('image3', formData.image3);
 
-    console.log('Form Data:', formDataToSend);
 
     navigate('/rental-list');
   };
