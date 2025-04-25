@@ -24,7 +24,7 @@ import { useParams } from 'react-router-dom';
 const DemoProduct = () => {
     const { createProduct, getProductsById, singleProduct } = useProductStore()
     const { id } = useParams();
-    const [productById, setProductById] = useState({})
+
     const [loading, setLoading] = useState(false)
     const toast = useRef(null);
     const [focusedFields, setFocusedFields] = useState({
@@ -44,8 +44,8 @@ const DemoProduct = () => {
             getProductsById(id)
         }
     }, [id]);
-    setProductById(singleProduct)
-// console.log(productById,'productById')
+
+    console.log(singleProduct, 'productById')
 
     const handleEdit = () => {
         setProductData({
@@ -87,10 +87,10 @@ const DemoProduct = () => {
 
     const [productData, setProductData] = useState({
         basicInfo: {
-            name: '' || productById?.name,
-            // description: '' ||productById?.description ,
-            shortDescription: '' || productById?.description,
-            longDescription: ''|| productById?.longDescription,
+            name: '',
+            description: '',
+            shortDescription: '',
+            longDescription: '',
             manufacturer: '',
             supplierName: '',
             supplierCode: '',
