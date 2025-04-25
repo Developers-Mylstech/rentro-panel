@@ -24,7 +24,7 @@ import { useParams } from 'react-router-dom';
 const DemoProduct = () => {
     const { createProduct, getProductsById, singleProduct } = useProductStore()
     const { id } = useParams();
-
+    const [productById, setProductById] = useState({})
     const [loading, setLoading] = useState(false)
     const toast = useRef(null);
     const [focusedFields, setFocusedFields] = useState({
@@ -44,13 +44,53 @@ const DemoProduct = () => {
             getProductsById(id)
         }
     }, [id]);
+    setProductById(singleProduct)
+// console.log(productById,'productById')
+
+    const handleEdit = () => {
+        setProductData({
+            basicInfo: {
+                name: '' || singleProduct?.name,
+                description: '',
+                shortDescription: '',
+                longDescription: '',
+                manufacturer: '',
+                supplierName: '',
+                supplierCode: '',
+                modelNo: '',
+            },
+            category: {
+                main: null,
+                sub: null
+            },
+            brand: null,
+            pricing: {
+                sell: null,
+                rent: null,
+                services: {
+                    oneTime: null,
+                    mmc: null,
+                    amcBasic: null,
+                    amcGold: null
+                }
+            },
+            inventory: {
+                sku: '',
+                quantity: 0,
+                stockStatus: 'IN_STOCK'
+            },
+            keyFeatures: [],
+            specifications: [],
+            images: []
+        })
+    }
 
     const [productData, setProductData] = useState({
         basicInfo: {
-            name: '',
-            description: '',
-            shortDescription: '',
-            longDescription: '',
+            name: '' || productById?.name,
+            // description: '' ||productById?.description ,
+            shortDescription: '' || productById?.description,
+            longDescription: ''|| productById?.longDescription,
             manufacturer: '',
             supplierName: '',
             supplierCode: '',
