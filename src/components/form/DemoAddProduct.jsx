@@ -16,25 +16,34 @@ import { Toast } from 'primereact/toast';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
 import "../../index.css"
+import { useParams } from 'react-router-dom';
 
 
 
 
 const DemoProduct = () => {
     const { createProduct } = useProductStore()
+    const { id } = useParams();
+
     const [loading, setLoading] = useState(false)
     const toast = useRef(null);
-     const [focusedFields, setFocusedFields] = useState({
-        name:false,
-        description:false,
-        shortDescription:false,
-        longDescription:false,
-        manufacturer:false,
-        supplierName:false,
-        supplierCode:false,
-        modelNo:false,
-      });
+    const [focusedFields, setFocusedFields] = useState({
+        name: false,
+        description: false,
+        shortDescription: false,
+        longDescription: false,
+        manufacturer: false,
+        supplierName: false,
+        supplierCode: false,
+        modelNo: false,
+    });
     
+
+    useEffect(() => {
+        if (id) {
+            console.log("id")
+        }
+    }, [id]);
 
 
     const [productData, setProductData] = useState({
@@ -114,7 +123,7 @@ const DemoProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
-     
+
         if (payload?.categoryId && payload?.brandId) {
             try {
                 setLoading(true)
@@ -278,20 +287,20 @@ const ProductBasicInfo = ({ data, onChange }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div className="space-y-2">
-                        <FloatLabel className='active:text-blue-500'>
-                    {/* <div className="flex items-center justify-between"> */}
+                    <FloatLabel className='active:text-blue-500'>
+                        {/* <div className="flex items-center justify-between"> */}
                         {/* <span className="text-xs text-red-500">*required</span> */}
-                    {/* </div> */}
-                    <InputText
-                        value={data.name}
-                        id='name'
-                        onChange={(e) => onChange('basicInfo', 'name', e.target.value)}
-                        required
-                        // placeholder="e.g. Premium Wireless Headphones"
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        {/* </div> */}
+                        <InputText
+                            value={data.name}
+                            id='name'
+                            onChange={(e) => onChange('basicInfo', 'name', e.target.value)}
+                            required
+                            // placeholder="e.g. Premium Wireless Headphones"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
-                        <label htmlFor='name'  className="block text-sm font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
-                        </FloatLabel>
+                        <label htmlFor='name' className="block text-sm font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
+                    </FloatLabel>
                     {!data.name && (
                         <p className="text-xs text-red-500 mt-1">Product name is required</p>
                     )}
@@ -299,30 +308,30 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     {/* <div className="flex items-center justify-between">
                     </div> */}
-                   <FloatLabel>
-                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
-                    <InputText
-                        value={data.modelNo}
-                        onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
-                        required
-                        // placeholder="Enter Model No."
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    />
-                   </FloatLabel>
+                    <FloatLabel>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
+                        <InputText
+                            value={data.modelNo}
+                            onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
+                            required
+                            // placeholder="Enter Model No."
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        />
+                    </FloatLabel>
 
                 </div>
 
                 <div className="space-y-2">
                     <div className="relative">
-                       <FloatLabel>
-                       <InputText
-                            value={data.manufacturer}
-                            onChange={(e) => onChange('basicInfo', 'manufacturer', e.target.value)}
-                            // placeholder="e.g. Sony, Apple, Samsung"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                        />
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
-                       </FloatLabel>
+                        <FloatLabel>
+                            <InputText
+                                value={data.manufacturer}
+                                onChange={(e) => onChange('basicInfo', 'manufacturer', e.target.value)}
+                                // placeholder="e.g. Sony, Apple, Samsung"
+                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
+                        </FloatLabel>
                         {data.manufacturer && (
                             <button
                                 onClick={() => onChange('basicInfo', 'manufacturer', '')}
@@ -339,15 +348,15 @@ const ProductBasicInfo = ({ data, onChange }) => {
 
                 <div className="space-y-2">
                     <div className="relative">
-                    <FloatLabel>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
-                        <InputText
-                            value={data.supplierName}
-                            onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
-                            // placeholder="Enter Supplier Name"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                        />
-                    </FloatLabel>
+                        <FloatLabel>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
+                            <InputText
+                                value={data.supplierName}
+                                onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
+                                // placeholder="Enter Supplier Name"
+                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                        </FloatLabel>
                         {data.supplierName && (
                             <button
                                 onClick={() => onChange('basicInfo', 'supplierName', '')}
@@ -363,15 +372,15 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 </div>
                 <div className="space-y-2">
                     <div className="relative">
-                  <FloatLabel>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
-                        <InputText
-                            value={data.supplierCode}
-                            onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
-                            // placeholder="Enter Supplier Code"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                        />
-                  </FloatLabel>
+                        <FloatLabel>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
+                            <InputText
+                                value={data.supplierCode}
+                                onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
+                                // placeholder="Enter Supplier Code"
+                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                        </FloatLabel>
                         {data.supplierCode && (
                             <button
                                 onClick={() => onChange('basicInfo', 'supplierCode', '')}
@@ -388,16 +397,16 @@ const ProductBasicInfo = ({ data, onChange }) => {
 
                 <div className="space-y-2 md:col-span-2">
                     <div className="relative">
-                  <FloatLabel>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
-                        <InputText
-                            value={data.shortDescription}
-                            onChange={(e) => onChange('basicInfo', 'shortDescription', e.target.value)}
-                            // placeholder="Brief product description (max 160 characters)"
-                            maxLength={160}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                        />
-                  </FloatLabel>
+                        <FloatLabel>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
+                            <InputText
+                                value={data.shortDescription}
+                                onChange={(e) => onChange('basicInfo', 'shortDescription', e.target.value)}
+                                // placeholder="Brief product description (max 160 characters)"
+                                maxLength={160}
+                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                        </FloatLabel>
                         <span className="absolute right-2 bottom-2 text-xs text-gray-400 dark:text-gray-500">
                             {data.shortDescription?.length || 0}/160
                         </span>
@@ -408,14 +417,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 {/* Long Description */}
                 <div className="space-y-2 md:col-span-2">
                     <FloatLabel>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
-                    <InputTextarea
-                        value={data.longDescription}
-                        onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
-                        // placeholder="Detailed product description with features and benefits"
-                        rows={3}
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
+                        <InputTextarea
+                            value={data.longDescription}
+                            onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
+                            // placeholder="Detailed product description with features and benefits"
+                            rows={3}
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        />
                     </FloatLabel>
 
                 </div>
@@ -595,10 +604,10 @@ const PricingOptions = ({ pricing, onChange }) => {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                 {[
-                    { label: 'Sell', value: 'sell', color:"green-500" },
-                    { label: 'Rent', value: 'rent',color:"orange-500" },
-                    { label: 'Service', value: 'service',color:"purple-500" },
-                    { label: 'Request a Quotation', value: 'quotation', color:"blue-500" },
+                    { label: 'Sell', value: 'sell', color: "green-500" },
+                    { label: 'Rent', value: 'rent', color: "orange-500" },
+                    { label: 'Service', value: 'service', color: "purple-500" },
+                    { label: 'Request a Quotation', value: 'quotation', color: "blue-500" },
                 ].map((option) => (
                     <label
                         key={option.value}
@@ -1353,12 +1362,12 @@ const InventorySection = ({ inventory, onChange }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* SKU Field */}
                 <div className="space-y-2">
-                   
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Product SKU
                     </label>
                     <div className="relative">
-     
+
 
                         <input
                             type="text"
@@ -1367,7 +1376,7 @@ const InventorySection = ({ inventory, onChange }) => {
                             placeholder="SKU-12345"
                             className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
-              
+
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 dark:text-gray-400 text-xs">UNIQUE</span>
                         </div>
