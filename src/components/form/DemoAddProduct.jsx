@@ -267,7 +267,6 @@ const preparePayload = (productData) => {
         },
         keyFeatures: productData.keyFeatures || []
     };
-console.log(payload,'00099')
     return payload;
 };
 
