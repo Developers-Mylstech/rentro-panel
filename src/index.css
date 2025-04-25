@@ -110,3 +110,7 @@ li.relative.open::after {
 .p-multiselect-items .p-checkbox:hover {
   border-color: #2563eb; /* Tailwind's blue-600 */
 }
+
+.custom-float-label .p-float-label :is(:active, :focus) + label  {
+  color: #2563eb;
+}

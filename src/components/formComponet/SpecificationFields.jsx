@@ -77,7 +77,7 @@ const SpecificationFields = ({ specs, onChange }) => {
           Specifications
         </label>
 
-        <div className="flex flex-col md:flex-row gap-3 md:w-[70%] w-full">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:w-[70%] w-full">
           <MultiSelect
             value={selectedSpecification}
             onChange={(e) => handleSpecificationChange(e.value)}

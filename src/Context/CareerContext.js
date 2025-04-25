@@ -31,7 +31,7 @@ const useCareerStore = create((set, get) => ({
 
       try{
 
-        const res = await axios.post('https://proud-expression-production-6ebc.up.railway.app/api/v1/job-posts',job);
+        const res = await axiosInstance.post('/job-posts',job);
 
         set((state) => ({
           careersPosts: [...state.careersPosts, {  ...job }],
@@ -40,6 +40,21 @@ const useCareerStore = create((set, get) => ({
         console.error("Failed to add jobpost:", error);
       }
   },
+
+  editJobPost : async (job,id) =>{
+
+    try{
+
+      const res = await axiosInstance.put(`/job-posts/${id}`,job);
+
+      set((state) => ({
+        careersPosts: [...state.careersPosts, {  ...job }],
+      }));
+    }catch(error){
+      console.error("Failed to add jobpost:", error);
+    }
+},
+
 
   getJobApplicants: async (id) => {
     try {
@@ -57,32 +72,22 @@ const useCareerStore = create((set, get) => ({
 
   
 
-  // Set the selected category and filter its subcategories
-//   setSelectedCategory: (categoryId) => {
-//     const { flatCategoryList } = get();
-//     const filteredSubCategories = flatCategoryList.filter(
-//       (cat) => cat.parentCategoryId === categoryId
-//     );
-    
-//     set({ 
-//       selectedCategory: categoryId,
-//       subCategories: filteredSubCategories,
-//     });
-//   },
 
-  // Remove a category
-//   removeCategory: async (id) => {
-//     try {
-//       await axiosInstance.delete(`/categories/${id}`);
-//       set((state) => ({
-//         flatCategoryList: state.flatCategoryList.filter((cat) => cat.categoryId !== id),
-//         categoryList: state.categoryList.filter((cat) => cat.categoryId !== id),
-//         subCategories: state.subCategories.filter((cat) => cat.categoryId !== id),
-//       }));
-//     } catch (error) {
-//       console.error("Failed to delete category:", error);
-//     }
-//   },
+  removeCareerPost: async (id) => {
+    try {
+     const res = await axiosInstance.delete(`/job-posts/${id}`);
+
+     if(res.status === 204){
+      alert("Job Post Deleted")
+     }
+      set((state) => ({
+        careersPosts: state.careersPosts.filter((job) => job.jobPostId !== id),
+       
+      }));
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+    }
+  },
 
 
  
