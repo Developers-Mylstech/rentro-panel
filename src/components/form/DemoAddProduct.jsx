@@ -22,7 +22,7 @@ import { useParams } from 'react-router-dom';
 
 
 const DemoProduct = () => {
-    const { createProduct } = useProductStore()
+    const { createProduct, getProductsById, singleProduct } = useProductStore()
     const { id } = useParams();
 
     const [loading, setLoading] = useState(false)
@@ -37,14 +37,13 @@ const DemoProduct = () => {
         supplierCode: false,
         modelNo: false,
     });
-    
+
 
     useEffect(() => {
         if (id) {
-            console.log("id")
+            getProductsById(id)
         }
     }, [id]);
-
 
     const [productData, setProductData] = useState({
         basicInfo: {
@@ -127,7 +126,6 @@ const DemoProduct = () => {
         if (payload?.categoryId && payload?.brandId) {
             try {
                 setLoading(true)
-                console.log(payload, 'payload with new styling');
                 const response = await createProduct(payload);
                 if (response.name) {
                     setLoading(false)
@@ -199,6 +197,7 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
+
     const payload = {
         name: productData.basicInfo.name,
         description: productData.basicInfo.shortDescription,
@@ -217,12 +216,16 @@ const preparePayload = (productData) => {
             sell: {
                 actualPrice: productData.pricing?.sell?.price || 0,
                 discountPrice: productData.pricing?.sell?.discountedPrice || 0,
-                benefits: productData.pricing?.sell?.benefits || []
+                benefits: productData.pricing?.sell?.benefits || [],
+                isWarrantyAvailable: productData.pricing?.sell?.isWarrantyAvailable || false,
+                warrantPeriod: +productData.pricing?.sell?.warrantPeriod || 0
             },
             rent: {
                 monthlyPrice: productData.pricing?.rent?.monthlyPrice || 0,
                 discountPrice: productData.pricing?.rent?.discountedPrice || 0,
-                benefits: productData.pricing?.rent?.benefits || []
+                benefits: productData.pricing?.rent?.benefits || [],
+                isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
+                warrantPeriod: +productData.pricing?.rent?.warrantPeriod || 0
             },
             requestQuotation: {
                 actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
@@ -264,9 +267,7 @@ const preparePayload = (productData) => {
         },
         keyFeatures: productData.keyFeatures || []
     };
-
-
-
+console.log(payload,'00099')
     return payload;
 };
 
@@ -744,13 +745,15 @@ const QuotationForm = ({ data, onChange }) => {
 
 
 
-const SellPricingForm = ({ data, onChange, darkMode = false }) => {
+const SellPricingForm = ({ data, onChange, }) => {
     const [formData, setFormData] = useState(data || {
         price: '',
         discount: '',
         discountedPrice: '',
         benefits: [''],
-        vatIncluded: false
+        vatIncluded: false,
+        isWarrantyAvailable: false,
+        warrantPeriod: 1,
     });
     const [discountType, setDiscountType] = useState('percentage');
 
@@ -786,7 +789,13 @@ const SellPricingForm = ({ data, onChange, darkMode = false }) => {
     };
 
     const handleChange = (field, value) => {
-        const updated = { ...formData, [field]: value };
+
+        const updated = {
+            ...formData,
+            [field]: value,
+            isWarrantyAvailable: field === 'warrantPeriod' ? value !== null : formData.isWarrantyAvailable
+        };
+
         setFormData(updated);
         onChange(updated);
     };
@@ -811,7 +820,7 @@ const SellPricingForm = ({ data, onChange, darkMode = false }) => {
         <div className="p-4 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
             <h3 className="text-lg font-medium mb-4 text-gray-800 dark:text-white">Sell Pricing</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Price (AED)</label>
                     <div className="relative rounded-md shadow-sm">
@@ -863,14 +872,25 @@ const SellPricingForm = ({ data, onChange, darkMode = false }) => {
                 </div>
 
                 <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Warranty Period (Months)</label>
+                    <input
+                        type="number"
+                        value={formData.warrantPeriod || ''}
+                        onChange={(e) => handleChange('warrantPeriod', e.target.value || null)}
+                        className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    />
+                </div>
+
+                <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Discounted Price (AED)</label>
                     <input
                         type="text"
                         value={formData.discountedPrice}
                         readOnly
-                        className="block w-full px-3 py-2 border-b shadow-sm bg-gray-50 border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
                 </div>
+
             </div>
 
             <div className="mb-6">
@@ -953,6 +973,8 @@ const RentPricingForm = ({ data, onChange }) => {
         benefits: [''],
         vatIncluded: true,
         vatAmount: '',
+        isWarrantyAvailable: false,
+        warrantPeriod: 1,
     });
     const [discountType, setDiscountType] = useState('percentage');
 
@@ -1003,7 +1025,7 @@ const RentPricingForm = ({ data, onChange }) => {
         <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <h3 className="text-lg font-medium text-gray-800 dark:text-gray-100 mb-4">Rent Pricing</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {/* Monthly Price */}
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Monthly Price (AED)</label>
@@ -1023,7 +1045,7 @@ const RentPricingForm = ({ data, onChange }) => {
                     </div>
                 </div>
 
-                {/* Discount Input */}
+
                 <div className="space-y-1">
                     <div className="flex space-x-4 mb-1">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Discount</label>
@@ -1053,6 +1075,15 @@ const RentPricingForm = ({ data, onChange }) => {
                         min="0"
                         step={discountType === 'percentage' ? '1' : '0.01'}
                         className="block w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500"
+                    />
+                </div>
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Warranty Period (Months)</label>
+                    <input
+                        type="number"
+                        value={formData.warrantPeriod || ''}
+                        onChange={(e) => handleChange('warrantPeriod', e.target.value || null)}
+                        className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
                 </div>
                 <div>

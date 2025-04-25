@@ -6,15 +6,15 @@ const useProductStore = create((set) => ({
   products: [],
   loading: false,
   error: null,
-
+  singleProduct: {},
   createProduct: async (newProduct) => {
     try {
       set({ loading: true, error: null });
 
-      const response = await axiosInstance.post('/products', newProduct,{
+      const response = await axiosInstance.post('/products', newProduct, {
         headers: {
           'skip_zrok_interstitial': 'true'
-      },
+        },
       });
       set((state) => ({
         products: [...state.products, response.data],
@@ -40,8 +40,20 @@ const useProductStore = create((set) => ({
       set({ loading: false });
     }
   },
+  getProductsById: async (id) => {
+    try {
+      set({ loading: true, error: null });
 
-  // Update product
+      const response = await axiosInstance.get(`/products/${id}`);
+      set({ singleProduct: response.data });
+
+    } catch (error) {
+      set({ error: error.message });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   updateProduct: async (id, updatedProduct) => {
     try {
       set({ loading: true, error: null });
@@ -60,25 +72,24 @@ const useProductStore = create((set) => ({
     }
   },
 
-  // Delete product
-  // Delete product
-deleteProduct: async (id) => {
-  try {
-    set({ loading: true, error: null });
 
-    const response = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`);
-    set((state) => ({
-      products: state.products.filter((product) => product.productId !== id), // Ensure you're matching the correct key (e.g., productId)
-    }));
+  deleteProduct: async (id) => {
+    try {
+      set({ loading: true, error: null });
 
-    return { success: true }; // ✅ return something so you can check success
-  } catch (error) {
-    set({ error: error.message });
-    return { success: false, error: error.message }; // ✅ also return failure info
-  } finally {
-    set({ loading: false });
-  }
-},
+      const response = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`);
+      set((state) => ({
+        products: state.products.filter((product) => product.productId !== id), // Ensure you're matching the correct key (e.g., productId)
+      }));
+
+      return { success: true }; // ✅ return something so you can check success
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message }; // ✅ also return failure info
+    } finally {
+      set({ loading: false });
+    }
+  },
 
 }));
 
