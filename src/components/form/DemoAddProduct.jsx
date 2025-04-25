@@ -1563,6 +1563,7 @@ const ImageUploader = ({ images, onChange }) => {
     };
 
     const handleUpload = async () => {
+        console.log("++++++++")
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
         if (uploaded) {
