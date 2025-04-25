@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-
 import axiosInstance from '../utils/axiosInstance';
 
 const useImageUploadStore = create((set) => ({

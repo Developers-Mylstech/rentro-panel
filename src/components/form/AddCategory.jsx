@@ -172,6 +172,8 @@
 import React, { useEffect, useState } from 'react';
 import useCategoryStore from '../../Context/CategoryContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FloatLabel } from 'primereact/floatlabel';
+import { InputText } from 'primereact/inputtext';
 
 export default function AddCategory() {
   const [mainCategory, setMainCategory] = useState('');
@@ -280,7 +282,7 @@ export default function AddCategory() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
         </div>
-        <h2 className="text-2xl font-light text-gray-800 dark:text-gray-200 mb-1 tracking-tight">
+        <h2 className="text-2xl font-light text-secondary dark:text-gray-200 mb-1 tracking-tight">
           {isEditMode ? 'Edit Category' : 'Create New Category'}
         </h2>
         <p className="text-gray-500 dark:text-gray-300 font-light">
@@ -288,26 +290,32 @@ export default function AddCategory() {
         </p>
       </div>
     
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className={`transition-all duration-200 ease-in-out ${isParentSelected ? 'opacity-60' : ''}`}>
-          <label htmlFor="mainCategory" className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-1">
+      <form onSubmit={handleSubmit} className="space-y-7">
+        <div className={`transition-all relative duration-200 ease-in-out ${isParentSelected ? 'opacity-60' : ''}`}>
+        {/* <FloatLabel> */}
+          <label htmlFor="mainCategory"    className={`absolute top-0  text-xs font-medium uppercase tracking-wider mb-1 ${
+      mainCategory  ? 'text-blue-500 -top-4' : 'text-gray-500 dark:text-gray-300'
+    } peer-focus:text-blue-500`}>
             Main Category
           </label>
+
           <input
             id="mainCategory"
             type="text"
             value={mainCategory}
             onChange={(e) => setMainCategory(e.target.value)}
-            placeholder="e.g. Filters"
-            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-200 dark:border-gray-600 focus:border-blue-500 focus:ring-0 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-t transition-all duration-200"
+            // placeholder="e.g. Filters"
+            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500"
             disabled={isParentSelected}
           />
+
+          {/* </FloatLabel> */}
           {!isParentSelected && (
             <p className="mt-1 text-xs text-gray-400 dark:text-gray-300">Leave empty if creating subcategory</p>
           )}
         </div>
     
-        <div className={`transition-all duration-200 ease-in-out ${isMainCategoryEntered ? 'opacity-60' : ''}`}>
+        <div className={`transition-all duration-200  ease-in-out ${isMainCategoryEntered ? 'opacity-60' : ''}`}>
           <div className="flex items-center justify-between">
             <label htmlFor="parentCategory" className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-1">
               Parent Category
@@ -320,7 +328,7 @@ export default function AddCategory() {
             id="parentCategory"
             value={mainCategoryID}
             onChange={(e) => setMainCategoryID(e.target.value)}
-            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-200 dark:border-gray-600 focus:border-blue-500 focus:ring-0 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-t transition-all duration-200 appearance-none"
+            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500"
             disabled={isMainCategoryEntered || (isEditMode && !isSubcategory)}
           >
             <option value="">Select parent category</option>
@@ -333,19 +341,23 @@ export default function AddCategory() {
         </div>
     
         <div className={`transition-all duration-200 ease-in-out ${isMainCategoryEntered ? 'opacity-60' : ''}`}>
-          <label htmlFor="subCategory" className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-1">
-            Subcategory Name
-          </label>
-          <input
+          <FloatLabel>
+          <InputText
             id="subCategory"
             type="text"
             value={subCategory}
             onChange={(e) => setSubCategory(e.target.value)}
-            placeholder="e.g. RO"
-            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-200 dark:border-gray-600 focus:border-blue-500 focus:ring-0 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-t transition-all duration-200"
+            // placeholder="e.g. RO"
+            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500 "
             disabled={isMainCategoryEntered || (isEditMode && !isSubcategory)}
           />
+          <label htmlFor="subCategory" className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+            Subcategory Name
+          </label>
+          </FloatLabel>
         </div>
+        
+        
     
         <div className="pt-2 flex gap-3">
           <button

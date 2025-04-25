@@ -9,4 +9,4 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common['skip_zrok_interstitial'] = 'true';
 
-export default axiosInstance;
+export default axiosInstance;
