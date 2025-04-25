@@ -11,7 +11,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.post('/api/products', newProduct,{
+      const response = await axiosInstance.post('/products', newProduct,{
         headers: {
           'skip_zrok_interstitial': 'true'
       },
