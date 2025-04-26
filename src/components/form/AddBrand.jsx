@@ -7,6 +7,7 @@ import useBrandStore from '../../Context/BrandContext';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FloatLabel } from 'primereact/floatlabel';
+import axiosInstance from '../../utils/axiosInstance';
         
 
 export default function AddBrandWithImageUploader() {
@@ -73,8 +74,8 @@ export default function AddBrandWithImageUploader() {
             setUploading(true);
             setMessage("Uploading images...");
 
-            const response = await axios.post(
-                'https://proud-expression-production-6ebc.up.railway.app/api/v1/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+            const response = await axiosInstance.post(
+                '/images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {

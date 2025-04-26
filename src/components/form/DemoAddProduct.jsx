@@ -220,78 +220,92 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
-    console.log(productData, 'payloadddd')
+    console.log(productData, 'productData')
+
+    // Safely handle images array
+    const imageUrls = Array.isArray(productData.images) 
+        ? productData.images.map(img => img?.url?.fileUrl || '').filter(url => url)
+        : [];
+
+    // Safely handle specifications
+    const specifications = Array.isArray(productData.specifications)
+        ? productData.specifications
+              .filter(spec => spec?.name && spec?.value)
+              .map(spec => ({
+                  name: spec.name,
+                  value: spec.value
+              }))
+        : [];
+
+    // Helper function to safely handle service benefits
+    const getServicePayload = (service) => {
+        if (!service) return { price: 0, benefits: [] };
+        
+        return {
+            price: Number(service.price) || 0,
+            benefits: Array.isArray(service.benefits) 
+                ? service.benefits.filter(benefit => benefit && benefit.trim() !== '')
+                : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
+        };
+    };
 
     const payload = {
-        name: productData.basicInfo.name,
-        description: productData.basicInfo.shortDescription,
-        longDescription: productData.basicInfo.longDescription,
-        manufacturer: productData.basicInfo.manufacturer,
-        brandId: +productData?.brand?.brandId,
-        imageUrls: productData.images.map(img => img?.url?.fileUrl || ''),
-        specifications: productData.specifications.map(spec => ({
-            name: spec.name,
-            value: spec.value
-        })),
-        modelNo: productData.basicInfo.modelNo,
-        supplierName: productData.basicInfo.supplierName,
-        supplierCode: productData.basicInfo.supplierCode,
+        name: productData.basicInfo.name || '',
+        description: productData.basicInfo.shortDescription || '',
+        longDescription: productData.basicInfo.longDescription || '',
+        manufacturer: productData.basicInfo.manufacturer || '',
+        brandId: +(productData?.brand?.brandId || 0),
+        imageUrls,
+        specifications,
+        modelNo: productData.basicInfo.modelNo || '',
+        supplierName: productData.basicInfo.supplierName || '',
+        supplierCode: productData.basicInfo.supplierCode || '',
         productFor: {
             sell: {
                 actualPrice: productData.pricing?.sell?.price || 0,
                 discountPrice: productData.pricing?.sell?.discountedPrice || 0,
-                benefits: productData.pricing?.sell?.benefits || [],
+                benefits: Array.isArray(productData.pricing?.sell?.benefits)
+                    ? productData.pricing.sell.benefits.filter(b => b)
+                    : [],
                 isWarrantyAvailable: productData.pricing?.sell?.isWarrantyAvailable || false,
-                warrantPeriod: +productData.pricing?.sell?.warrantPeriod || 0
+                warrantPeriod: +(productData.pricing?.sell?.warrantPeriod || 0)
             },
             rent: {
                 monthlyPrice: productData.pricing?.rent?.monthlyPrice || 0,
                 discountPrice: productData.pricing?.rent?.discountedPrice || 0,
-                benefits: productData.pricing?.rent?.benefits || [],
+                benefits: Array.isArray(productData.pricing?.rent?.benefits)
+                    ? productData.pricing.rent.benefits.filter(b => b)
+                    : [],
                 isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
-                warrantPeriod: +productData.pricing?.rent?.warrantPeriod || 0
+                warrantPeriod: +(productData.pricing?.rent?.warrantPeriod || 0)
             },
             requestQuotation: {
                 actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
                 discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
             },
             service: {
-                ots: {
-                    price: productData.pricing?.services?.ots?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.ots?.benefits)
-                        ? productData.pricing?.services?.ots?.benefits
-                        : []
-                },
-                mmc: {
-                    price: productData.pricing?.services?.mmc?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
-                        ? productData.pricing?.services?.mmc?.benefits
-                        : []
-                },
-                amcBasic: {
-                    price: productData.pricing?.services?.amcBasic?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
-                        ? productData.pricing?.services?.amcBasic?.benefits
-                        : []
-                },
-                amcGold: {
-                    price: productData.pricing?.services?.amcGold?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
-                        ? productData.pricing?.services?.amcGold?.benefits
-                        : []
-                },
+                ots: getServicePayload(productData.pricing?.services?.ots),
+                mmc: getServicePayload(productData.pricing?.services?.mmc),
+                amcBasic: getServicePayload(productData.pricing?.services?.amcBasic),
+                amcGold: getServicePayload(productData.pricing?.services?.amcGold)
             }
         },
-        categoryId: +productData.category.main.categoryId,
-        subCategoryId: +productData?.category?.sub?.categoryId || "",
+        categoryId: +(productData.category?.main?.categoryId || 0),
+        subCategoryId: +(productData?.category?.sub?.categoryId || 0),
         inventory: {
-            quantity: productData.inventory.quantity || 0,
-            sku: productData.inventory.sku || '',
-            stockStatus: productData.inventory.stockStatus || 'IN_STOCK'
+            quantity: +(productData.inventory?.quantity || 0),
+            sku: productData.inventory?.sku || '',
+            stockStatus: productData.inventory?.stockStatus || 'IN_STOCK'
         },
-        keyFeatures: productData.keyFeatures || [],
-        tagNKeywords: productData?.tagandkeywords || []
+        keyFeatures: Array.isArray(productData.keyFeatures)
+            ? productData.keyFeatures.filter(f => f)
+            : [],
+        tagNKeywords: Array.isArray(productData?.tagandkeywords)
+            ? productData.tagandkeywords.filter(t => t)
+            : []
     };
+    console.log(payload, 'payload')
+    
     return payload;
 };
 
@@ -1287,7 +1301,11 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
     const handleChange = (field, value) => {
         const updated = { ...formData, [field]: value };
         setFormData(updated);
-        onChange(updated);
+        // Make sure to pass the benefits as an array
+        onChange({
+            ...updated,
+            benefits: Array.isArray(updated.benefits) ? updated.benefits : [updated.benefits].filter(b => b)
+        });
     };
 
     const handleBenefitChange = (index, value) => {
@@ -1350,7 +1368,7 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeBenefit(index)}
-                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-600 transition-colors"
+                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-700 transition-colors"
                                         aria-label="Remove benefit"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -1820,9 +1838,19 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
 
 
 
-const TagsAndKeywords = ({ tags = [], onChange }) => {
-    const [keywords, setKeywords] = useState(tags.length > 0 ? tags : ['']);
-console.log(tags,)
+const TagsAndKeywords = ({ features = [], onChange }) => {
+    const [keywords, setKeywords] = useState(() => {
+        // Initialize with features if available, otherwise start with one empty string
+        return features && features.length > 0 ? features : [''];
+    });
+
+    // Update keywords when features prop changes
+    useEffect(() => {
+        if (features && features.length > 0) {
+            setKeywords(features);
+        }
+    }, []);
+
     useEffect(() => {
         if (keywords.length === 0) {
             setKeywords(['']);
@@ -1874,7 +1902,7 @@ console.log(tags,)
                     <div key={index} className="flex items-start gap-3 group">
                         <div className="flex-1 relative">
                             <InputText
-                                value={keyword}
+                                value={keyword || ''}
                                 onChange={(e) => handleKeywordChange(index, e.target.value)}
                                 placeholder={`Enter tag/keyword #${index + 1}...`}
                                 className="w-full"
