@@ -593,12 +593,11 @@ const PricingOptions = ({ pricing, onChange }) => {
         <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                 {[
                     { label: 'Sell', value: 'sell', color:"green-500" },
                     { label: 'Rent', value: 'rent',color:"orange-500" },
                     { label: 'Service', value: 'service',color:"purple-500" },
-                    { label: 'Request a Quotation', value: 'quotation', color:"blue-500" },
                 ].map((option) => (
                     <label
                         key={option.value}
@@ -642,96 +641,12 @@ const PricingOptions = ({ pricing, onChange }) => {
                     />
                 )}
 
-                {selectedOptions.includes('quotation') && (
-                    <QuotationForm
-                        data={pricing.quotation}
-                        onChange={(data) => onChange('pricing', 'quotation', data)}
-                    />
-                )}
+                
             </div>
         </div>
     );
 };
 
-const QuotationForm = ({ data, onChange }) => {
-    const [formData, setFormData] = useState(data || {
-        name: '',
-        mobile: '',
-        companyName: '',
-        location: ''
-    });
-
-    const handleChange = (field, value) => {
-        const updated = { ...formData, [field]: value };
-        setFormData(updated);
-        onChange(updated);
-    };
-
-    return (
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Request a Quotation</h3>
-
-            <div className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
-                    <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                        placeholder="Enter your name"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile*</label>
-                    <input
-                        type="tel"
-                        value={formData.mobile}
-                        onChange={(e) => handleChange('mobile', e.target.value)}
-                        placeholder="Enter your mobile number"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name (if any)</label>
-                    <input
-                        type="text"
-                        value={formData.companyName}
-                        onChange={(e) => handleChange('companyName', e.target.value)}
-                        placeholder="Enter company name"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                    <input
-                        type="text"
-                        value={formData.location}
-                        onChange={(e) => handleChange('location', e.target.value)}
-                        placeholder="Enter location"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
-                    <div className="mt-1 flex items-center">
-                        <label className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Choose File
-                            <input type="file" className="sr-only" />
-                        </label>
-                        <span className="ml-2 text-sm text-gray-500">No file chosen</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 
 
