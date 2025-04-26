@@ -38,7 +38,7 @@ function CustomSidebar({ isDarkMode }) {
       </button>
 
       <div
-        className={`fixed top-0 left-0 h-full p-5 overflow-y-auto z-[55] w-[70%] 
+        className={`fixed top-0 left-0 h-full overflow-y-auto  pl-2 z-50 w-[70%] 
     bg-secondary dark:bg-gray-800 dark:text-gray-100
     transition-transform duration-1000 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
@@ -65,7 +65,7 @@ function CustomSidebar({ isDarkMode }) {
           <li>
             <Link
               to="/"
-              className={`flex items-center gap-3 p-2 w-[100%] h-auto rounded-xl py-4 pl-4 transition-all
+              className={`flex items-center gap-3 p-2 mx-auto w-[95%] h-auto rounded-xl py-4 pl-4 transition-all
       ${location.pathname === "/"
                   ? "bg-[#f8f8f8] text-secondary  "
                   : "text-secondary bg-white  "}`
@@ -86,7 +86,7 @@ function CustomSidebar({ isDarkMode }) {
           ].map((menu) => {
             const isActive = location.pathname.includes(menu.name);
             return (
-              <li className={`w-[112%] block relative  duration-[200ms] my-10  ${activeMenu === menu.name ? "open" : ""
+              <li className={`w-[100%] block relative  duration-[200ms] my-10  ${activeMenu === menu.name ? "open" : ""
                 }`} key={menu.name}>
                 <div className={isDark == true ? "right-container" : "right-container"}></div>
                 <button
@@ -167,7 +167,7 @@ function CustomSidebar({ isDarkMode }) {
           ].map((menu) => {
             const isActive = location.pathname.includes(menu.name);
             return (
-              <li className={`w-[112%]   block relative my-10 ${activeMenu === menu.name ? "open" : ""
+              <li className={`w-[100%]  block relative my-10 ${activeMenu === menu.name ? "open" : ""
                 }`} key={menu.name}>
                 <div className="right-container"></div>
 

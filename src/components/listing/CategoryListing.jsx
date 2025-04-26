@@ -300,7 +300,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
   return (
     <div className="dark:text-gray-200 p-6 w-full h-full">
       <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
-        <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
+        <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300 ">
           Category List
         </h5>
         <div className="flex items-center md:flex-row gap-3">
@@ -362,7 +362,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
 
       {/* Mobile Skeleton */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full lg:hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full lg:hidden pt-16">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}

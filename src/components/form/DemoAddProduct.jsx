@@ -288,9 +288,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                         onChange={(e) => onChange('basicInfo', 'name', e.target.value)}
                         required
                         // placeholder="e.g. Premium Wireless Headphones"
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
-                        <label htmlFor='name'  className="block text-sm font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
+                        <label htmlFor='name'  className="block text-sm peer-focus:text-blue-600 font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
                         </FloatLabel>
                     {!data.name && (
                         <p className="text-xs text-red-500 mt-1">Product name is required</p>
@@ -300,14 +300,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                     {/* <div className="flex items-center justify-between">
                     </div> */}
                    <FloatLabel>
-                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
                     <InputText
                         value={data.modelNo}
                         onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
                         required
                         // placeholder="Enter Model No."
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
+                   <label className="block text-sm font-medium peer-focus:text-blue-600 text-gray-700 dark:text-gray-300">Product Model No</label>
                    </FloatLabel>
 
                 </div>
@@ -319,9 +319,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             value={data.manufacturer}
                             onChange={(e) => onChange('basicInfo', 'manufacturer', e.target.value)}
                             // placeholder="e.g. Sony, Apple, Samsung"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
+                       <label className="block peer-focus:text-blue-600 text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
                        </FloatLabel>
                         {data.manufacturer && (
                             <button
@@ -340,13 +340,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                     <FloatLabel>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                         <InputText
                             value={data.supplierName}
                             onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
                             // placeholder="Enter Supplier Name"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                    <label className="block peer-focus:text-blue-600 text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                     </FloatLabel>
                         {data.supplierName && (
                             <button
@@ -364,13 +364,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                   <FloatLabel>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                         <InputText
                             value={data.supplierCode}
                             onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
                             // placeholder="Enter Supplier Code"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                  <label className="block peer-focus:text-blue-600 text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                   </FloatLabel>
                         {data.supplierCode && (
                             <button
@@ -389,14 +389,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2 md:col-span-2">
                     <div className="relative">
                   <FloatLabel>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                         <InputText
                             value={data.shortDescription}
                             onChange={(e) => onChange('basicInfo', 'shortDescription', e.target.value)}
                             // placeholder="Brief product description (max 160 characters)"
                             maxLength={160}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                  <label className="block peer-focus:text-blue-600 text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                   </FloatLabel>
                         <span className="absolute right-2 bottom-2 text-xs text-gray-400 dark:text-gray-500">
                             {data.shortDescription?.length || 0}/160
@@ -408,14 +408,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 {/* Long Description */}
                 <div className="space-y-2 md:col-span-2">
                     <FloatLabel>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                     <InputTextarea
                         value={data.longDescription}
                         onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
                         // placeholder="Detailed product description with features and benefits"
                         rows={3}
-                        className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        className="w-full px-3 peer py-2  border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
+                    <label className="block peer-focus:text-blue-600 text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                     </FloatLabel>
 
                 </div>

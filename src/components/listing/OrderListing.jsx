@@ -64,7 +64,7 @@ export default function OrderListing({ orders }) {
   );
 
   return (
-    <div>
+    <div className="">
       {/* Header Section */}
       
 

@@ -87,7 +87,7 @@ export default function BannerList() {
     <div className='md:h-screen h-[100%]'>
       {/* Header Section */}
       <div className="flex md:flex-row flex-col  justify-between items-center mb-6">
-        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200 my-4">
+        <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-200 my-4 ">
           Banner List
         </h5>
         <div className="flex justify-center items-center gap-3">

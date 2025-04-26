@@ -129,6 +129,7 @@ import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function AddRent() {
   const navigate = useNavigate();
@@ -220,44 +221,50 @@ export default function AddRent() {
       <h3 className="heading mb-6 dark:text-white">Add New Rental Detail</h3>
 
       <div className="border border-gray-300 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
-        <h2 className="subheading mb-4 text-gray-800 dark:text-gray-200">Rental Information</h2>
+        <h2 className="subheading mb-8 text-gray-800 dark:text-gray-200 ">Rental Information</h2>
 
         {/* Title Field */}
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2 md:mb-0">Title</label>
+        <div className="mb-8 flex flex-col md:flex-row justify-between md:items-center">
+          <FloatLabel className='w-full'>
           <InputText
-            className="w-[100%] md:w-[70%]  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none rounded-md"
+            className="w-[100%] peer md:w-[70%] peer p-2 border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none focus:border-blue-500 rounded-md"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="Title"
+            // placeholder="Title"
           />
+          <label className="text-gray-600 peer-focus:text-blue-500 dark:text-gray-300 mb-2 md:mb-0">Title</label>
+          </FloatLabel>
           {errors.title && <span className="text-red-500 text-sm">{errors.title}</span>}
         </div>
 
         {/* Subtitle Field */}
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2 md:mb-0">Subtitle</label>
+        <div className="mb-8 flex flex-col md:flex-row justify-between md:items-center ">
+        <FloatLabel className='w-full'>
           <InputText
-            className="w-[100%] md:w-[70%]  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none rounded-md"
+            className="w-[100%] md:w-[70%] peer  p-2 border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none focus:border-blue-500 rounded-md"
             name="subtitle"
             value={formData.subtitle}
             onChange={handleChange}
-            placeholder="Subtitle"
+            // placeholder="Subtitle"
           />
+          <label className="text-gray-600 peer-focus:text-blue-500 dark:text-gray-300 mb-2 md:mb-0">Subtitle</label>
+          </FloatLabel>
           {errors.subtitle && <span className="text-red-500 text-sm">{errors.subtitle}</span>}
         </div>
 
         {/* Description Field */}
         <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2 md:mb-0">Description</label>
+          <FloatLabel className='w-full'>     
           <InputText
-            className="w-[100%] md:w-[70%] p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none rounded-md"
+            className="w-[100%] peer md:w-[70%] p-2 border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-0 focus:outline-none focus:border-blue-500 rounded-md "
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Description"
+            // placeholder="Description"
           />
+          <label className="text-gray-600 peer-focus:text-blue-500 dark:text-gray-300 mb-2 md:mb-0">Description</label>
+          </FloatLabel>    
           {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
         </div>
       </div>

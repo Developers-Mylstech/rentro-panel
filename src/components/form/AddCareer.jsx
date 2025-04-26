@@ -821,7 +821,7 @@ function AddCareer() {
               <label 
                 htmlFor="heading"
                 className={`absolute left-0 ${focusedFields.heading || formData.heading ? 
-                  '-top-1 text-sm text-gray-500 dark:text-blue-400 transition-all duration-200' : 
+                  '-top-1 text-sm text-blue-400 dark:text-blue-400 transition-all duration-200' : 
                   'top-4 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200'}`}
               >
                 Job Title <span className="text-red-500">*</span>
@@ -844,7 +844,7 @@ function AddCareer() {
               <label 
                 htmlFor="description"
                 className={`absolute left-0 ${focusedFields.description || formData.description ? 
-                  '-top-1 text-sm text-gray-500 dark:text-blue-400 transition-all duration-200' : 
+                  '-top-1 text-sm text-blue-400  dark:text-blue-400 transition-all duration-200' : 
                   'top-4 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200'}`}
               >
                 Job Description <span className="text-red-500">*</span>
@@ -867,7 +867,7 @@ function AddCareer() {
               <label 
                 htmlFor="notes"
                 className={`absolute left-0 ${focusedFields.notes || formData.notes ? 
-                  '-top-1 text-sm text-gray-500 dark:text-blue-400 transition-all duration-200' : 
+                  '-top-1 text-sm text-blue-400  dark:text-blue-400 transition-all duration-200' : 
                   'top-4 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200'}`}
               >
                 Requirements
@@ -958,7 +958,7 @@ function AddCareer() {
               </div>
             )}
 
-<div className="pt-4 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-2">
+<div className="pt-4 border-t border-gray-200 dark:border-gray-700 grid md:grid-cols-2 grid-cols-1 gap-2">
   <button
     type="button"
     onClick={handleImageUpload}

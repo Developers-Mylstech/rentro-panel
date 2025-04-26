@@ -45,7 +45,7 @@ export default function Header({setIsDarkMode}) {
     ];
 
     return (
-        <div className="flex justify-end py-2 border-b sticky z-50 px-10 gap-5 top-0 transition-all duration-300 
+        <div className=" flex justify-end py-2 border-b fixed right-0 left-0 z-40 px-10 gap-5 top-0 transition-all duration-300 
                          text-black bg-white dark:bg-gray-900 dark:text-dark">
             <Menu   model={items}   popup ref={menuRef} id="popup_menu_left" className=' bg-white dark:text-gray-100 dark:bg-gray-800 '  />
 

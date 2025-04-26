@@ -292,24 +292,22 @@ export default function AddCategory() {
     
       <form onSubmit={handleSubmit} className="space-y-7">
         <div className={`transition-all relative duration-200 ease-in-out ${isParentSelected ? 'opacity-60' : ''}`}>
-        {/* <FloatLabel> */}
-          <label htmlFor="mainCategory"    className={`absolute top-0  text-xs font-medium uppercase tracking-wider mb-1 ${
-      mainCategory  ? 'text-blue-500 -top-4' : 'text-gray-500 dark:text-gray-300'
-    } peer-focus:text-blue-500`}>
-            Main Category
-          </label>
+        <FloatLabel>
 
-          <input
+          <InputText
             id="mainCategory"
             type="text"
             value={mainCategory}
             onChange={(e) => setMainCategory(e.target.value)}
             // placeholder="e.g. Filters"
-            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500"
+            className="w-full peer px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500"
             disabled={isParentSelected}
           />
+          <label htmlFor="mainCategory"     className="block text-sm font-medium text-gray-700 peer-focus:text-blue-600 uppercase tracking-wider transition-colors duration-200">
+            Main Category
+          </label>
 
-          {/* </FloatLabel> */}
+          </FloatLabel>
           {!isParentSelected && (
             <p className="mt-1 text-xs text-gray-400 dark:text-gray-300">Leave empty if creating subcategory</p>
           )}
@@ -348,10 +346,10 @@ export default function AddCategory() {
             value={subCategory}
             onChange={(e) => setSubCategory(e.target.value)}
             // placeholder="e.g. RO"
-            className="w-full px-4 py-2.5 text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500 "
+            className="w-full px-4 py-2.5 peer text-sm border-0 border-b border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-0 focus:border-blue-500 "
             disabled={isMainCategoryEntered || (isEditMode && !isSubcategory)}
           />
-          <label htmlFor="subCategory" className="block text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+          <label htmlFor="subCategory"  className="block text-sm font-medium text-gray-700 peer-focus:text-blue-600 uppercase tracking-wider transition-colors duration-200">
             Subcategory Name
           </label>
           </FloatLabel>
@@ -359,7 +357,7 @@ export default function AddCategory() {
         
         
     
-        <div className="pt-2 flex gap-3">
+        <div className="pt-2 grid md:grid-cols-2 grid-cols-1 gap-3">
           <button
             type="button"
             onClick={handleCancel}

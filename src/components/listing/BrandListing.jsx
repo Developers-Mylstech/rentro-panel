@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { IconField } from "primereact/iconfield";
@@ -74,7 +71,7 @@ export default function BrandListing({ brands }) {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3">
         <div className="flex items-center">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 ">
           Brand List
         </h1>
          
@@ -124,7 +121,7 @@ export default function BrandListing({ brands }) {
               {paginatedBrands.length > 0 ? (
                 paginatedBrands.map((brand) => (
                   <tr
-                    key={brand._id}
+                    key={brand.brandId}
                     className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">

@@ -172,20 +172,24 @@ export default function AddBrandWithImageUploader() {
                     <div className="space-y-2">
 
                     <FloatLabel>
-                        <InputText
-                         id="username"
-                            className={`w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50  transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
-                            // placeholder="e.g. Apple, Nike"
-                            {...register('name', {
-                                required: 'Brand name is required',
-                                minLength: {
-                                    value: 2,
-                                    message: 'Minimum 2 characters required'
-                                }
-                            })}
-                        />
-                            <label  htmlFor="username" className="block text-sm font-medium text-gray-700 uppercase tracking-wider">Brand Name</label>
-                        </FloatLabel>
+    <InputText
+        id="username"
+        className={`peer w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50 transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
+        {...register('name', {
+            required: 'Brand name is required',
+            minLength: {
+                value: 2,
+                message: 'Minimum 2 characters required'
+            }
+        })}
+    />
+    <label
+        htmlFor="username"
+        className={`block  text-sm font-medium text-gray-700 peer-focus:text-blue-600 uppercase tracking-wider transition-colors duration-200`}
+    >
+        Brand Name
+    </label>
+</FloatLabel>
                         {errors.name && (
                             <p className="text-xs text-red-500 mt-1 animate-fade-in">{errors.name.message}</p>
                         )}
