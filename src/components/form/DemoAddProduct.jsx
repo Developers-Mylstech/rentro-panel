@@ -775,7 +775,6 @@ const SellPricingForm = ({ data, onChange, }) => {
             [field]: value,
             isWarrantyAvailable: field === 'warrantPeriod' ? value !== null : formData.isWarrantyAvailable
         };
-console.log(updated,'udpate sell')
         setFormData(updated);
         onChange(updated);
     };
