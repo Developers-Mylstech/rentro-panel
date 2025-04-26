@@ -36,7 +36,7 @@ const useBrandStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axiosInstance.post(
-                '/api/v1/product-images/upload?quality=80&fallbackToJpeg=true',
+                '/images/upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {

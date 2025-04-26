@@ -28,6 +28,8 @@ import AddAboutUs from "./components/form/AddAboutUs";
 import RequestQuotationListing from "./components/listing/RequestQuotationListing";
 import Career from "./pages/Career";
 import AddCareer from "./components/form/AddCareer";
+import DemoProduct from "./components/form/DemoAddProduct";
+import Demo2 from "./components/form/demo2";
 
 function App() {
   const [isTokenValid, setIsTokenValid] = useState(false)
@@ -39,8 +41,12 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
 
-              <Route path="products" element={<Products />} />
-              <Route path="products/add" element={<AddClient />} />
+              <Route path="products">
+                <Route index element={<Products />} />
+                <Route path="add" element={<DemoProduct />} />
+                <Route path="edit/:id" element={<DemoProduct />} />
+              </Route>
+
 
               <Route path="categories" element={<Categories />} />
               <Route path="categories/add" element={<AddCategory />} />
@@ -69,8 +75,8 @@ function App() {
               <Route path="about" element={<AboutusListing />} />
               <Route path="about/add" element={<AddAboutUs />} />
 
-              <Route path="career" element={<Career/>} />
-              <Route  path="career/add" element = {<AddCareer/>} />
+              <Route path="career" element={<Career />} />
+              <Route path="career/add" element={<AddCareer />} />
 
 
             </Route>
