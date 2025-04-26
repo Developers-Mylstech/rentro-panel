@@ -46,7 +46,7 @@ const useProductStore = create((set) => ({
 
       const response = await axiosInstance.get(`/products/${id}`);
       set({ singleProduct: response.data });
-
+      return response.data
     } catch (error) {
       set({ error: error.message });
     } finally {
@@ -77,7 +77,7 @@ const useProductStore = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/products/${id}`);
+      const response = await axiosInstance.delete(`/products/${id}`);
       set((state) => ({
         products: state.products.filter((product) => product.productId !== id), // Ensure you're matching the correct key (e.g., productId)
       }));

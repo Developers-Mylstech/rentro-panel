@@ -29,6 +29,7 @@ import RequestQuotationListing from "./components/listing/RequestQuotationListin
 import Career from "./pages/Career";
 import AddCareer from "./components/form/AddCareer";
 import DemoProduct from "./components/form/DemoAddProduct";
+import Demo2 from "./components/form/demo2";
 
 function App() {
   const [isTokenValid, setIsTokenValid] = useState(false)
@@ -46,7 +47,7 @@ function App() {
                 <Route path="edit/:id" element={<DemoProduct />} />
               </Route>
 
-              
+
               <Route path="categories" element={<Categories />} />
               <Route path="categories/add" element={<AddCategory />} />
 
