@@ -1,6 +1,7 @@
 // stores/requestQuotationStore.js
 import { create } from 'zustand';
 import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 export const useRequestQuotationStore = create((set, get) => ({
     quotations: [],
@@ -11,7 +12,7 @@ export const useRequestQuotationStore = create((set, get) => ({
     fetchQuotations: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get('api/request-quotations', {
+            const response = await axiosInstance.get('/request-quotations', {
                 headers: {
                     'skip_zrok_interstitial': 'true'
                 },
@@ -53,18 +54,11 @@ export const useRequestQuotationStore = create((set, get) => ({
         }
     },
 
-    // Update quotation
-    updateQuotation: async (id, updatedData) => {
+
+    updateQuotation: async (id, updatedData  ) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.put(`${API_URL}/${id}`, updatedData);
-            set((state) => ({
-                quotations: state.quotations.map(item =>
-                    item.id === id ? response.data : item
-                ),
-                currentQuotation: response.data,
-                loading: false
-            }));
+            const response = await axiosInstance.put(`/request-quotations/${id}`, updatedData)
             return response.data;
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });

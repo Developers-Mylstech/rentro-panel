@@ -21,67 +21,102 @@ import { useParams } from 'react-router-dom';
 
 
 
-const DemoProduct = () => {
-    const { createProduct, getProductsById, singleProduct, updateProduct } = useProductStore()
+const Demo2 = () => {
+    const { createProduct, getProductsById, singleProduct, updateProduct } = useProductStore();
     const { id } = useParams();
-    const [loading, setLoading] = useState(false)
-    const [pageLoading, setPageLoading] = useState(false)
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [loading, setLoading] = useState(false);
     const toast = useRef(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
             if (id) {
-                setPageLoading(true);
-                const res = await getProductsById(id);
-                
-                if(res?.name){
-
-                    setPageLoading(false);
-                }
+                setIsEditMode(true);
+                const product = await getProductsById(id);
+                console.log("Fetched product:", product);
             }
         };
         fetchProduct();
     }, [id]);
 
-
+    console.log(singleProduct, '[]{{')
 
 
     const [productData, setProductData] = useState({
         basicInfo: {
-            name: singleProduct?.name || '',
-            // description: singleProduct?.description || '',
-            shortDescription: singleProduct?.description || '',
-            longDescription: singleProduct?.longDescription || '',
-            manufacturer: singleProduct?.manufacturer || '',
-            supplierName: singleProduct?.supplierName || '',
-            supplierCode: singleProduct?.supplierCode || '',
-            modelNo: singleProduct?.modelNo || '',
+            name: '',
+            shortDescription: '',
+            longDescription: '',
+            manufacturer: '',
+            supplierName: '',
+            supplierCode: '',
+            modelNo: '',
         },
         category: {
-            main: singleProduct?.category?.name || null,
-            sub: singleProduct?.category?.sub || null
+            main: null,
+            sub: null
         },
-        brand: singleProduct?.brand || null,
+        brand: null,
         pricing: {
-            sell: singleProduct?.pricing?.sell || null,
-            rent: singleProduct?.pricing?.rent || null,
+            sell: null,
+            rent: null,
             services: {
-                ots: singleProduct?.pricing?.services?.ots || null,
-                mmc: singleProduct?.pricing?.services?.mmc || null,
-                amcBasic: singleProduct?.pricing?.services?.amcBasic || null,
-                amcGold: singleProduct?.pricing?.services?.amcGold || null
+                ots: null,
+                mmc: null,
+                amcBasic: null,
+                amcGold: null
             }
         },
         inventory: {
-            sku: singleProduct?.inventory?.sku || '',
-            quantity: singleProduct?.inventory?.quantity || 0,
-            stockStatus: singleProduct?.inventory?.stockStatus || 'IN_STOCK'
+            sku: '',
+            quantity: 0,
+            stockStatus: 'IN_STOCK'
         },
-        keyFeatures: singleProduct?.keyFeatures || [],
-        specifications: singleProduct?.specifications || [],
-        images: singleProduct?.imageUrls || [],
-        tagandkeywords : singleProduct?.tagNKeywords || []
+        keyFeatures: [],
+        specifications: [],
+        images: []
     });
+
+    // Update product data when singleProduct changes
+    useEffect(() => {
+        if (singleProduct && Object.keys(singleProduct).length > 0) {
+            console.log("Updating product data with:", singleProduct);
+            setProductData({
+                basicInfo: {
+                    name: singleProduct.name || '',
+                    shortDescription: singleProduct.description || '',
+                    longDescription: singleProduct.longDescription || '',
+                    manufacturer: singleProduct.manufacturer || '',
+                    supplierName: singleProduct.supplierName || '',
+                    supplierCode: singleProduct.supplierCode || '',
+                    modelNo: singleProduct.modelNo || '',
+                },
+                category: {
+                    main: null, 
+                    sub: singleProduct.subCategoryId || null
+                },
+                brand: singleProduct.brand || null,
+                pricing: {
+                    sell: singleProduct.pricing?.sell || null,
+                    rent: singleProduct.pricing?.rent || null,
+                    services: {
+                        ots: singleProduct.pricing?.services?.ots || null,
+                        mmc: singleProduct.pricing?.services?.mmc || null,
+                        amcBasic: singleProduct.pricing?.services?.amcBasic || null,
+                        amcGold: singleProduct.pricing?.services?.amcGold || null
+                    }
+                },
+                inventory: {
+                    sku: singleProduct.inventory?.sku || '',
+                    quantity: singleProduct.inventory?.quantity || 0,
+                    stockStatus: singleProduct.inventory?.stockStatus || 'IN_STOCK'
+                },
+                keyFeatures: singleProduct.keyFeatures || [],
+                specifications: singleProduct.specifications || [],
+                images: singleProduct.images || []
+            });
+        }
+    }, [singleProduct]);
 
     const handleInputChange = (section, field, value) => {
 
@@ -124,35 +159,34 @@ const DemoProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
-        if (!payload?.categoryId) {
-            showToast('warn', 'Warning', 'Please select a Category.');
-            return;
-        }
 
-        if (!payload?.brandId) {
-            showToast('warn', 'Warning', 'Please select a Brand.');
-            return;
-        }
+        if (payload?.categoryId && payload?.brandId) {
+            try {
+                setLoading(true);
+                let response;
 
-        try {
-            setLoading(true);
-            let response;
-            if (id) {
-                response = await updateProduct(id, payload);
-                showToast('success', 'Success', 'Product updated successfully!');
+                if (isEditMode) {
+                    response = await updateProduct(id, payload);
+                    if (response) {
+                        setLoading(false);
+                        showToast('success', 'Success', 'Product updated successfully!');
+                    }
+                } else {
+                    response = await createProduct(payload);
+                    if (response.name) {
+                        setLoading(false);
+                        showToast('success', 'Success', 'Product created successfully!');
+                    }
+                }
+            } catch (error) {
                 setLoading(false);
-            } else {
-                response = await createProduct(payload);
-                showToast('success', 'Success', 'Product created successfully!');
-                setLoading(false);
+                showToast('error', 'Error', `Failed to ${isEditMode ? 'update' : 'create'} product. Please try again.`);
+                console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, error);
             }
-        } catch (error) {
-            setLoading(false);
-            showToast('error', 'Error', 'Failed to create product. Please try again.');
-            console.error('Error creating product:', error);
+        } else {
+            showToast('warn', 'Warning', 'Please make sure Category and Brand fields are filled.');
         }
     };
-
 
 
 
@@ -162,56 +196,48 @@ const DemoProduct = () => {
 
             <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
-                    Add New Product
+                    {isEditMode ? 'Edit Product' : 'Add New Product'}
                 </h1>
-                {pageLoading ? <div className='flex justify-center items-center h-96'><FaSpinner className='animate-spin' /></div> :
-                    <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
-                        <ProductBasicInfo data={productData.basicInfo} onChange={handleInputChange} />
-                        <CategoryBrandSelection
-                            category={productData.category}
-                            brand={productData.brand}
-                            singleProduct={singleProduct}
-                            onChange={handleInputChange}
-                        />
-                        <PricingOptions
-                            singleProduct={singleProduct}
-                            pricing={productData.pricing}
-                            onChange={handleInputChange}
-                        />
-                        <SpecificationFields
-                        singleProduct
-                            specs={productData.specifications}
-                            onChange={handleInputChange}
-                        />
-                        <InventorySection
-                            inventory={productData.inventory}
-                            onChange={handleInputChange}
-                        />
-                        <KeyFeaturesFields
-                            features={productData.keyFeatures}
-                            onChange={handleInputChange}
-                        />
-                        <TagsAndKeywords
-                            features={productData.tagandkeywords}
-                            onChange={handleInputChange}
-                        />
-                        <ImageUploader
-                            singleProduct={singleProduct}
-                            images={productData.images}
-                            onChange={(images) => handleInputChange('images', 'images', images)}
-                        />
 
-                        <div className="flex justify-end pt-4 border-t dark:border-gray-600">
-                            <button
-                                type="submit"
-                                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                            >
-                                {loading ? <FaSpinner className='animate-spin' /> : 'Add New Product '}
-                            </button>
-                        </div>
-                    </form>
-                }
+                <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
+                    <ProductBasicInfo data={productData.basicInfo} onChange={handleInputChange} />
+                    <CategoryBrandSelection
+                        category={productData.category}
+                        brand={productData.brand}
+                        singleProduct={singleProduct}
+                        onChange={handleInputChange}
+                    />
+                    <PricingOptions
+                        singleProduct={singleProduct}
+                        pricing={productData.pricing}
+                        onChange={handleInputChange}
+                    />
+                    <SpecificationFields
+                        specs={productData.specifications}
+                        onChange={handleInputChange}
+                    />
+                    <InventorySection
+                        inventory={productData.inventory}
+                        onChange={handleInputChange}
+                    />
+                    <KeyFeaturesFields
+                        features={productData.keyFeatures}
+                        onChange={handleInputChange}
+                    />
+                    <ImageUploader
+                        images={productData.images}
+                        onChange={(images) => handleInputChange('images', 'images', images)}
+                    />
 
+                    <div className="flex justify-end pt-4 border-t dark:border-gray-600">
+                        <button
+                            type="submit"
+                            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        >
+                            {loading ? <FaSpinner className='animate-spin' /> : (isEditMode ? 'Update Product' : 'Add New Product')}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -220,92 +246,76 @@ const DemoProduct = () => {
 
 
 const preparePayload = (productData) => {
-    console.log(productData, 'productData')
-
-    // Safely handle images array
-    const imageUrls = Array.isArray(productData.images) 
-        ? productData.images.map(img => img?.url?.fileUrl || '').filter(url => url)
-        : [];
-
-    // Safely handle specifications
-    const specifications = Array.isArray(productData.specifications)
-        ? productData.specifications
-              .filter(spec => spec?.name && spec?.value)
-              .map(spec => ({
-                  name: spec.name,
-                  value: spec.value
-              }))
-        : [];
-
-    // Helper function to safely handle service benefits
-    const getServicePayload = (service) => {
-        if (!service) return { price: 0, benefits: [] };
-        
-        return {
-            price: Number(service.price) || 0,
-            benefits: Array.isArray(service.benefits) 
-                ? service.benefits.filter(benefit => benefit && benefit.trim() !== '')
-                : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
-        };
-    };
 
     const payload = {
-        name: productData.basicInfo.name || '',
-        description: productData.basicInfo.shortDescription || '',
-        longDescription: productData.basicInfo.longDescription || '',
-        manufacturer: productData.basicInfo.manufacturer || '',
-        brandId: +(productData?.brand?.brandId || 0),
-        imageUrls,
-        specifications,
-        modelNo: productData.basicInfo.modelNo || '',
-        supplierName: productData.basicInfo.supplierName || '',
-        supplierCode: productData.basicInfo.supplierCode || '',
+        name: productData.basicInfo.name,
+        description: productData.basicInfo.shortDescription,
+        longDescription: productData.basicInfo.longDescription,
+        manufacturer: productData.basicInfo.manufacturer,
+        brandId: +productData?.brand?.brand,
+        imageUrls: productData.images.map(img => img?.url?.fileUrl || ''),
+        specifications: productData.specifications.map(spec => ({
+            name: spec.name,
+            value: spec.value
+        })),
+        modelNo: productData.basicInfo.modelNo,
+        supplierName: productData.basicInfo.supplierName,
+        supplierCode: productData.basicInfo.supplierCode,
         productFor: {
             sell: {
                 actualPrice: productData.pricing?.sell?.price || 0,
                 discountPrice: productData.pricing?.sell?.discountedPrice || 0,
-                benefits: Array.isArray(productData.pricing?.sell?.benefits)
-                    ? productData.pricing.sell.benefits.filter(b => b)
-                    : [],
+                benefits: productData.pricing?.sell?.benefits || [],
                 isWarrantyAvailable: productData.pricing?.sell?.isWarrantyAvailable || false,
-                warrantPeriod: +(productData.pricing?.sell?.warrantPeriod || 0)
+                warrantPeriod: +productData.pricing?.sell?.warrantPeriod || 0
             },
             rent: {
                 monthlyPrice: productData.pricing?.rent?.monthlyPrice || 0,
                 discountPrice: productData.pricing?.rent?.discountedPrice || 0,
-                benefits: Array.isArray(productData.pricing?.rent?.benefits)
-                    ? productData.pricing.rent.benefits.filter(b => b)
-                    : [],
+                benefits: productData.pricing?.rent?.benefits || [],
                 isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
-                warrantPeriod: +(productData.pricing?.rent?.warrantPeriod || 0)
+                warrantPeriod: +productData.pricing?.rent?.warrantPeriod || 0
             },
             requestQuotation: {
                 actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
                 discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
             },
             service: {
-                ots: getServicePayload(productData.pricing?.services?.ots),
-                mmc: getServicePayload(productData.pricing?.services?.mmc),
-                amcBasic: getServicePayload(productData.pricing?.services?.amcBasic),
-                amcGold: getServicePayload(productData.pricing?.services?.amcGold)
+                ots: {
+                    price: productData.pricing?.services?.ots?.price || 0,
+                    benefits: Array.isArray(productData.pricing?.services?.ots?.benefits)
+                        ? productData.pricing?.services?.ots?.benefits
+                        : []
+                },
+                mmc: {
+                    price: productData.pricing?.services?.mmc?.price || 0,
+                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
+                        ? productData.pricing?.services?.mmc?.benefits
+                        : []
+                },
+                amcBasic: {
+                    price: productData.pricing?.services?.amcBasic?.price || 0,
+                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
+                        ? productData.pricing?.services?.amcBasic?.benefits
+                        : []
+                },
+                amcGold: {
+                    price: productData.pricing?.services?.amcGold?.price || 0,
+                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
+                        ? productData.pricing?.services?.amcGold?.benefits
+                        : []
+                },
             }
         },
-        categoryId: +(productData.category?.main?.categoryId || 0),
-        subCategoryId: +(productData?.category?.sub?.categoryId || 0),
+        categoryId: +productData.category.main.categoryId,
+        subCategoryId: +productData.category.sub || "",
         inventory: {
-            quantity: +(productData.inventory?.quantity || 0),
-            sku: productData.inventory?.sku || '',
-            stockStatus: productData.inventory?.stockStatus || 'IN_STOCK'
+            quantity: productData.inventory.quantity || 0,
+            sku: productData.inventory.sku || '',
+            stockStatus: productData.inventory.stockStatus || 'IN_STOCK'
         },
-        keyFeatures: Array.isArray(productData.keyFeatures)
-            ? productData.keyFeatures.filter(f => f)
-            : [],
-        tagNKeywords: Array.isArray(productData?.tagandkeywords)
-            ? productData.tagandkeywords.filter(t => t)
-            : []
+        keyFeatures: productData.keyFeatures || []
     };
-    console.log(payload, 'payload')
-    
     return payload;
 };
 
@@ -313,7 +323,7 @@ const preparePayload = (productData) => {
 
 
 
-export default DemoProduct;
+export default Demo2;
 
 const ProductBasicInfo = ({ data, onChange }) => {
     return (
@@ -507,17 +517,14 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
             const matchedBrand = brands.find(
                 b => b.brandId === singleProduct.brand?.brandId
             ) || null;
-
             if (matchedCategory) {
                 onChange('category', 'main', matchedCategory);
                 setSelectedCategory(matchedCategory.categoryId);
-                setIsTouched(true); // Mark as touched since we're setting a value
             }
 
             if (matchedBrand) {
                 onChange('brand', null, matchedBrand);
                 setSelectedBrand(matchedBrand);
-                setIsTouched(true);
             }
 
             setIsInitialized(true);
@@ -528,31 +535,19 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const filteredBrands = brands.filter(b =>
+    const filteredBrands = brand?.filter(b =>
         b.name.toLowerCase().includes(brandSearchTerm.toLowerCase())
     );
 
-    const selectedSubCategoryOption = subCategories.find(sub =>
+    const selectedSubCategoryOption = subCategories.find(sub => 
         sub.categoryId === (category.sub?.categoryId || category.sub)
     );
 
     const selectedCategoryOption = category.main
-        ? filteredCategories.find(cat =>
+        ? filteredCategories.find(cat => 
             cat.categoryId === (category.main?.categoryId || category.main)
-        ) || null
+          ) || null
         : null;
-
-    const handleCategoryChange = (e) => {
-        onChange('category', 'main', e.value);
-        setSelectedCategory(e.value?.categoryId);
-        setIsTouched(true);
-    };
-
-    const handleBrandChange = (e) => {
-        onChange('brand', null, e.value);
-        setSelectedBrand(e.value);
-        setIsTouched(true);
-    };
 
     return (
         <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -571,13 +566,19 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                     <Dropdown
                         id="mainCategory"
                         value={selectedCategoryOption}
-                        onChange={handleCategoryChange}
+                        onChange={(e) => {
+                            onChange('category', 'main', e.value);
+                            setSelectedCategory(e.value?.categoryId);
+                        }}
                         options={filteredCategories}
                         optionLabel="name"
                         placeholder="Select Category"
                         filter
                         filterBy="name"
-                        className={classNames('w-full border dark:border-gray-600 focus:outline-none focus:ring-0 bg-white dark:bg-gray-900')}
+                        className={classNames('w-full border dark:border-gray-600 focus:outline-none focus:ring-0 bg-white dark:bg-gray-900', {
+                            'p-invalid': !category.main && isTouched
+                        })}
+                        onFocus={() => setIsTouched(true)}
                         filterPlaceholder="Search categories..."
                         emptyFilterMessage="No categories found"
                         valueTemplate={(option) => {
@@ -598,8 +599,7 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                         }}
                     />
 
-                    {/* Only show error if touched and no category selected */}
-                    {isTouched && !category.main && (
+                    {!category.main && isTouched && (
                         <small className="p-error">Please select a main category</small>
                     )}
                 </div>
@@ -628,19 +628,25 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                     <Dropdown
                         id="brand"
                         value={selectedBrand}
-                        onChange={handleBrandChange}
+                        onChange={(e) => {
+                            onChange('brand', null, e.value);
+                            setSelectedBrand(e.value);
+                            setIsTouched(true);
+                        }}
                         options={filteredBrands}
                         optionLabel="name"
                         placeholder="Select Brand"
                         filter
                         filterBy="name"
-                        className={classNames('w-full border bg-white dark:bg-gray-900 dark:border-gray-600 outline-none p-dropdown:focus-none')}
+                        className={classNames('w-full border bg-white dark:bg-gray-900 dark:border-gray-600 outline-none p-dropdown:focus-none', {
+                            'p-invalid': !brand && isTouched
+                        })}
+                        onFocus={() => setIsTouched(true)}
                         filterPlaceholder="Search brands..."
                         emptyFilterMessage="No brands found"
                     />
 
-                    {/* Only show error if touched and no brand selected */}
-                    {isTouched && !brand && (
+                    {!brand && isTouched && (
                         <small className="p-error">Please select a brand</small>
                     )}
                 </div>
@@ -729,6 +735,88 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
         </div>
     );
 };
+
+// Currently unused but kept for future implementation
+const QuotationForm = ({ data, onChange }) => {
+    const [formData, setFormData] = useState(data || {
+        name: '',
+        mobile: '',
+        companyName: '',
+        location: ''
+    });
+
+    const handleChange = (field, value) => {
+        const updated = { ...formData, [field]: value };
+        setFormData(updated);
+        onChange(updated);
+    };
+
+    return (
+        <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">Request a Quotation</h3>
+
+            <div className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
+                    <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                        placeholder="Enter your name"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile*</label>
+                    <input
+                        type="tel"
+                        value={formData.mobile}
+                        onChange={(e) => handleChange('mobile', e.target.value)}
+                        placeholder="Enter your mobile number"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name (if any)</label>
+                    <input
+                        type="text"
+                        value={formData.companyName}
+                        onChange={(e) => handleChange('companyName', e.target.value)}
+                        placeholder="Enter company name"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => handleChange('location', e.target.value)}
+                        placeholder="Enter location"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+                    <div className="mt-1 flex items-center">
+                        <label className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Choose File
+                            <input type="file" className="sr-only" />
+                        </label>
+                        <span className="ml-2 text-sm text-gray-500">No file chosen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 
 const SellPricingForm = ({ data, onChange, }) => {
@@ -952,7 +1040,6 @@ const SellPricingForm = ({ data, onChange, }) => {
 
 
 const RentPricingForm = ({ data, onChange }) => {
-    console.log(data)
     const [formData, setFormData] = useState(data || {
         monthlyPrice: '',
         discount: '',
@@ -1301,11 +1388,7 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
     const handleChange = (field, value) => {
         const updated = { ...formData, [field]: value };
         setFormData(updated);
-        // Make sure to pass the benefits as an array
-        onChange({
-            ...updated,
-            benefits: Array.isArray(updated.benefits) ? updated.benefits : [updated.benefits].filter(b => b)
-        });
+        onChange(updated);
     };
 
     const handleBenefitChange = (index, value) => {
@@ -1368,7 +1451,7 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeBenefit(index)}
-                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-700 transition-colors"
+                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-600 transition-colors"
                                         aria-label="Remove benefit"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -1585,8 +1668,8 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
 
 
 
-const ImageUploader = ({ images, onChange, singleProduct }) => {
-    const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
+const ImageUploader = ({ images, onChange }) => {
+    const { uploadFiles, isLoading } = useImageUploadStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -1647,22 +1730,14 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
         setSelectedFiles(prev => prev.filter((e) => e.name !== name));
     };
 
-    const handleDeleteImage = async (index) => {
-        try {
-            const newImages = [...images];
-            newImages.splice(index, 1);
-            onChange(newImages);
-
-            await deleteImage(singleProduct.productId);
-            showToast('success', 'Success', 'Image deleted successfully');
-
-        } catch (error) {
-            showToast('error', 'Error', 'Failed to delete image');
-            console.error('Error deleting image:', error);
-        }
+    const removeUploadedImage = (index) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
+        onChange(newImages);
     };
 
-    const handleUpload = async (entityType, entityId) => {
+    const handleUpload = async () => {
+        console.log("++++++++")
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
         if (uploaded) {
@@ -1670,6 +1745,7 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
             setSelectedFiles([]);
         }
     };
+
     return (
         <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
@@ -1677,6 +1753,7 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
             </h2>
 
             <div className="space-y-4">
+                {/* Upload Area */}
                 <div
                     className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${isDragging
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
@@ -1717,9 +1794,10 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                     </div>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3">
                     <button
-                        onClick={() => handleUpload('product', singleProduct?.productId)}
+                        onClick={handleUpload}
                         disabled={isLoading || selectedFiles.length === 0}
                         className={`flex items-center px-4 py-2 rounded-md text-white transition ${selectedFiles.length === 0 || isLoading
                             ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
@@ -1790,25 +1868,22 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                     </div>
                 )}
 
-                {/* Display uploaded images */}
-                {(images?.length > 0 || singleProduct?.images?.length > 0) && (
+                {/* Uploaded Images */}
+                {images.length > 0 && (
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Uploaded Images ({images?.length || singleProduct?.images?.length})
+                            Uploaded Images ({images.length})
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {(images || singleProduct?.images)?.map((img, index) => (
+                            {images.map((img, index) => (
                                 <div
                                     key={index}
                                     className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
                                 >
                                     <img
-                                        src={img?.url?.fileUrl || img}
+                                        src={img?.url?.fileUrl}
                                         alt={`Product ${index + 1}`}
                                         className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.target.src = '/path-to-fallback-image.jpg'; // Add fallback image
-                                        }}
                                     />
                                     {index === 0 && (
                                         <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
@@ -1816,15 +1891,13 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                                         </span>
                                     )}
                                     <button
-                                        onClick={() => handleDeleteImage(img)}
+                                        onClick={() => removeUploadedImage(index)}
                                         className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
                                     >
                                         <FiX className="h-4 w-4 text-red-500" />
                                     </button>
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                                        <p className="text-xs text-white truncate">
-                                            {img?.name || `Image ${index + 1}`}
-                                        </p>
+                                        <p className="text-xs text-white truncate">Uploaded {index + 1}</p>
                                     </div>
                                 </div>
                             ))}
@@ -1836,88 +1909,3 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
     );
 };
 
-
-
-const TagsAndKeywords = ({ features = [], onChange }) => {
-    const [keywords, setKeywords] = useState(() => {
-        // Initialize with features if available, otherwise start with one empty string
-        return features && features.length > 0 ? features : [''];
-    });
-
-    // Update keywords when features prop changes
-    useEffect(() => {
-        if (features && features.length > 0) {
-            setKeywords(features);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (keywords.length === 0) {
-            setKeywords(['']);
-        }
-    }, []);
-
-    useEffect(() => {
-        const nonEmptyKeywords = keywords.filter(keyword => keyword.trim() !== '');
-        onChange('tagandkeywords', null, nonEmptyKeywords);
-    }, [keywords]);
-
-    const handleKeywordChange = (index, value) => {
-        const updatedKeywords = [...keywords];
-        updatedKeywords[index] = value;
-        setKeywords(updatedKeywords);
-    };
-
-    const addKeyword = () => {
-        setKeywords([...keywords, '']);
-    };
-
-    const removeKeyword = (index) => {
-        if (keywords.length <= 1) {
-            // If it's the last keyword, just clear it instead of removing
-            const updatedKeywords = [...keywords];
-            updatedKeywords[index] = '';
-            setKeywords(updatedKeywords);
-        } else {
-            const updatedKeywords = keywords.filter((_, i) => i !== index);
-            setKeywords(updatedKeywords);
-        }
-    };
-
-    return (
-        <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:bg-gray-800">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold dark:text-gray-100">Tags & Keywords</h2>
-                <button
-                    type="button"
-                    onClick={addKeyword}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                    Add Tag
-                </button>
-            </div>
-
-            <div className="space-y-4">
-                {keywords.map((keyword, index) => (
-                    <div key={index} className="flex items-start gap-3 group">
-                        <div className="flex-1 relative">
-                            <InputText
-                                value={keyword || ''}
-                                onChange={(e) => handleKeywordChange(index, e.target.value)}
-                                placeholder={`Enter tag/keyword #${index + 1}...`}
-                                className="w-full"
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => removeKeyword(index)}
-                            className="text-red-500 hover:text-red-700 transition-colors"
-                        >
-                            Remove
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};

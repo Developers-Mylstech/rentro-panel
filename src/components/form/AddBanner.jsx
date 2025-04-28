@@ -233,7 +233,6 @@ export default function AddBanner() {
   }, [previewImages]);
 
   const onSubmit = (data) => {
-    console.log('Form Data:', data);
     reset();
     localStorage.removeItem('bannerPreviewImages');
   };

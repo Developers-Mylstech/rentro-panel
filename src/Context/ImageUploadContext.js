@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import axiosInstance from '../utils/axiosInstance';
 
 const useImageUploadStore = create((set) => ({
@@ -19,7 +18,7 @@ const useImageUploadStore = create((set) => ({
             }
 
             const response = await axiosInstance.post(
-                '/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+                '/images/batch-upload?quality=80&fallbackToJpeg=true',
                 formData,
                 {
                     headers: {
@@ -29,7 +28,7 @@ const useImageUploadStore = create((set) => ({
                 }
             );
 
-            // Transform API response to [{ url: "path" }, ...]
+       
             const formattedFiles = response.data.map((path) => ({ url: path }));
             set({ uploadedFiles: formattedFiles, isLoading: false });
 
@@ -40,7 +39,23 @@ const useImageUploadStore = create((set) => ({
         }
     },
 
+    deleteImage: async (productId ) => {
+        console.log(productId,'00999')
+        set({ isDeleting: true, error: null });
+        
+        try {
+            await axiosInstance.delete(`/images/delete/product/${productId}`);
+
+            return true;
+        } catch (error) {
+            set({ error: error.message, isDeleting: false });
+            throw error;
+        }
+    },
+
     reset: () => set({ uploadedFiles: [], error: null, isLoading: false }),
 }));
 
 export default useImageUploadStore;
+
+// /api/v1/images/update/{entityType}/{entityId}
