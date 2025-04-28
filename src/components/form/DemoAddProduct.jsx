@@ -124,6 +124,8 @@ const DemoProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
+        console.log(payload, 'payload checkinh')
+
         if (!payload?.categoryId) {
             showToast('warn', 'Warning', 'Please select a Category.');
             return;
@@ -157,7 +159,7 @@ const DemoProduct = () => {
 
 
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto px-0 py-0">
             <Toast ref={toast} position="top-right" />
 
             <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
@@ -279,10 +281,10 @@ const preparePayload = (productData) => {
                 isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
                 warrantPeriod: +(productData.pricing?.rent?.warrantPeriod || 0)
             },
-            requestQuotation: {
-                actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
-                discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
-            },
+            // requestQuotation: {
+            //     actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
+            //     discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
+            // },
             service: {
                 ots: getServicePayload(productData.pricing?.services?.ots),
                 mmc: getServicePayload(productData.pricing?.services?.mmc),
@@ -291,7 +293,7 @@ const preparePayload = (productData) => {
             }
         },
         categoryId: +(productData.category?.main?.categoryId || 0),
-        subCategoryId: +(productData?.category?.sub?.categoryId || 0),
+        subCategoryId: +(productData?.category?.sub?.categoryId || null),
         inventory: {
             quantity: +(productData.inventory?.quantity || 0),
             sku: productData.inventory?.sku || '',
@@ -667,12 +669,12 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
         <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {[
                     { label: 'Sell', value: 'sell', color: "green-500", hasData: !!singleProduct?.productFor?.sell },
                     { label: 'Rent', value: 'rent', color: "orange-500", hasData: !!singleProduct?.productFor?.rent },
                     { label: 'Service', value: 'service', color: "purple-500", hasData: !!singleProduct?.productFor?.service },
-                    { label: 'Request a Quotation', value: 'quotation', color: "blue-500", hasData: !!singleProduct?.productFor?.requestQuotation },
+                    // { label: 'Request a Quotation', value: 'quotation', color: "blue-500", hasData: !!singleProduct?.productFor?.requestQuotation },
                 ].map((option) => (
                     <label
                         key={option.value}

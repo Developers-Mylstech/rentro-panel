@@ -45,6 +45,9 @@ function App() {
                 <Route index element={<Products />} />
                 <Route path="add" element={<DemoProduct />} />
                 <Route path="edit/:id" element={<DemoProduct />} />
+
+{/* <Route path="add" element={<AddProduct />} />
+<Route path="edit/:id" element={<AddProduct />} /> */}
               </Route>
 
 
