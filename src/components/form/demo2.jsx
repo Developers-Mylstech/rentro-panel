@@ -957,7 +957,6 @@ const SellPricingForm = ({ data, onChange, }) => {
 
 
 const RentPricingForm = ({ data, onChange }) => {
-    console.log(data)
     const [formData, setFormData] = useState(data || {
         monthlyPrice: '',
         discount: '',
@@ -1170,37 +1169,49 @@ const RentPricingForm = ({ data, onChange }) => {
 
 const ServiceOptions = ({ services, onChange }) => {
     const [selectedServices, setSelectedServices] = useState({
-        ots: !!services?.ots,
-        mmc: !!services?.mmc,
-        amcBasic: !!services?.amcBasic,
-        amcGold: !!services?.amcGold
+        ots: services?.ots || null,
+        mmc: services?.mmc || null,
+        amcBasic: services?.amcBasic || null,
+        amcGold: services?.amcGold || null
     });
+    
 
     const handleServiceToggle = (service) => {
-        const serviceKey = service === 'ots' ? 'ots' : service;
-        const updated = {
-            ...selectedServices,
-            [service]: !selectedServices[service]
-        };
-        setSelectedServices(updated);
-
-        if (!updated[service]) {
+        const updated = { ...selectedServices };
+    
+        if (updated[service]) {
+            // Toggle off
+            updated[service] = null;
             const updatedServices = { ...services };
-            delete updatedServices[serviceKey];
+            delete updatedServices[service];
             onChange(updatedServices);
+        } else {
+            // Toggle on with default or previous form state
+            updated[service] = services?.[service] || { price: '', benefits: [''] };
         }
+    
+        setSelectedServices(updated);
     };
+    
+    
 
     const handleServiceChange = (service, data) => {
-        const serviceKey = service === 'ots' ? 'ots' : service;
+        const updated = {
+            ...selectedServices,
+            [service]: {
+                ...selectedServices?.[service],
+                ...data
+            }
+        };
+        setSelectedServices(updated);
         onChange({
             ...services,
-            [serviceKey]: {
-                ...services?.[serviceKey], // Preserve existing properties
-                ...data // Update with new data
-            }
+            [service]: updated[service]
         });
     };
+    
+    
+
 
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
@@ -1594,7 +1605,6 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
     const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
-console.log(uploadFiles,'uploadFiles');
     const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files || e.dataTransfer.files);
         await validateAndSetFiles(files);
@@ -1670,7 +1680,6 @@ console.log(uploadFiles,'uploadFiles');
     const handleUpload = async (entityType, entityId) => {
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
-        console.log(uploaded,'uploades Imhgas')
         if (uploaded) {
             onChange([...images, ...uploaded]);
             setSelectedFiles([]);
@@ -1808,14 +1817,12 @@ console.log(uploadFiles,'uploadFiles');
                                     key={index}
                                     className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
                                 >
-                                    {/* <img
+                                    <img
                                         src={img?.url?.fileUrl || img}
                                         alt={`Product ${index + 1}`}
                                         className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.target.src = '/path-to-fallback-image.jpg'; // Add fallback image
-                                        }}
-                                    /> */}
+                                        
+                                    />
                                     {index === 0 && (
                                         <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
                                             Main
