@@ -33,16 +33,21 @@ const DemoProduct = () => {
         const fetchProduct = async () => {
             if (id) {
                 setPageLoading(true);
-                const res = await getProductsById(id);
-                
-                if(res?.name){
-
+                try {
+                    const res = await getProductsById(id);
+                    if (res?.name) {
+                  
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch product:", error);
+                } finally {
                     setPageLoading(false);
                 }
             }
         };
         fetchProduct();
     }, [id]);
+    
 
 
 
@@ -163,7 +168,7 @@ const DemoProduct = () => {
 
             <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
-                    Add New Product
+                   {id ? 'Edit Product' : 'Add New Product'} 
                 </h1>
                 {pageLoading ? <DemoProductSkeleton/> :
                     <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">

@@ -14,7 +14,8 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: "https://api.rentro.ae/api",
+          target: 'https://w323ibdvmjcw.share.zrok.io/api/v1',
+          // target: import.meta.env.VITE_API_BASE_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
