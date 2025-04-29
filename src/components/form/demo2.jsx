@@ -33,19 +33,51 @@ const demo2 = () => {
             if (id) {
                 setPageLoading(true);
                 const res = await getProductsById(id);
-                
-                if(res?.name){
-
+    
+                if (res?.name) {
+                    setProductData({
+                        basicInfo: {
+                            name: res.name || '',
+                            shortDescription: res.description || '',
+                            longDescription: res.longDescription || '',
+                            manufacturer: res.manufacturer || '',
+                            supplierName: res.supplierName || '',
+                            supplierCode: res.supplierCode || '',
+                            modelNo: res.modelNo || '',
+                        },
+                        category: {
+                            main: res.category?.name || null,
+                            sub: res.category?.sub || null
+                        },
+                        brand: res.brand || null,
+                        pricing: {
+                            sell: res.pricing?.sell || null,
+                            rent: res.pricing?.rent || null,
+                            services: {
+                                ots: res.pricing?.services?.ots || null,
+                                mmc: res.pricing?.services?.mmc || null,
+                                amcBasic: res.pricing?.services?.amcBasic || null,
+                                amcGold: res.pricing?.services?.amcGold || null
+                            }
+                        },
+                        inventory: {
+                            sku: res.inventory?.sku || '',
+                            quantity: res.inventory?.quantity || 0,
+                            stockStatus: res.inventory?.stockStatus || 'IN_STOCK'
+                        },
+                        keyFeatures: res.keyFeatures || [],
+                        specifications: res.specifications || [],
+                        images: res.imageUrls || [],
+                        tagandkeywords : res.tagNKeywords || []
+                    });
+    
                     setPageLoading(false);
                 }
             }
         };
         fetchProduct();
     }, [id]);
-
-
-
-
+    
     const [productData, setProductData] = useState({
         basicInfo: {
             name: singleProduct?.name || '',
