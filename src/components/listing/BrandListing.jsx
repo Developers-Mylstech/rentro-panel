@@ -127,14 +127,15 @@ export default function BrandListing({ brands }) {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <img
+                          {/* <img
                             className="h-10 w-10 rounded-full object-contain"
-                            src={brand.images?.[0] || "/default-brand.png"}
+                            src={ "/default-brand.png"}
+                            // src={brand.images?.[0] || "/default-brand.png"}
                             alt={brand.name}
                             onError={(e) => {
                               e.target.src = "/default-brand.png";
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </td>
@@ -188,14 +189,14 @@ export default function BrandListing({ brands }) {
               className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200 flex justify-between items-center"
             >
               <div className="flex items-center gap-3">
-                <img
+                {/* <img
                   className="h-12 w-12 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                   src={brand.images?.[0] || "/default-brand.png"}
                   alt={brand.name}
                   onError={(e) => {
                     e.target.src = "/default-brand.png";
                   }}
-                />
+                /> */}
                 <span className="font-medium text-gray-800 dark:text-gray-100">
                   {brand.name}
                 </span>
