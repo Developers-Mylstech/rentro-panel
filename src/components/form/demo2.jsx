@@ -321,9 +321,10 @@ const demo2 = () => {
                             singleProduct={singleProduct}
                             pricing={productData.pricing}
                             onChange={handleInputChange}
-                        />
+                            formSubmitted={formSubmitted}
+                            />
                         <SpecificationFields
-                            singleProduct
+                            // singleProduct
                             specs={productData.specifications}
                             onChange={handleInputChange}
                         />
@@ -802,7 +803,7 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
 
 
 
-const PricingOptions = ({ pricing, onChange, singleProduct }) => {
+const PricingOptions = ({ pricing, onChange, singleProduct,formSubmitted }) => {
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const handleOptionChange = (option) => {
@@ -851,13 +852,15 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
             <div className="space-y-6">
                 {(selectedOptions.includes('sell') || !!singleProduct?.productFor?.sell) && (
                     <SellPricingForm
-                        data={singleProduct?.productFor?.sell || pricing.sell}
-                        onChange={(data) => onChange('pricing', 'sell', data)}
+                    formSubmitted={formSubmitted}
+                    data={singleProduct?.productFor?.sell || pricing.sell}
+                    onChange={(data) => onChange('pricing', 'sell', data)}
                     />
                 )}
 
                 {(selectedOptions.includes('rent') || !!singleProduct?.productFor?.rent) && (
                     <RentPricingForm
+                    formSubmitted={formSubmitted}
                         data={singleProduct?.productFor?.rent || pricing.rent}
                         onChange={(data) => onChange('pricing', 'rent', data)}
                     />
@@ -882,12 +885,12 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
 };
 
 
-const SellPricingForm = ({ data, onChange, }) => {
+const SellPricingForm = ({ data, onChange,}) => {
     const [formData, setFormData] = useState(data || {
         price: '' || data?.actualPrice,
         discount: '',
         discountedPrice: '' || data?.discountPrice,
-        benefits: [''],
+        benefits: [''] || data?.benefits,
         vatIncluded: false,
         isWarrantyAvailable: false,
         warrantPeriod: 1,
@@ -896,7 +899,7 @@ const SellPricingForm = ({ data, onChange, }) => {
 
     useEffect(() => {
         calculateDiscountedPrice();
-    }, [formData.price, formData.discount, discountType, formData.vatIncluded]);
+    }, [formData.price, formData.discount, discountType, formData.vatIncluded]);    
 
     const calculateDiscountedPrice = () => {
         let basePrice = parseFloat(formData.price) || 0;
@@ -1112,7 +1115,7 @@ const SellPricingForm = ({ data, onChange, }) => {
 };
 
 
-const RentPricingForm = ({ data, onChange }) => {
+const RentPricingForm = ({ data, onChange,formSubmitted }) => {
     const [formData, setFormData] = useState(data || {
         monthlyPrice: '',
         discount: '',
@@ -1153,6 +1156,8 @@ const RentPricingForm = ({ data, onChange }) => {
         setFormData(updated);
         onChange(updated);
     };
+
+    
 
     const handleBenefitChange = (index, value) => {
         const updatedBenefits = [...formData.benefits];
