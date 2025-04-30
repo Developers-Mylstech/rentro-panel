@@ -1,211 +1,3 @@
-// import React, { useState } from "react";
-// import { DataTable } from "primereact/datatable";
-// import { Column } from "primereact/column";
-// import { Button } from "primereact/button";
-// import { IconField } from "primereact/iconfield";
-// import { InputIcon } from "primereact/inputicon";
-// import { InputText } from "primereact/inputtext";
-// import { Dialog } from "primereact/dialog";
-// import CustomButton from "../../systemdesign/CustomeButton";
-// import { useNavigate } from "react-router-dom";
-
-// export default function CategoryList({ categoryList, removeCategory }) {
-//   const [search, setSearch] = useState("");
-//   const [visible, setVisible] = useState(false);
-//   const [categoryToDelete, setCategoryToDelete] = useState(null);
-//   const navigate = useNavigate();
-
-//   const filteredCategories = categoryList.filter((category) =>
-//     category.name.toLowerCase().includes(search.toLowerCase())
-//   );
-
-//   // ✅ Called after confirmation
-//   const handleDelete = () => {
-//     if (categoryToDelete) {
-//       removeCategory(categoryToDelete);
-
-    
-
-//       setVisible(false);
-//       setCategoryToDelete(null);
-//     }
-//   };
-
-//   // ✅ Just opens the confirmation dialog
-//   const showDeleteDialog = (id) => {
-//     setCategoryToDelete(id);
-//     setVisible(true);
-//   };
-
-//   const editCategory = (category) => {
-//     navigate("/categories/add", { state: { category } });
-//   };
-
-//   const imageTemplate = (rowData) => {
-//     const imageUrl = rowData.images?.[0] || "https://via.placeholder.com/150";
-//     return (
-//       <img
-//         src={imageUrl}
-//         alt={rowData.name}
-//         className="w-16 h-16 rounded-lg object-contain flex justify-center"
-//       />
-//     );
-//   };
-
-//   const subCategoryTemplate = (rowData) => {
-//     return rowData.subCategories.length > 0
-//       ? rowData.subCategories.map((sub) => sub.name || sub).join(", ")
-//       : "No Subcategories";
-//   };
-
-//   const actionsTemplate = (rowData) => (
-//     <div className="flex gap-2">
-//       <Button
-//         icon="pi pi-pencil"
-//         onClick={() => editCategory(rowData)}
-//         className="rounded-lg text-white bg-blue-500 p-2"
-//       />
-//       <Button
-//         icon="pi pi-trash"
-//         onClick={() => showDeleteDialog(rowData.categoryId)}
-//         className="rounded-lg text-white bg-red-500 p-2"
-//       />
-//     </div>
-//   );
-
-//   return (
-//     <div className="dark:text-gray-200 p-6 w-full h-full">
-//       <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
-//         <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300">
-//           Category List
-//         </h5>
-//         <div className="flex items-center md:flex-row gap-3">
-//           <IconField iconPosition="right" className="border p-2 rounded bg-white dark:bg-gray-800">
-//             <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400" />
-//             <InputText
-//               value={search}
-//               onChange={(e) => setSearch(e.target.value)}
-//               placeholder="Search..."
-//               className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent bg-transparent dark:text-white w-[60%]"
-//             />
-//           </IconField>
-//           <CustomButton
-//             title={"Category"}
-//             icon={"pi pi-plus"}
-//             onClick={() => navigate("/categories/add")}
-//           />
-//         </div>
-//       </div>
-
-//       <DataTable
-//         value={filteredCategories}
-//         paginator
-//         rows={5}
-//         stripedRows
-//         paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
-//         className="border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md mb-8 hidden lg:block"
-//       >
-//         <Column
-//           field="images"
-//           header="Category Image"
-//           body={imageTemplate}
-//           headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
-//           bodyClassName="dark:bg-gray-800 dark:text-gray-100 border"
-//         />
-//         <Column
-//           field="name"
-//           header="Main Category"
-//           headerClassName="bg-gray-100 text-gray-500 font-light text-sm text-center dark:bg-gray-800 dark:text-gray-100"
-//           className="font-semibold text-gray-700 dark:bg-gray-800 border-b dark:text-gray-100"
-//         />
-//         <Column
-//           header="Subcategory"
-//           body={subCategoryTemplate}
-//           headerClassName="bg-gray-100 text-gray-500 font-light text-sm text-center dark:bg-gray-800 dark:text-gray-100"
-//           className="font-semibold text-gray-700 dark:bg-gray-800 border-b dark:text-gray-100"
-//         />
-//         <Column
-//           header="Option"
-//           body={actionsTemplate}
-//           headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
-//           className="dark:bg-gray-800 border-b dark:text-gray-100"
-//         />
-//       </DataTable>
-
-//       {/* Mobile Version */}
-//       <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
-//         {filteredCategories.map((category) => (
-//           <div
-//             key={category.categoryId}
-//             className="bg-white dark:bg-gray-800 dark:text-gray-100 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 max-w-full"
-//           >
-//             <img
-//               src={category.images?.[0] || "https://via.placeholder.com/150"}
-//               alt={category.name}
-//               className="w-full h-36 object-cover"
-//             />
-//             <div className="p-4">
-//               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-//                 {category.name}
-//               </h3>
-//               <p className="text-sm text-gray-500 dark:text-gray-400">
-//                 {category.subCategories.length > 0
-//                   ? category.subCategories.map((sub) => sub.name || sub).join(", ")
-//                   : "No Subcategories"}
-//               </p>
-//               <div className="flex justify-center mt-4 gap-3">
-//                 <Button
-//                   icon="pi pi-pencil"
-//                   className="p-button-sm text-white p-2 w-full bg-green-300"
-//                   onClick={() => editCategory(category)}
-//                 />
-//                 <Button
-//                   icon="pi pi-trash"
-//                   className="p-button-sm text-white p-2 w-full bg-red-400"
-//                   onClick={() => showDeleteDialog(category.categoryId)}
-//                 />
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Delete Confirmation Dialog */}
-//       <Dialog
-//         header="Confirmation"
-//         position="top"
-//         draggable={false}
-//         visible={visible}
-//         onHide={() => {
-//           setVisible(false);
-//           setCategoryToDelete(null);
-//         }}
-//       >
-//         <p className="mb-10 text-gray-700 dark:text-gray-300">
-//           Do you want to delete this category?
-//         </p>
-//         <div className="flex justify-center gap-4">
-//           <CustomButton
-//             title={"Yes"}
-//             icon={"pi pi-check"}
-//             onClick={handleDelete}
-//           />
-//           <CustomButton
-//             title={"No"}
-//             icon={"pi pi-times"}
-//             onClick={() => {
-//               setVisible(false);
-//               setCategoryToDelete(null);
-//             }}
-//           />
-//         </div>
-//       </Dialog>
-//     </div>
-//   );
-// }
-
-
-
 import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -215,6 +7,8 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { Skeleton } from "primereact/skeleton";
+import { Tag } from "primereact/tag";
+import { Tooltip } from "primereact/tooltip";
 import CustomButton from "../../systemdesign/CustomeButton";
 import { useNavigate } from "react-router-dom";
 
@@ -225,9 +19,8 @@ export default function CategoryList({ categoryList, removeCategory }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Simulate loading delay
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); 
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -255,160 +48,245 @@ export default function CategoryList({ categoryList, removeCategory }) {
   const imageTemplate = (rowData) => {
     const imageUrl = rowData.images?.[0] || "https://via.placeholder.com/150";
     return (
-      <img
-        src={imageUrl}
-        alt={rowData.name}
-        className="w-16 h-16 rounded-lg object-contain flex justify-center"
-      />
+      <div className="flex items-center">
+        <img
+          src={imageUrl}
+          alt={rowData.name}
+          className="w-12 h-12 rounded-lg object-cover border border-gray-100 dark:border-gray-700 shadow-sm hover:scale-105 transition-transform duration-200"
+        />
+      </div>
     );
   };
 
   const subCategoryTemplate = (rowData) => {
-    return rowData.subCategories.length > 0
-      ? rowData.subCategories.map((sub) => sub.name || sub).join(", ")
-      : "No Subcategories";
+    if (rowData.subCategories.length === 0) {
+      return <span className="text-gray-400 dark:text-gray-500">None</span>;
+    }
+    
+    return (
+      <div className="flex flex-wrap gap-1">
+        {rowData.subCategories.slice(0, 3).map((sub, index) => (
+          <Tag
+            key={index}
+            value={sub.name || sub}
+            severity="info"
+            rounded
+            className="text-xs"
+          />
+        ))}
+        {rowData.subCategories.length > 3 && (
+          <Tag
+            value={`+${rowData.subCategories.length - 3}`}
+            severity="secondary"
+            rounded
+            className="text-xs"
+          />
+        )}
+      </div>
+    );
   };
 
   const actionsTemplate = (rowData) => (
     <div className="flex gap-2">
+      <Tooltip target=".edit-btn" position="top" content="Edit Category" />
       <Button
         icon="pi pi-pencil"
+        className="edit-btn p-2 rounded-full text-green-500 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-200"
         onClick={() => editCategory(rowData)}
-        className="rounded-lg text-white bg-blue-500 p-2"
+        text
+        raised
       />
+      <Tooltip target=".delete-btn" position="top" content="Delete Category" />
       <Button
         icon="pi pi-trash"
+        className="delete-btn p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-200"
         onClick={() => showDeleteDialog(rowData.categoryId)}
-        className="rounded-lg text-white bg-red-500 p-2"
+        text
+        raised
       />
     </div>
   );
 
   const skeletons = Array.from({ length: 5 }, (_, i) => (
-    <div key={i} className="p-4 border-b dark:border-gray-700">
+    <div key={i} className="p-4 border-b border-gray-100 dark:border-gray-700">
       <div className="flex gap-4 items-center">
-        <Skeleton width="64px" height="64px" borderRadius="8px" />
+        <Skeleton width="48px" height="48px" borderRadius="8px" />
         <div className="flex flex-col gap-2 flex-1">
-          <Skeleton width="80%" height="20px" />
-          <Skeleton width="60%" height="16px" />
+          <Skeleton width="70%" height="18px" />
+          <Skeleton width="50%" height="14px" />
         </div>
-        <Skeleton width="60px" height="36px" className="rounded" />
+        <div className="flex gap-2">
+          <Skeleton width="32px" height="32px" borderRadius="50%" />
+          <Skeleton width="32px" height="32px" borderRadius="50%" />
+        </div>
       </div>
     </div>
   ));
 
   return (
-    <div className="dark:text-gray-200 p-6 w-full h-full">
-      <div className="flex md:flex-row flex-col justify-between items-center mb-6 w-full">
-        <h5 className="text-2xl mb-4 font-semibold text-gray-700 dark:text-gray-300 ">
-          Category List
-        </h5>
-        <div className="flex items-center md:flex-row gap-3">
-          <IconField iconPosition="right" className="border p-2 rounded bg-white dark:bg-gray-800">
-            <InputIcon className="pi pi-search text-gray-500 dark:text-gray-400" />
+    <div className="dark:text-gray-200 p-4 md:p-6 w-full h-full">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Category Management
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {categoryList.length} categories available
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <IconField className="w-full md:w-64">
+            <InputIcon className="pi pi-search text-gray-400" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="p-inputtext-sm focus:ring-0 focus:outline-none focus:border-transparent bg-transparent dark:text-white w-[60%]"
+              placeholder="Search categories..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
             />
           </IconField>
+          
           <CustomButton
-            title={"Category"}
-            icon={"pi pi-plus"}
+            title="Add Category"
+            icon="pi pi-plus"
             onClick={() => navigate("/categories/add")}
+            className="px-4 py-2 rounded-lg shadow-sm"
           />
         </div>
       </div>
 
+      {/* Desktop Table View */}
       {loading ? (
-        <div className="hidden lg:block">{skeletons}</div>
+        <div className="hidden lg:block border border-gray-100 dark:border-gray-700 rounded-lg">
+          {skeletons}
+        </div>
       ) : (
-        <DataTable
-          value={filteredCategories}
-          paginator
-          rows={5}
-          stripedRows
-          paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
-          className="border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md mb-8 hidden lg:block"
-        >
-          <Column
-            field="images"
-            header="Category Image"
-            body={imageTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
-            bodyClassName="dark:bg-gray-800 dark:text-gray-100 border"
-          />
-          <Column
-            field="name"
-            header="Main Category"
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm text-center dark:bg-gray-800 dark:text-gray-100"
-            className="font-semibold text-gray-700 dark:bg-gray-800 border-b dark:text-gray-100"
-          />
-          <Column
-            header="Subcategory"
-            body={subCategoryTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm text-center dark:bg-gray-800 dark:text-gray-100"
-            className="font-semibold text-gray-700 dark:bg-gray-800 border-b dark:text-gray-100"
-          />
-          <Column
-            header="Option"
-            body={actionsTemplate}
-            headerClassName="bg-gray-100 text-gray-500 font-light text-sm border dark:bg-gray-800 dark:text-gray-100"
-            className="dark:bg-gray-800 border-b dark:text-gray-100"
-          />
-        </DataTable>
+        <div className="hidden lg:block">
+          <DataTable
+            value={filteredCategories}
+            paginator
+            rows={8}
+            stripedRows
+            className="border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm"
+            emptyMessage={
+              <div className="flex flex-col items-center justify-center py-12">
+                <i className="pi pi-inbox text-4xl text-gray-400 mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">No categories found</p>
+              </div>
+            }
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            rowsPerPageOptions={[5, 10, 25]}
+            paginatorClassName="border-t border-gray-100 dark:border-gray-700 px-4 py-3"
+          >
+            {/* <Column
+              field="images"
+              header=""
+              body={imageTemplate}
+              style={{ width: '80px' }}
+              headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
+            /> */}
+            <Column
+              field="name"
+              header="Category"
+              headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700 font-medium text-gray-800 dark:text-gray-100"
+            />
+            <Column
+              header="Subcategories"
+              body={subCategoryTemplate}
+              headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
+            />
+            <Column
+              header="Actions"
+              body={actionsTemplate}
+              headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
+              style={{ width: '140px' }}
+            />
+          </DataTable>
+        </div>
       )}
 
-      {/* Mobile Skeleton */}
+      {/* Mobile Card View */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full lg:hidden pt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:hidden">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow animate-pulse"
+              className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm animate-pulse"
             >
-              <Skeleton height="140px" className="mb-3 rounded" />
-              <Skeleton width="80%" height="20px" className="mb-2" />
-              <Skeleton width="60%" height="16px" className="mb-4" />
+              <Skeleton height="140px" className="mb-3 rounded-lg" />
+              <Skeleton width="70%" height="20px" className="mb-2" />
+              <Skeleton width="90%" height="16px" className="mb-4" />
               <div className="flex gap-2">
-                <Skeleton width="48%" height="36px" className="rounded" />
-                <Skeleton width="48%" height="36px" className="rounded" />
+                <Skeleton width="100%" height="36px" className="rounded" />
+                <Skeleton width="100%" height="36px" className="rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:hidden">
           {filteredCategories.map((category) => (
             <div
               key={category.categoryId}
-              className="bg-white dark:bg-gray-800 dark:text-gray-100 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 max-w-full"
+              className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-300 dark:border-gray-700"
             >
-              <img
-                src={category.images?.[0] || "https://via.placeholder.com/150"}
-                alt={category.name}
-                className="w-full h-36 object-cover"
-              />
+              {/* <div className="relative group">
+                <img
+                  src={category.images?.[0] || "https://via.placeholder.com/300"}
+                  alt={category.name}
+                  className="w-full h-40 object-cover group-hover:opacity-90 transition-opacity duration-300"
+                />
+              </div> */}
+              
               <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   {category.name}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {category.subCategories.length > 0
-                    ? category.subCategories.map((sub) => sub.name || sub).join(", ")
-                    : "No Subcategories"}
-                </p>
-                <div className="flex justify-center mt-4 gap-3">
+                
+                <div className="flex flex-wrap gap-1 mb-4 bg-blue-50 rounded-lg p-2">
+                  <p >Subcaterories: </p>
+                  {category.subCategories.length > 0 ? (
+                    category.subCategories.slice(0, 3).map((sub, index) => (
+                      <Tag
+                        key={index}
+                        value={sub.name || sub}
+                        severity="info"
+                        rounded
+                        className="text-[8px]"
+                      />
+                    ))
+                  ) : (
+                    <Tag value="No subcategories" severity="secondary" rounded className="text-[8px]" />
+                  )}
+                  {category.subCategories.length > 3 && (
+                    <Tag
+                      value={`+${category.subCategories.length - 3}`}
+                      severity="secondary"
+                      rounded
+                      className="text-xs"
+                    />
+                  )}
+                </div>
+                
+                <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <Button
                     icon="pi pi-pencil"
-                    className="p-button-sm text-white p-2 w-full bg-green-300"
+                    className="p-2 rounded-full text-green-500 hover:bg-green-50 dark:hover:bg-green-900/30"
                     onClick={() => editCategory(category)}
+                    text
+                    raised
                   />
                   <Button
                     icon="pi pi-trash"
-                    className="p-button-sm text-white p-2 w-full bg-red-400"
+                    className="p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"
                     onClick={() => showDeleteDialog(category.categoryId)}
+                    text
+                    raised
                   />
                 </div>
               </div>
@@ -419,31 +297,39 @@ export default function CategoryList({ categoryList, removeCategory }) {
 
       {/* Delete Confirmation Dialog */}
       <Dialog
-        header="Confirmation"
-        position="top"
-        draggable={false}
+        header="Delete Category"
         visible={visible}
         onHide={() => {
           setVisible(false);
           setCategoryToDelete(null);
         }}
+        className="w-11/12 sm:w-96"
+        headerClassName="border-b border-gray-100 dark:border-gray-700 p-4"
+        contentClassName="p-4"
+        footerClassName="border-t border-gray-100 dark:border-gray-700 p-4"
       >
-        <p className="mb-10 text-gray-700 dark:text-gray-300">
-          Do you want to delete this category?
-        </p>
+        <div className="flex flex-col items-center text-center">
+          <i className="pi pi-exclamation-triangle text-5xl text-red-500 mb-4" />
+          <p className="text-gray-700 dark:text-gray-300 mb-6">
+            Are you sure you want to delete this category? This action cannot be undone.
+          </p>
+        </div>
+        
         <div className="flex justify-center gap-4">
-          <CustomButton
-            title={"Yes"}
-            icon={"pi pi-check"}
-            onClick={handleDelete}
-          />
-          <CustomButton
-            title={"No"}
-            icon={"pi pi-times"}
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            className="p-button-text"
             onClick={() => {
               setVisible(false);
               setCategoryToDelete(null);
             }}
+          />
+          <Button
+            label="Delete"
+            icon="pi pi-trash"
+            className="p-button-danger"
+            onClick={handleDelete}
           />
         </div>
       </Dialog>

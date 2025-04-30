@@ -130,6 +130,8 @@ const DemoProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
+        console.log(payload, 'payload checkinh')
+
         if (!payload?.categoryId) {
             showToast('warn', 'Warning', 'Please select a Category.');
             return;
@@ -163,10 +165,10 @@ const DemoProduct = () => {
 
 
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto px-0 py-0">
             <Toast ref={toast} position="top-right" />
 
-            <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
+            <div className="bg-white dark:bg-gray-800 p-2 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
                    {id ? 'Edit Product' : 'Add New Product'} 
                 </h1>
@@ -210,7 +212,7 @@ const DemoProduct = () => {
                         <div className="flex justify-end pt-4 border-t dark:border-gray-600">
                             <button
                                 type="submit"
-                                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                                className="px-6 py-2 bg-secondary text-white rounded-md  transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                             >
                                 {loading ? <FaSpinner className='animate-spin' /> : 'Add New Product '}
                             </button>
@@ -285,10 +287,10 @@ const preparePayload = (productData) => {
                 isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
                 warrantPeriod: +(productData.pricing?.rent?.warrantPeriod || 0)
             },
-            requestQuotation: {
-                actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
-                discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
-            },
+            // requestQuotation: {
+            //     actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
+            //     discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
+            // },
             service: {
                 ots: getServicePayload(productData.pricing?.services?.ots),
                 mmc: getServicePayload(productData.pricing?.services?.mmc),
@@ -297,7 +299,7 @@ const preparePayload = (productData) => {
             }
         },
         categoryId: +(productData.category?.main?.categoryId || 0),
-        subCategoryId: +(productData?.category?.sub?.categoryId || 0),
+        subCategoryId: +(productData?.category?.sub?.categoryId || null),
         inventory: {
             quantity: +(productData.inventory?.quantity || 0),
             sku: productData.inventory?.sku || '',
@@ -323,16 +325,16 @@ export default DemoProduct;
 
 const ProductBasicInfo = ({ data, onChange }) => {
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Product Information</h2>
-                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded">Required fields*</span>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Product Information</h2>
+                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div className="space-y-2">
-                    <FloatLabel className='active:text-blue-500'>
+                    <FloatLabel className='active:text-blue-500 '>
                         {/* <div className="flex items-center justify-between"> */}
                         {/* <span className="text-xs text-red-500">*required</span> */}
                         {/* </div> */}
@@ -342,9 +344,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             onChange={(e) => onChange('basicInfo', 'name', e.target.value)}
                             required
                             // placeholder="e.g. Premium Wireless Headphones"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 peer py-2 border-b border-gray-300  dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500 "
                         />
-                        <label htmlFor='name' className="block text-sm font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
+                        <label htmlFor='name' className="block text-sm peer-focus:text-blue-500 font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
                     </FloatLabel>
                     {!data.name && (
                         <p className="text-xs text-red-500 mt-1">Product name is required</p>
@@ -354,14 +356,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                     {/* <div className="flex items-center justify-between">
                     </div> */}
                     <FloatLabel>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
                         <InputText
                             value={data.modelNo}
                             onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
                             required
                             // placeholder="Enter Model No."
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 peer py-2 border-b dark:text-gray-200 dark:bg-gray-800 border-gray-300  focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                        <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
                     </FloatLabel>
 
                 </div>
@@ -373,9 +375,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                                 value={data.manufacturer}
                                 onChange={(e) => onChange('basicInfo', 'manufacturer', e.target.value)}
                                 // placeholder="e.g. Sony, Apple, Samsung"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full peer px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
                         </FloatLabel>
                         {data.manufacturer && (
                             <button
@@ -394,13 +396,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                             <InputText
                                 value={data.supplierName}
                                 onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
                                 // placeholder="Enter Supplier Name"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                         </FloatLabel>
                         {data.supplierName && (
                             <button
@@ -418,13 +420,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                             <InputText
                                 value={data.supplierCode}
                                 onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
                                 // placeholder="Enter Supplier Code"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                         </FloatLabel>
                         {data.supplierCode && (
                             <button
@@ -443,14 +445,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2 md:col-span-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                             <InputText
                                 value={data.shortDescription}
                                 onChange={(e) => onChange('basicInfo', 'shortDescription', e.target.value)}
                                 // placeholder="Brief product description (max 160 characters)"
                                 maxLength={160}
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 py-2 peer border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block  peer-focus:text-blue-500 text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                         </FloatLabel>
                         <span className="absolute right-2 bottom-2 text-xs text-gray-400 dark:text-gray-500">
                             {data.shortDescription?.length || 0}/160
@@ -468,7 +470,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
                             // placeholder="Detailed product description with features and benefits"
                             rows={3}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
                     </FloatLabel>
 
@@ -561,10 +563,10 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Category & Brand</h2>
-                <span className="text-xs bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300 px-2 py-1 rounded">Required fields*</span>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Category & Brand</h2>
+                <span className="text-xs bg-blue-50 text-secondary dark:bg-blue-900 dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -670,8 +672,8 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h2 className="md:text-xl text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                 {[
@@ -691,10 +693,10 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
                             type="checkbox"
                             checked={selectedOptions.includes(option.value) || option.hasData}
                             onChange={() => handleOptionChange(option.value)}
-                            className="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-500 focus:ring-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                            className="form-checkbox h-5 w-5 text-secondary dark:text-blue-500 focus:ring-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
                             disabled={option.hasData}
                         />
-                        <span className="text-sm font-medium">{option.label}</span>
+                        <span className="text-sm font-medium">{option.label}</span> 
                         {option.hasData && (
                             <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">(configured)</span>
                         )}
@@ -831,7 +833,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                                 type="radio"
                                 checked={discountType === 'percentage'}
                                 onChange={() => setDiscountType('percentage')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">%</span>
                         </label>
@@ -840,7 +842,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                                 type="radio"
                                 checked={discountType === 'fixed'}
                                 onChange={() => setDiscountType('fixed')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">AED</span>
                         </label>
@@ -885,7 +887,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                             type="radio"
                             checked={formData.vatIncluded}
                             onChange={() => handleChange('vatIncluded', true)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                         />
                         <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
                     </label>
@@ -894,7 +896,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                             type="radio"
                             checked={!formData.vatIncluded}
                             onChange={() => handleChange('vatIncluded', false)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                         />
                         <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
                     </label>
@@ -912,12 +914,12 @@ const SellPricingForm = ({ data, onChange, }) => {
                     <button
                         type="button"
                         onClick={addBenefit}
-                        className="inline-flex items-center px-3 py-1 rounded-md transition duration-200 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
+                        className="inline-flex items-center px-3 py-1 rounded-md transition duration-200 bg-secondary  text-white"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add Benefit
+                        Add 
                     </button>
                 </div>
 
@@ -934,7 +936,9 @@ const SellPricingForm = ({ data, onChange, }) => {
                             onClick={() => removeBenefit(index)}
                             className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-500"
                         >
-                            Remove
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                         </button>
                     </div>
                 ))}
@@ -1020,7 +1024,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={discountType === 'percentage'}
                                 onChange={() => setDiscountType('percentage')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-200">%</span>
                         </label>
@@ -1029,7 +1033,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={discountType === 'fixed'}
                                 onChange={() => setDiscountType('fixed')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-200">AED</span>
                         </label>
@@ -1074,7 +1078,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={formData.vatIncluded}
                                 onChange={() => handleChange('vatIncluded', true)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
                         </label>
@@ -1083,7 +1087,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={!formData.vatIncluded}
                                 onChange={() => handleChange('vatIncluded', false)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
                         </label>
@@ -1104,12 +1108,12 @@ const RentPricingForm = ({ data, onChange }) => {
                     <button
                         type="button"
                         onClick={addBenefit}
-                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                        className="inline-flex items-center px-3 py-1 bg-secondary text-white rounded-md  transition duration-200"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add Benefit
+                        Add 
                     </button>
                 </div>
 
@@ -1201,7 +1205,7 @@ const ServiceOptions = ({ services, onChange }) => {
                                     type="checkbox"
                                     checked={isChecked}
                                     onChange={() => handleServiceToggle(key)}
-                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    className="w-4 h-4 text-secondary border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     disabled={hasData}
                                 />
                             </div>
@@ -1345,7 +1349,7 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                                     value={benefit}
                                     onChange={(e) => handleBenefitChange(index, e.target.value)}
                                     placeholder={`Benefit ${index + 1}`}
-                                    className="flex-1 px-4 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                                    className=" block w-full px-4 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                                 />
                                 {formData.benefits.length > 1 && (
                                     <button
@@ -1364,12 +1368,12 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                         <button
                             type="button"
                             onClick={addBenefit}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors"
                         >
                             <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                             </svg>
-                            Add Benefit
+                            Add 
                         </button>
                     </div>
                 </div>
@@ -1382,8 +1386,8 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
 
 const InventorySection = ({ inventory, onChange }) => {
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
                 Inventory Management
             </h2>
 
@@ -1402,7 +1406,7 @@ const InventorySection = ({ inventory, onChange }) => {
                             value={inventory.sku}
                             onChange={(e) => onChange('inventory', 'sku', e.target.value)}
                             placeholder="SKU-12345"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
 
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -1423,7 +1427,7 @@ const InventorySection = ({ inventory, onChange }) => {
                             onChange={(e) => onChange('inventory', 'quantity', parseInt(e.target.value))}
                             placeholder="0"
                             min="0"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 dark:text-gray-400 text-sm">QTY</span>
@@ -1440,7 +1444,7 @@ const InventorySection = ({ inventory, onChange }) => {
                         <select
                             value={inventory.stockStatus}
                             onChange={(e) => onChange('inventory', 'stockStatus', e.target.value)}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         >
                             <option value="IN_STOCK" className="text-gray-900 dark:text-gray-100">In Stock</option>
                             <option value="OUT_OF_STOCK" className="text-gray-900 dark:text-gray-100">Out of Stock</option>
@@ -1508,9 +1512,9 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Key Features</h2>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Key Features</h2>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                     {keyFeatures.filter(f => f.trim() !== '').length} added
                 </span>
@@ -1553,7 +1557,7 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
                 <button
                     type="button"
                     onClick={addFeature}
-                    className="inline-flex items-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg shadow-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
+                    className="inline-flex items-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg shadow-sm text-secondary dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -1654,8 +1658,8 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
         }
     };
     return (
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
+        <section className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
+            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
                 Product Images
             </h2>
 
@@ -1673,7 +1677,7 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                         <FiUploadCloud className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                         <div className="flex flex-col items-center">
                             <p className="text-sm text-gray-600 dark:text-gray-300">
-                                <span className="font-medium text-blue-600 dark:text-blue-400">
+                                <span className="font-medium text-secondary dark:text-blue-400">
                                     Click to upload
                                 </span>{' '}
                                 or drag and drop
@@ -1684,9 +1688,9 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                         </div>
                         <label
                             htmlFor="file-upload"
-                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition dark:bg-blue-700 dark:hover:bg-blue-800"
+                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-secondary text-white rounded-md  transition "
                         >
-                            <FiUpload className="h-4 w-4 mr-2" />
+                            <FiUpload className="h-4 w-4 mr-2 " />
                             Select Files
                         </label>
                         <input
@@ -1868,13 +1872,13 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
     };
 
     return (
-        <div className="border p-6 rounded-lg shadow bg-white mb-6 dark:bg-gray-800">
+        <div className="border p-2 rounded-lg shadow bg-white mb-6 dark:bg-gray-800">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold dark:text-gray-100">Tags & Keywords</h2>
+                <h2 className="md:text-xl text-base font-semibold dark:text-gray-100">Tags & Keywords</h2>
                 <button
                     type="button"
                     onClick={addKeyword}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    className="px-4 py-2 bg-secondary text-white rounded  transition-colors"
                 >
                     Add Tag
                 </button>
@@ -1888,7 +1892,7 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
                                 value={keyword || ''}
                                 onChange={(e) => handleKeywordChange(index, e.target.value)}
                                 placeholder={`Enter tag/keyword #${index + 1}...`}
-                                className="w-full"
+                                className="w-full p-2 border-b dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
                         </div>
                         <button
@@ -1896,7 +1900,9 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
                             onClick={() => removeKeyword(index)}
                             className="text-red-500 hover:text-red-700 transition-colors"
                         >
-                            Remove
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                         </button>
                     </div>
                 ))}

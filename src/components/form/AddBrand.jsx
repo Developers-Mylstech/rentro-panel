@@ -48,15 +48,16 @@ export default function AddBrandWithImageUploader() {
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        // if (files.length > 5) {
-        //     setMessage("Maximum 5 images allowed");
-        //     return;
-        // }
-        setSelectedFiles(files);
-        const previews = files.map(file => URL.createObjectURL(file));
-        setPreviewUrls(previews); // Only show new previews, remove old ones
+        
+        // Combine with existing files if any
+        const newFiles = [...selectedFiles, ...files];
+        setSelectedFiles(newFiles);
+
+        // Create new preview URLs
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setPreviewUrls([...previewUrls, ...newPreviews]);
+        
         setMessage("");
-        setUploadedUrl([]); // Clear previously uploaded URLs when new files are selected
     };
 
     const handleImageUpload = async () => {
@@ -85,8 +86,15 @@ export default function AddBrandWithImageUploader() {
             );
 
             const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
-            setUploadedUrl(uploadedFiles); // Replace with new URLs only
+            
+            // Combine with existing uploaded URLs if any
+            const combinedUrls = [...uploadedUrl, ...uploadedFiles];
+            setUploadedUrl(combinedUrls);
+            
             setMessage(uploadedFiles.length ? "Images uploaded successfully" : "Upload completed but no URLs returned");
+
+            // Clear selected files after successful upload
+            setSelectedFiles([]);
 
         } catch (error) {
             console.error(error);
@@ -111,19 +119,20 @@ export default function AddBrandWithImageUploader() {
             if (isEditMode) {
                 await editBrand(currentBrandId, payload);
                 setMessage("Brand updated successfully!");
-                navigate(-1); // Go back to previous screen after update
+                navigate(-1);
             } else {
                 await addBrand(payload);
                 setMessage("Brand created successfully!");
                 
-                // Reset form only for create mode
+                // Reset all states
                 reset();
                 setSelectedFiles([]);
-                setPreviewUrls([]);
+                setPreviewUrls(prev => {
+                    // Clean up all object URLs
+                    prev.forEach(url => URL.revokeObjectURL(url));
+                    return [];
+                });
                 setUploadedUrl([]);
-                
-                // Revoke object URLs
-                previewUrls.forEach(url => URL.revokeObjectURL(url));
             }
             
         } catch (error) {
@@ -133,13 +142,26 @@ export default function AddBrandWithImageUploader() {
     };
 
     const handleRemoveImage = (index) => {
+        // Remove from uploaded URLs
         const newUrls = [...uploadedUrl];
         newUrls.splice(index, 1);
         setUploadedUrl(newUrls);
         
+        // Remove from preview URLs
         const newPreviews = [...previewUrls];
         newPreviews.splice(index, 1);
         setPreviewUrls(newPreviews);
+
+        // Remove from selected files
+        const newSelectedFiles = [...selectedFiles];
+        newSelectedFiles.splice(index, 1);
+        setSelectedFiles(newSelectedFiles);
+
+        // Clean up object URL to prevent memory leaks
+        URL.revokeObjectURL(previewUrls[index]);
+
+        // Reset message
+        setMessage("");
     };
 
     return (
@@ -245,7 +267,7 @@ export default function AddBrandWithImageUploader() {
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveImage(idx)}
-                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-50"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
