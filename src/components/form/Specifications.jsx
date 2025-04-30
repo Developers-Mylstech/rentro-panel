@@ -88,7 +88,7 @@ const SpecificationFields = () => {
             optionLabel="name"
             filter
             placeholder="Select Specifications"
-            className="w-full md:w-[40%] border"
+            className="w-[80%] md:w-[40%] border"
           />
 
           {!showNewFieldInput ? (
