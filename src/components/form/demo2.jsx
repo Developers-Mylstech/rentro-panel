@@ -21,102 +21,99 @@ import { useParams } from 'react-router-dom';
 
 
 
-const Demo2 = () => {
-    const { createProduct, getProductsById, singleProduct, updateProduct } = useProductStore();
+const demo2 = () => {
+    const { createProduct, getProductsById, singleProduct, updateProduct } = useProductStore()
     const { id } = useParams();
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [pageLoading, setPageLoading] = useState(false)
     const toast = useRef(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
             if (id) {
-                setIsEditMode(true);
-                const product = await getProductsById(id);
-                console.log("Fetched product:", product);
+                setPageLoading(true);
+                const res = await getProductsById(id);
+    
+                if (res?.name) {
+                    setProductData({
+                        basicInfo: {
+                            name: res.name || '',
+                            shortDescription: res.description || '',
+                            longDescription: res.longDescription || '',
+                            manufacturer: res.manufacturer || '',
+                            supplierName: res.supplierName || '',
+                            supplierCode: res.supplierCode || '',
+                            modelNo: res.modelNo || '',
+                        },
+                        category: {
+                            main: res.category?.name || null,
+                            sub: res.category?.sub || null
+                        },
+                        brand: res.brand || null,
+                        pricing: {
+                            sell: res.pricing?.sell || null,
+                            rent: res.pricing?.rent || null,
+                            services: {
+                                ots: res.pricing?.services?.ots || null,
+                                mmc: res.pricing?.services?.mmc || null,
+                                amcBasic: res.pricing?.services?.amcBasic || null,
+                                amcGold: res.pricing?.services?.amcGold || null
+                            }
+                        },
+                        inventory: {
+                            sku: res.inventory?.sku || '',
+                            quantity: res.inventory?.quantity || 0,
+                            stockStatus: res.inventory?.stockStatus || 'IN_STOCK'
+                        },
+                        keyFeatures: res.keyFeatures || [],
+                        specifications: res.specifications || [],
+                        images: res.imageUrls || [],
+                        tagandkeywords : res.tagNKeywords || []
+                    });
+    
+                    setPageLoading(false);
+                }
             }
         };
         fetchProduct();
     }, [id]);
-
-    console.log(singleProduct, '[]{{')
-
-
+    
     const [productData, setProductData] = useState({
         basicInfo: {
-            name: '',
-            shortDescription: '',
-            longDescription: '',
-            manufacturer: '',
-            supplierName: '',
-            supplierCode: '',
-            modelNo: '',
+            name: singleProduct?.name || '',
+            // description: singleProduct?.description || '',
+            shortDescription: singleProduct?.description || '',
+            longDescription: singleProduct?.longDescription || '',
+            manufacturer: singleProduct?.manufacturer || '',
+            supplierName: singleProduct?.supplierName || '',
+            supplierCode: singleProduct?.supplierCode || '',
+            modelNo: singleProduct?.modelNo || '',
         },
         category: {
-            main: null,
-            sub: null
+            main: singleProduct?.category?.name || null,
+            sub: singleProduct?.category?.sub || null
         },
-        brand: null,
+        brand: singleProduct?.brand || null,
         pricing: {
-            sell: null,
-            rent: null,
+            sell: singleProduct?.pricing?.sell || null,
+            rent: singleProduct?.pricing?.rent || null,
             services: {
-                ots: null,
-                mmc: null,
-                amcBasic: null,
-                amcGold: null
+                ots: singleProduct?.pricing?.services?.ots || null,
+                mmc: singleProduct?.pricing?.services?.mmc || null,
+                amcBasic: singleProduct?.pricing?.services?.amcBasic || null,
+                amcGold: singleProduct?.pricing?.services?.amcGold || null
             }
         },
         inventory: {
-            sku: '',
-            quantity: 0,
-            stockStatus: 'IN_STOCK'
+            sku: singleProduct?.inventory?.sku || '',
+            quantity: singleProduct?.inventory?.quantity || 0,
+            stockStatus: singleProduct?.inventory?.stockStatus || 'IN_STOCK'
         },
-        keyFeatures: [],
-        specifications: [],
-        images: []
+        keyFeatures: singleProduct?.keyFeatures || [],
+        specifications: singleProduct?.specifications || [],
+        images: singleProduct?.imageUrls || [],
+        tagandkeywords : singleProduct?.tagNKeywords || []
     });
-
-    // Update product data when singleProduct changes
-    useEffect(() => {
-        if (singleProduct && Object.keys(singleProduct).length > 0) {
-            console.log("Updating product data with:", singleProduct);
-            setProductData({
-                basicInfo: {
-                    name: singleProduct.name || '',
-                    shortDescription: singleProduct.description || '',
-                    longDescription: singleProduct.longDescription || '',
-                    manufacturer: singleProduct.manufacturer || '',
-                    supplierName: singleProduct.supplierName || '',
-                    supplierCode: singleProduct.supplierCode || '',
-                    modelNo: singleProduct.modelNo || '',
-                },
-                category: {
-                    main: null, 
-                    sub: singleProduct.subCategoryId || null
-                },
-                brand: singleProduct.brand || null,
-                pricing: {
-                    sell: singleProduct.pricing?.sell || null,
-                    rent: singleProduct.pricing?.rent || null,
-                    services: {
-                        ots: singleProduct.pricing?.services?.ots || null,
-                        mmc: singleProduct.pricing?.services?.mmc || null,
-                        amcBasic: singleProduct.pricing?.services?.amcBasic || null,
-                        amcGold: singleProduct.pricing?.services?.amcGold || null
-                    }
-                },
-                inventory: {
-                    sku: singleProduct.inventory?.sku || '',
-                    quantity: singleProduct.inventory?.quantity || 0,
-                    stockStatus: singleProduct.inventory?.stockStatus || 'IN_STOCK'
-                },
-                keyFeatures: singleProduct.keyFeatures || [],
-                specifications: singleProduct.specifications || [],
-                images: singleProduct.images || []
-            });
-        }
-    }, [singleProduct]);
 
     const handleInputChange = (section, field, value) => {
 
@@ -159,85 +156,96 @@ const Demo2 = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = preparePayload(productData);
+        console.log(payload, 'payload checkinh')
 
-        if (payload?.categoryId && payload?.brandId) {
-            try {
-                setLoading(true);
-                let response;
+        if (!payload?.categoryId) {
+            showToast('warn', 'Warning', 'Please select a Category.');
+            return;
+        }
 
-                if (isEditMode) {
-                    response = await updateProduct(id, payload);
-                    if (response) {
-                        setLoading(false);
-                        showToast('success', 'Success', 'Product updated successfully!');
-                    }
-                } else {
-                    response = await createProduct(payload);
-                    if (response.name) {
-                        setLoading(false);
-                        showToast('success', 'Success', 'Product created successfully!');
-                    }
-                }
-            } catch (error) {
+        if (!payload?.brandId) {
+            showToast('warn', 'Warning', 'Please select a Brand.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            let response;
+            if (id) {
+                response = await updateProduct(id, payload);
+                showToast('success', 'Success', 'Product updated successfully!');
                 setLoading(false);
-                showToast('error', 'Error', `Failed to ${isEditMode ? 'update' : 'create'} product. Please try again.`);
-                console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, error);
+            } else {
+                response = await createProduct(payload);
+                showToast('success', 'Success', 'Product created successfully!');
+                setLoading(false);
             }
-        } else {
-            showToast('warn', 'Warning', 'Please make sure Category and Brand fields are filled.');
+        } catch (error) {
+            setLoading(false);
+            showToast('error', 'Error', 'Failed to create product. Please try again.');
+            console.error('Error creating product:', error);
         }
     };
 
 
 
+
     return (
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-auto px-0 py-0">
             <Toast ref={toast} position="top-right" />
 
-            <div className="bg-white dark:bg-gray-800 p-6 shadow-md rounded-md">
+            <div className="bg-white dark:bg-gray-800 p-2 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
-                    {isEditMode ? 'Edit Product' : 'Add New Product'}
+                    Add New Product
                 </h1>
+                {pageLoading ? <div className='flex justify-center items-center h-96'><FaSpinner className='animate-spin' /></div> :
+                    <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
+                        <ProductBasicInfo data={productData.basicInfo} onChange={handleInputChange} />
+                        <CategoryBrandSelection
+                            category={productData.category}
+                            brand={productData.brand}
+                            singleProduct={singleProduct}
+                            onChange={handleInputChange}
+                        />
+                        <PricingOptions
+                            singleProduct={singleProduct}
+                            pricing={productData.pricing}
+                            onChange={handleInputChange}
+                        />
+                        <SpecificationFields
+                        singleProduct
+                            specs={productData.specifications}
+                            onChange={handleInputChange}
+                        />
+                        <InventorySection
+                            inventory={productData.inventory}
+                            onChange={handleInputChange}
+                        />
+                        <KeyFeaturesFields
+                            features={productData.keyFeatures}
+                            onChange={handleInputChange}
+                        />
+                        <TagsAndKeywords
+                            features={productData.tagandkeywords}
+                            onChange={handleInputChange}
+                        />
+                        <ImageUploader
+                            singleProduct={singleProduct}
+                            images={productData.images}
+                            onChange={(images) => handleInputChange('images', 'images', images)}
+                        />
 
-                <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
-                    <ProductBasicInfo data={productData.basicInfo} onChange={handleInputChange} />
-                    <CategoryBrandSelection
-                        category={productData.category}
-                        brand={productData.brand}
-                        singleProduct={singleProduct}
-                        onChange={handleInputChange}
-                    />
-                    <PricingOptions
-                        singleProduct={singleProduct}
-                        pricing={productData.pricing}
-                        onChange={handleInputChange}
-                    />
-                    <SpecificationFields
-                        specs={productData.specifications}
-                        onChange={handleInputChange}
-                    />
-                    <InventorySection
-                        inventory={productData.inventory}
-                        onChange={handleInputChange}
-                    />
-                    <KeyFeaturesFields
-                        features={productData.keyFeatures}
-                        onChange={handleInputChange}
-                    />
-                    <ImageUploader
-                        images={productData.images}
-                        onChange={(images) => handleInputChange('images', 'images', images)}
-                    />
+                        <div className="flex justify-end pt-4 border-t dark:border-gray-600">
+                            <button
+                                type="submit"
+                                className="px-6 py-2 bg-secondary text-white rounded-md  transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                            >
+                                {loading ? <FaSpinner className='animate-spin' /> : 'Add New Product '}
+                            </button>
+                        </div>
+                    </form>
+                }
 
-                    <div className="flex justify-end pt-4 border-t dark:border-gray-600">
-                        <button
-                            type="submit"
-                            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                        >
-                            {loading ? <FaSpinner className='animate-spin' /> : (isEditMode ? 'Update Product' : 'Add New Product')}
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
 
@@ -246,76 +254,93 @@ const Demo2 = () => {
 
 
 const preparePayload = (productData) => {
+    console.log(productData, 'productData')
+
+    const imageUrls = Array.isArray(productData.images)
+    ? productData.images
+        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+        .filter(url => url)
+    : [];
+
+
+    const specifications = Array.isArray(productData.specifications)
+        ? productData.specifications
+              .filter(spec => spec?.name && spec?.value)
+              .map(spec => ({
+                  name: spec.name,
+                  value: spec.value
+              }))
+        : [];
+
+    // Helper function to safely handle service benefits
+    const getServicePayload = (service) => {
+        if (!service) return { price: 0, benefits: [] };
+        
+        return {
+            price: Number(service.price) || 0,
+            benefits: Array.isArray(service.benefits) 
+                ? service.benefits.filter(benefit => benefit && benefit.trim() !== '')
+                : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
+        };
+    };
 
     const payload = {
-        name: productData.basicInfo.name,
-        description: productData.basicInfo.shortDescription,
-        longDescription: productData.basicInfo.longDescription,
-        manufacturer: productData.basicInfo.manufacturer,
-        brandId: +productData?.brand?.brand,
-        imageUrls: productData.images.map(img => img?.url?.fileUrl || ''),
-        specifications: productData.specifications.map(spec => ({
-            name: spec.name,
-            value: spec.value
-        })),
-        modelNo: productData.basicInfo.modelNo,
-        supplierName: productData.basicInfo.supplierName,
-        supplierCode: productData.basicInfo.supplierCode,
+        name: productData.basicInfo.name || '',
+        description: productData.basicInfo.shortDescription || '',
+        longDescription: productData.basicInfo.longDescription || '',
+        manufacturer: productData.basicInfo.manufacturer || '',
+        brandId: +(productData?.brand?.brandId || 0),
+        imageUrls,
+        specifications,
+        modelNo: productData.basicInfo.modelNo || '',
+        supplierName: productData.basicInfo.supplierName || '',
+        supplierCode: productData.basicInfo.supplierCode || '',
         productFor: {
             sell: {
                 actualPrice: productData.pricing?.sell?.price || 0,
                 discountPrice: productData.pricing?.sell?.discountedPrice || 0,
-                benefits: productData.pricing?.sell?.benefits || [],
+                benefits: Array.isArray(productData.pricing?.sell?.benefits)
+                    ? productData.pricing.sell.benefits.filter(b => b)
+                    : [],
                 isWarrantyAvailable: productData.pricing?.sell?.isWarrantyAvailable || false,
-                warrantPeriod: +productData.pricing?.sell?.warrantPeriod || 0
+                warrantPeriod: +(productData.pricing?.sell?.warrantPeriod || 0)
             },
             rent: {
                 monthlyPrice: productData.pricing?.rent?.monthlyPrice || 0,
                 discountPrice: productData.pricing?.rent?.discountedPrice || 0,
-                benefits: productData.pricing?.rent?.benefits || [],
+                benefits: Array.isArray(productData.pricing?.rent?.benefits)
+                    ? productData.pricing.rent.benefits.filter(b => b)
+                    : [],
                 isWarrantyAvailable: productData.pricing?.rent?.isWarrantyAvailable || false,
-                warrantPeriod: +productData.pricing?.rent?.warrantPeriod || 0
+                warrantPeriod: +(productData.pricing?.rent?.warrantPeriod || 0)
             },
-            requestQuotation: {
-                actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
-                discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
-            },
+            // requestQuotation: {
+            //     actualPrice: productData.pricing?.requestQuotation?.actualPrice || 0,
+            //     discountPrice: productData.pricing?.requestQuotation?.discountedPrice || 0
+            // },
             service: {
-                ots: {
-                    price: productData.pricing?.services?.ots?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.ots?.benefits)
-                        ? productData.pricing?.services?.ots?.benefits
-                        : []
-                },
-                mmc: {
-                    price: productData.pricing?.services?.mmc?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.mmc?.benefits)
-                        ? productData.pricing?.services?.mmc?.benefits
-                        : []
-                },
-                amcBasic: {
-                    price: productData.pricing?.services?.amcBasic?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcBasic?.benefits)
-                        ? productData.pricing?.services?.amcBasic?.benefits
-                        : []
-                },
-                amcGold: {
-                    price: productData.pricing?.services?.amcGold?.price || 0,
-                    benefits: Array.isArray(productData.pricing?.services?.amcGold?.benefits)
-                        ? productData.pricing?.services?.amcGold?.benefits
-                        : []
-                },
+                ots: getServicePayload(productData.pricing?.services?.ots),
+                mmc: getServicePayload(productData.pricing?.services?.mmc),
+                amcBasic: getServicePayload(productData.pricing?.services?.amcBasic),
+                amcGold: getServicePayload(productData.pricing?.services?.amcGold)
             }
         },
-        categoryId: +productData.category.main.categoryId,
-        subCategoryId: +productData.category.sub || "",
+        categoryId: +(productData.category?.main?.categoryId || 0),
+        subCategoryId: +(productData?.category?.sub?.categoryId),
         inventory: {
-            quantity: productData.inventory.quantity || 0,
-            sku: productData.inventory.sku || '',
-            stockStatus: productData.inventory.stockStatus || 'IN_STOCK'
+            quantity: +(productData.inventory?.quantity || 0),
+            sku: productData.inventory?.sku || '',
+            stockStatus: productData.inventory?.stockStatus || 'IN_STOCK'
         },
-        keyFeatures: productData.keyFeatures || []
+        keyFeatures: Array.isArray(productData.keyFeatures)
+            ? productData.keyFeatures.filter(f => f)
+            : [],
+        tagNKeywords: Array.isArray(productData?.tagandkeywords)
+            ? productData.tagandkeywords.filter(t => t)
+            : []
     };
+    console.log(payload, 'payload')
+    
     return payload;
 };
 
@@ -323,20 +348,20 @@ const preparePayload = (productData) => {
 
 
 
-export default Demo2;
+export default demo2;
 
 const ProductBasicInfo = ({ data, onChange }) => {
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Product Information</h2>
-                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded">Required fields*</span>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Product Information</h2>
+                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div className="space-y-2">
-                    <FloatLabel className='active:text-blue-500'>
+                    <FloatLabel className='active:text-blue-500 '>
                         {/* <div className="flex items-center justify-between"> */}
                         {/* <span className="text-xs text-red-500">*required</span> */}
                         {/* </div> */}
@@ -346,9 +371,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             onChange={(e) => onChange('basicInfo', 'name', e.target.value)}
                             required
                             // placeholder="e.g. Premium Wireless Headphones"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 peer py-2 border-b border-gray-300  dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500 "
                         />
-                        <label htmlFor='name' className="block text-sm font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
+                        <label htmlFor='name' className="block text-sm peer-focus:text-blue-500 font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Product Name</label>
                     </FloatLabel>
                     {!data.name && (
                         <p className="text-xs text-red-500 mt-1">Product name is required</p>
@@ -358,14 +383,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                     {/* <div className="flex items-center justify-between">
                     </div> */}
                     <FloatLabel>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
                         <InputText
                             value={data.modelNo}
                             onChange={(e) => onChange('basicInfo', 'modelNo', e.target.value)}
                             required
                             // placeholder="Enter Model No."
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 peer py-2 border-b dark:text-gray-200 dark:bg-gray-800 border-gray-300  focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                        <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Product Model No</label>
                     </FloatLabel>
 
                 </div>
@@ -377,9 +402,9 @@ const ProductBasicInfo = ({ data, onChange }) => {
                                 value={data.manufacturer}
                                 onChange={(e) => onChange('basicInfo', 'manufacturer', e.target.value)}
                                 // placeholder="e.g. Sony, Apple, Samsung"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full peer px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Manufacturer</label>
                         </FloatLabel>
                         {data.manufacturer && (
                             <button
@@ -398,13 +423,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                             <InputText
                                 value={data.supplierName}
                                 onChange={(e) => onChange('basicInfo', 'supplierName', e.target.value)}
                                 // placeholder="Enter Supplier Name"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Name</label>
                         </FloatLabel>
                         {data.supplierName && (
                             <button
@@ -422,13 +447,13 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                             <InputText
                                 value={data.supplierCode}
                                 onChange={(e) => onChange('basicInfo', 'supplierCode', e.target.value)}
                                 // placeholder="Enter Supplier Code"
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Supplier Code</label>
                         </FloatLabel>
                         {data.supplierCode && (
                             <button
@@ -447,16 +472,16 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 <div className="space-y-2 md:col-span-2">
                     <div className="relative">
                         <FloatLabel>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                             <InputText
                                 value={data.shortDescription}
                                 onChange={(e) => onChange('basicInfo', 'shortDescription', e.target.value)}
                                 // placeholder="Brief product description (max 160 characters)"
                                 maxLength={160}
-                                className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                className="w-full px-3 py-2 peer border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                             />
+                            <label className="block  peer-focus:text-blue-500 text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                         </FloatLabel>
-                        <span className="absolute right-2 bottom-2 text-xs text-gray-400 dark:text-gray-500">
+                        <span className="absolute right-2  bottom-2 text-xs text-gray-400 dark:text-gray-500">
                             {data.shortDescription?.length || 0}/160
                         </span>
                     </div>
@@ -466,14 +491,14 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 {/* Long Description */}
                 <div className="space-y-2 md:col-span-2">
                     <FloatLabel>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                         <InputTextarea
                             value={data.longDescription}
                             onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
                             // placeholder="Detailed product description with features and benefits"
                             rows={3}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full peer px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
+                        <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                     </FloatLabel>
 
                 </div>
@@ -517,14 +542,17 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
             const matchedBrand = brands.find(
                 b => b.brandId === singleProduct.brand?.brandId
             ) || null;
+
             if (matchedCategory) {
                 onChange('category', 'main', matchedCategory);
                 setSelectedCategory(matchedCategory.categoryId);
+                setIsTouched(true); // Mark as touched since we're setting a value
             }
 
             if (matchedBrand) {
                 onChange('brand', null, matchedBrand);
                 setSelectedBrand(matchedBrand);
+                setIsTouched(true);
             }
 
             setIsInitialized(true);
@@ -535,25 +563,37 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const filteredBrands = brand?.filter(b =>
+    const filteredBrands = brands.filter(b =>
         b.name.toLowerCase().includes(brandSearchTerm.toLowerCase())
     );
 
-    const selectedSubCategoryOption = subCategories.find(sub => 
+    const selectedSubCategoryOption = subCategories.find(sub =>
         sub.categoryId === (category.sub?.categoryId || category.sub)
     );
 
     const selectedCategoryOption = category.main
-        ? filteredCategories.find(cat => 
+        ? filteredCategories.find(cat =>
             cat.categoryId === (category.main?.categoryId || category.main)
-          ) || null
+        ) || null
         : null;
 
+    const handleCategoryChange = (e) => {
+        onChange('category', 'main', e.value);
+        setSelectedCategory(e.value?.categoryId);
+        setIsTouched(true);
+    };
+
+    const handleBrandChange = (e) => {
+        onChange('brand', null, e.value);
+        setSelectedBrand(e.value);
+        setIsTouched(true);
+    };
+
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Category & Brand</h2>
-                <span className="text-xs bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300 px-2 py-1 rounded">Required fields*</span>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Category & Brand</h2>
+                <span className="text-xs bg-blue-50 text-secondary dark:bg-blue-900 dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -566,19 +606,13 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                     <Dropdown
                         id="mainCategory"
                         value={selectedCategoryOption}
-                        onChange={(e) => {
-                            onChange('category', 'main', e.value);
-                            setSelectedCategory(e.value?.categoryId);
-                        }}
+                        onChange={handleCategoryChange}
                         options={filteredCategories}
                         optionLabel="name"
                         placeholder="Select Category"
                         filter
                         filterBy="name"
-                        className={classNames('w-full border dark:border-gray-600 focus:outline-none focus:ring-0 bg-white dark:bg-gray-900', {
-                            'p-invalid': !category.main && isTouched
-                        })}
-                        onFocus={() => setIsTouched(true)}
+                        className={classNames('w-full border dark:border-gray-600 focus:outline-none focus:ring-0 bg-white dark:bg-gray-900')}
                         filterPlaceholder="Search categories..."
                         emptyFilterMessage="No categories found"
                         valueTemplate={(option) => {
@@ -599,7 +633,8 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                         }}
                     />
 
-                    {!category.main && isTouched && (
+                    {/* Only show error if touched and no category selected */}
+                    {isTouched && !category.main && (
                         <small className="p-error">Please select a main category</small>
                     )}
                 </div>
@@ -628,25 +663,19 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
                     <Dropdown
                         id="brand"
                         value={selectedBrand}
-                        onChange={(e) => {
-                            onChange('brand', null, e.value);
-                            setSelectedBrand(e.value);
-                            setIsTouched(true);
-                        }}
+                        onChange={handleBrandChange}
                         options={filteredBrands}
                         optionLabel="name"
                         placeholder="Select Brand"
                         filter
                         filterBy="name"
-                        className={classNames('w-full border bg-white dark:bg-gray-900 dark:border-gray-600 outline-none p-dropdown:focus-none', {
-                            'p-invalid': !brand && isTouched
-                        })}
-                        onFocus={() => setIsTouched(true)}
+                        className={classNames('w-full border bg-white dark:bg-gray-900 dark:border-gray-600 outline-none p-dropdown:focus-none')}
                         filterPlaceholder="Search brands..."
                         emptyFilterMessage="No brands found"
                     />
 
-                    {!brand && isTouched && (
+                    {/* Only show error if touched and no brand selected */}
+                    {isTouched && !brand && (
                         <small className="p-error">Please select a brand</small>
                     )}
                 </div>
@@ -670,15 +699,15 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
+        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h2 className="md:text-xl text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {[
                     { label: 'Sell', value: 'sell', color: "green-500", hasData: !!singleProduct?.productFor?.sell },
                     { label: 'Rent', value: 'rent', color: "orange-500", hasData: !!singleProduct?.productFor?.rent },
                     { label: 'Service', value: 'service', color: "purple-500", hasData: !!singleProduct?.productFor?.service },
-                    { label: 'Request a Quotation', value: 'quotation', color: "blue-500", hasData: !!singleProduct?.productFor?.requestQuotation },
+                    // { label: 'Request a Quotation', value: 'quotation', color: "blue-500", hasData: !!singleProduct?.productFor?.requestQuotation },
                 ].map((option) => (
                     <label
                         key={option.value}
@@ -692,10 +721,10 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
                             type="checkbox"
                             checked={selectedOptions.includes(option.value) || option.hasData}
                             onChange={() => handleOptionChange(option.value)}
-                            className="form-checkbox h-5 w-5 text-blue-600 dark:text-blue-500 focus:ring-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                            className="form-checkbox h-5 w-5 text-secondary dark:text-blue-500 focus:ring-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
                             disabled={option.hasData}
                         />
-                        <span className="text-sm font-medium">{option.label}</span>
+                        <span className="text-sm font-medium">{option.label}</span> 
                         {option.hasData && (
                             <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">(configured)</span>
                         )}
@@ -735,88 +764,6 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
         </div>
     );
 };
-
-// Currently unused but kept for future implementation
-const QuotationForm = ({ data, onChange }) => {
-    const [formData, setFormData] = useState(data || {
-        name: '',
-        mobile: '',
-        companyName: '',
-        location: ''
-    });
-
-    const handleChange = (field, value) => {
-        const updated = { ...formData, [field]: value };
-        setFormData(updated);
-        onChange(updated);
-    };
-
-    return (
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Request a Quotation</h3>
-
-            <div className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
-                    <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                        placeholder="Enter your name"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile*</label>
-                    <input
-                        type="tel"
-                        value={formData.mobile}
-                        onChange={(e) => handleChange('mobile', e.target.value)}
-                        placeholder="Enter your mobile number"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name (if any)</label>
-                    <input
-                        type="text"
-                        value={formData.companyName}
-                        onChange={(e) => handleChange('companyName', e.target.value)}
-                        placeholder="Enter company name"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                    <input
-                        type="text"
-                        value={formData.location}
-                        onChange={(e) => handleChange('location', e.target.value)}
-                        placeholder="Enter location"
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
-                    <div className="mt-1 flex items-center">
-                        <label className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Choose File
-                            <input type="file" className="sr-only" />
-                        </label>
-                        <span className="ml-2 text-sm text-gray-500">No file chosen</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 
 
 const SellPricingForm = ({ data, onChange, }) => {
@@ -921,7 +868,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                                 type="radio"
                                 checked={discountType === 'percentage'}
                                 onChange={() => setDiscountType('percentage')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">%</span>
                         </label>
@@ -930,7 +877,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                                 type="radio"
                                 checked={discountType === 'fixed'}
                                 onChange={() => setDiscountType('fixed')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">AED</span>
                         </label>
@@ -975,7 +922,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                             type="radio"
                             checked={formData.vatIncluded}
                             onChange={() => handleChange('vatIncluded', true)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                         />
                         <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
                     </label>
@@ -984,7 +931,7 @@ const SellPricingForm = ({ data, onChange, }) => {
                             type="radio"
                             checked={!formData.vatIncluded}
                             onChange={() => handleChange('vatIncluded', false)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                         />
                         <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
                     </label>
@@ -1002,12 +949,12 @@ const SellPricingForm = ({ data, onChange, }) => {
                     <button
                         type="button"
                         onClick={addBenefit}
-                        className="inline-flex items-center px-3 py-1 rounded-md transition duration-200 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
+                        className="inline-flex items-center px-3 py-1 rounded-md transition duration-200 bg-secondary  text-white"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add Benefit
+                        Add 
                     </button>
                 </div>
 
@@ -1024,7 +971,9 @@ const SellPricingForm = ({ data, onChange, }) => {
                             onClick={() => removeBenefit(index)}
                             className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-500"
                         >
-                            Remove
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                         </button>
                     </div>
                 ))}
@@ -1128,7 +1077,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={discountType === 'percentage'}
                                 onChange={() => setDiscountType('percentage')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-200">%</span>
                         </label>
@@ -1137,7 +1086,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={discountType === 'fixed'}
                                 onChange={() => setDiscountType('fixed')}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-200">AED</span>
                         </label>
@@ -1182,7 +1131,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={formData.vatIncluded}
                                 onChange={() => handleChange('vatIncluded', true)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
                         </label>
@@ -1191,7 +1140,7 @@ const RentPricingForm = ({ data, onChange }) => {
                                 type="radio"
                                 checked={!formData.vatIncluded}
                                 onChange={() => handleChange('vatIncluded', false)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
                         </label>
@@ -1212,12 +1161,12 @@ const RentPricingForm = ({ data, onChange }) => {
                     <button
                         type="button"
                         onClick={addBenefit}
-                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                        className="inline-flex items-center px-3 py-1 bg-secondary text-white rounded-md  transition duration-200"
                     >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add Benefit
+                        Add 
                     </button>
                 </div>
 
@@ -1252,37 +1201,49 @@ const RentPricingForm = ({ data, onChange }) => {
 
 const ServiceOptions = ({ services, onChange }) => {
     const [selectedServices, setSelectedServices] = useState({
-        ots: !!services?.ots,
-        mmc: !!services?.mmc,
-        amcBasic: !!services?.amcBasic,
-        amcGold: !!services?.amcGold
+        ots: services?.ots || null,
+        mmc: services?.mmc || null,
+        amcBasic: services?.amcBasic || null,
+        amcGold: services?.amcGold || null
     });
+    
 
     const handleServiceToggle = (service) => {
-        const serviceKey = service === 'ots' ? 'ots' : service;
-        const updated = {
-            ...selectedServices,
-            [service]: !selectedServices[service]
-        };
-        setSelectedServices(updated);
-
-        if (!updated[service]) {
+        const updated = { ...selectedServices };
+    
+        if (updated[service]) {
+            // Toggle off
+            updated[service] = null;
             const updatedServices = { ...services };
-            delete updatedServices[serviceKey];
+            delete updatedServices[service];
             onChange(updatedServices);
+        } else {
+            // Toggle on with default or previous form state
+            updated[service] = services?.[service] || { price: '', benefits: [''] };
         }
+    
+        setSelectedServices(updated);
     };
+    
+    
 
     const handleServiceChange = (service, data) => {
-        const serviceKey = service === 'ots' ? 'ots' : service;
+        const updated = {
+            ...selectedServices,
+            [service]: {
+                ...selectedServices?.[service],
+                ...data
+            }
+        };
+        setSelectedServices(updated);
         onChange({
             ...services,
-            [serviceKey]: {
-                ...services?.[serviceKey], // Preserve existing properties
-                ...data // Update with new data
-            }
+            [service]: updated[service]
         });
     };
+    
+    
+
 
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
@@ -1305,7 +1266,7 @@ const ServiceOptions = ({ services, onChange }) => {
                                     type="checkbox"
                                     checked={isChecked}
                                     onChange={() => handleServiceToggle(key)}
-                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    className="w-4 h-4 text-secondary border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     disabled={hasData}
                                 />
                             </div>
@@ -1388,7 +1349,11 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
     const handleChange = (field, value) => {
         const updated = { ...formData, [field]: value };
         setFormData(updated);
-        onChange(updated);
+        // Make sure to pass the benefits as an array
+        onChange({
+            ...updated,
+            benefits: Array.isArray(updated.benefits) ? updated.benefits : [updated.benefits].filter(b => b)
+        });
     };
 
     const handleBenefitChange = (index, value) => {
@@ -1445,13 +1410,13 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                                     value={benefit}
                                     onChange={(e) => handleBenefitChange(index, e.target.value)}
                                     placeholder={`Benefit ${index + 1}`}
-                                    className="flex-1 px-4 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                                    className=" block w-full px-4 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                                 />
                                 {formData.benefits.length > 1 && (
                                     <button
                                         type="button"
                                         onClick={() => removeBenefit(index)}
-                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-600 transition-colors"
+                                        className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-gray-700 transition-colors"
                                         aria-label="Remove benefit"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -1464,12 +1429,12 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                         <button
                             type="button"
                             onClick={addBenefit}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors"
                         >
                             <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                             </svg>
-                            Add Benefit
+                            Add 
                         </button>
                     </div>
                 </div>
@@ -1482,8 +1447,8 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
 
 const InventorySection = ({ inventory, onChange }) => {
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
                 Inventory Management
             </h2>
 
@@ -1502,7 +1467,7 @@ const InventorySection = ({ inventory, onChange }) => {
                             value={inventory.sku}
                             onChange={(e) => onChange('inventory', 'sku', e.target.value)}
                             placeholder="SKU-12345"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
 
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -1523,7 +1488,7 @@ const InventorySection = ({ inventory, onChange }) => {
                             onChange={(e) => onChange('inventory', 'quantity', parseInt(e.target.value))}
                             placeholder="0"
                             min="0"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 dark:text-gray-400 text-sm">QTY</span>
@@ -1540,7 +1505,7 @@ const InventorySection = ({ inventory, onChange }) => {
                         <select
                             value={inventory.stockStatus}
                             onChange={(e) => onChange('inventory', 'stockStatus', e.target.value)}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         >
                             <option value="IN_STOCK" className="text-gray-900 dark:text-gray-100">In Stock</option>
                             <option value="OUT_OF_STOCK" className="text-gray-900 dark:text-gray-100">Out of Stock</option>
@@ -1608,9 +1573,9 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Key Features</h2>
+                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Key Features</h2>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                     {keyFeatures.filter(f => f.trim() !== '').length} added
                 </span>
@@ -1653,7 +1618,7 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
                 <button
                     type="button"
                     onClick={addFeature}
-                    className="inline-flex items-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg shadow-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
+                    className="inline-flex items-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg shadow-sm text-secondary dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -1668,11 +1633,10 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
 
 
 
-const ImageUploader = ({ images, onChange }) => {
-    const { uploadFiles, isLoading } = useImageUploadStore();
+const ImageUploader = ({ images, onChange, singleProduct }) => {
+    const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
-
     const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files || e.dataTransfer.files);
         await validateAndSetFiles(files);
@@ -1730,14 +1694,22 @@ const ImageUploader = ({ images, onChange }) => {
         setSelectedFiles(prev => prev.filter((e) => e.name !== name));
     };
 
-    const removeUploadedImage = (index) => {
-        const newImages = [...images];
-        newImages.splice(index, 1);
-        onChange(newImages);
+    const handleDeleteImage = async (index) => {
+        try {
+            const newImages = [...images];
+            newImages.splice(index, 1);
+            onChange(newImages);
+
+            await deleteImage(singleProduct.productId);
+            showToast('success', 'Success', 'Image deleted successfully');
+
+        } catch (error) {
+            showToast('error', 'Error', 'Failed to delete image');
+            console.error('Error deleting image:', error);
+        }
     };
 
-    const handleUpload = async () => {
-        console.log("++++++++")
+    const handleUpload = async (entityType, entityId) => {
         if (selectedFiles.length === 0) return;
         const uploaded = await uploadFiles(selectedFiles);
         if (uploaded) {
@@ -1745,15 +1717,13 @@ const ImageUploader = ({ images, onChange }) => {
             setSelectedFiles([]);
         }
     };
-
     return (
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
+        <section className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
+            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
                 Product Images
             </h2>
 
             <div className="space-y-4">
-                {/* Upload Area */}
                 <div
                     className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${isDragging
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
@@ -1767,7 +1737,7 @@ const ImageUploader = ({ images, onChange }) => {
                         <FiUploadCloud className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                         <div className="flex flex-col items-center">
                             <p className="text-sm text-gray-600 dark:text-gray-300">
-                                <span className="font-medium text-blue-600 dark:text-blue-400">
+                                <span className="font-medium text-secondary dark:text-blue-400">
                                     Click to upload
                                 </span>{' '}
                                 or drag and drop
@@ -1778,9 +1748,9 @@ const ImageUploader = ({ images, onChange }) => {
                         </div>
                         <label
                             htmlFor="file-upload"
-                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition dark:bg-blue-700 dark:hover:bg-blue-800"
+                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-secondary text-white rounded-md  transition "
                         >
-                            <FiUpload className="h-4 w-4 mr-2" />
+                            <FiUpload className="h-4 w-4 mr-2 " />
                             Select Files
                         </label>
                         <input
@@ -1794,10 +1764,9 @@ const ImageUploader = ({ images, onChange }) => {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3">
                     <button
-                        onClick={handleUpload}
+                        onClick={() => handleUpload('product', singleProduct?.productId)}
                         disabled={isLoading || selectedFiles.length === 0}
                         className={`flex items-center px-4 py-2 rounded-md text-white transition ${selectedFiles.length === 0 || isLoading
                             ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
@@ -1868,22 +1837,23 @@ const ImageUploader = ({ images, onChange }) => {
                     </div>
                 )}
 
-                {/* Uploaded Images */}
-                {images.length > 0 && (
+                {/* Display uploaded images */}
+                {(images?.length > 0 || singleProduct?.images?.length > 0) && (
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Uploaded Images ({images.length})
+                            Uploaded Images ({images?.length || singleProduct?.images?.length})
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {images.map((img, index) => (
+                            {(images || singleProduct?.images)?.map((img, index) => (
                                 <div
                                     key={index}
                                     className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
                                 >
                                     <img
-                                        src={img?.url?.fileUrl}
+                                        src={img?.url?.fileUrl || img}
                                         alt={`Product ${index + 1}`}
                                         className="w-full h-full object-cover"
+                                        
                                     />
                                     {index === 0 && (
                                         <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
@@ -1891,13 +1861,15 @@ const ImageUploader = ({ images, onChange }) => {
                                         </span>
                                     )}
                                     <button
-                                        onClick={() => removeUploadedImage(index)}
+                                        onClick={() => handleDeleteImage(img)}
                                         className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
                                     >
                                         <FiX className="h-4 w-4 text-red-500" />
                                     </button>
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                                        <p className="text-xs text-white truncate">Uploaded {index + 1}</p>
+                                        <p className="text-xs text-white truncate">
+                                            {img?.name || `Image ${index + 1}`}
+                                        </p>
                                     </div>
                                 </div>
                             ))}
@@ -1909,3 +1881,90 @@ const ImageUploader = ({ images, onChange }) => {
     );
 };
 
+
+
+const TagsAndKeywords = ({ features = [], onChange }) => {
+    const [keywords, setKeywords] = useState(() => {
+        // Initialize with features if available, otherwise start with one empty string
+        return features && features.length > 0 ? features : [''];
+    });
+
+    // Update keywords when features prop changes
+    useEffect(() => {
+        if (features && features.length > 0) {
+            setKeywords(features);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (keywords.length === 0) {
+            setKeywords(['']);
+        }
+    }, []);
+
+    useEffect(() => {
+        const nonEmptyKeywords = keywords.filter(keyword => keyword.trim() !== '');
+        onChange('tagandkeywords', null, nonEmptyKeywords);
+    }, [keywords]);
+
+    const handleKeywordChange = (index, value) => {
+        const updatedKeywords = [...keywords];
+        updatedKeywords[index] = value;
+        setKeywords(updatedKeywords);
+    };
+
+    const addKeyword = () => {
+        setKeywords([...keywords, '']);
+    };
+
+    const removeKeyword = (index) => {
+        if (keywords.length <= 1) {
+            // If it's the last keyword, just clear it instead of removing
+            const updatedKeywords = [...keywords];
+            updatedKeywords[index] = '';
+            setKeywords(updatedKeywords);
+        } else {
+            const updatedKeywords = keywords.filter((_, i) => i !== index);
+            setKeywords(updatedKeywords);
+        }
+    };
+
+    return (
+        <div className="border p-2 rounded-lg shadow bg-white mb-6 dark:bg-gray-800">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="md:text-xl text-base font-semibold dark:text-gray-100">Tags & Keywords</h2>
+                <button
+                    type="button"
+                    onClick={addKeyword}
+                    className="px-4 py-2 bg-secondary text-white rounded  transition-colors"
+                >
+                    Add Tag
+                </button>
+            </div>
+
+            <div className="space-y-4">
+                {keywords.map((keyword, index) => (
+                    <div key={index} className="flex items-start gap-3 group">
+                        <div className="flex-1 relative">
+                            <InputText
+                                value={keyword || ''}
+                                onChange={(e) => handleKeywordChange(index, e.target.value)}
+                                placeholder={`Enter tag/keyword #${index + 1}...`}
+                                className="w-full p-2 border-b dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => removeKeyword(index)}
+                            className="text-red-500 hover:text-red-700 transition-colors"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};

@@ -2,14 +2,14 @@
 import React from 'react';
 import LoginForm from '../components/form/LoginForm';
 import Waves from '../components/Waves';
+import useAuthStore from '../Context/AuthContext';
 
-export default function Login({ isTokenValid }) {
-    console.log(isTokenValid);
+export default function  Login() {
 
     return (
         <div className="flex justify-center gap-6 items-center h-screen w-full relative overflow-hidden bg-secondary">
 
-<img src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png" alt="" className='w-32 absolute top-10 left-10'  />
+            <img src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png" alt="" className='w-32 absolute top-10 left-10' />
             <div className="w-[38%] hidden md:block text-center lg:text-left px-4">
                 <h1 className="text-white text-5xl  font-bold">Welcome to the App</h1>
                 <p className="text-white text-xl mt-4">
@@ -17,11 +17,11 @@ export default function Login({ isTokenValid }) {
                 </p>
             </div>
 
-            {/* Login Form Section */}
+   
             <div className="flex justify-center items-center w-[90%] md:w-[35%]">
                 <div className="border rounded-lg p-6 md:p-8 lg:p-10 w-full sm:w-3/4 md:w-2/3 lg:w-[80%] text-center flex flex-col items-center gap-4 bg-black bg-opacity-10 shadow-xl shadow-gray-800/40 ">
                     <h1 className="text-primary text-3xl font-semibold">Login</h1>
-                    <LoginForm isTokenValid={isTokenValid} />
+                    <LoginForm  />
                 </div>
             </div>
 

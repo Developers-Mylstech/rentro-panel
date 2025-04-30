@@ -17,6 +17,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
 import "../../index.css"
 import { useParams } from 'react-router-dom';
+import DemoProductSkeleton from '../widget/DemoProductSkeleton';
 
 
 
@@ -32,16 +33,21 @@ const DemoProduct = () => {
         const fetchProduct = async () => {
             if (id) {
                 setPageLoading(true);
-                const res = await getProductsById(id);
-                
-                if(res?.name){
-
+                try {
+                    const res = await getProductsById(id);
+                    if (res?.name) {
+                  
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch product:", error);
+                } finally {
                     setPageLoading(false);
                 }
             }
         };
         fetchProduct();
     }, [id]);
+    
 
 
 
@@ -164,9 +170,9 @@ const DemoProduct = () => {
 
             <div className="bg-white dark:bg-gray-800 p-2 shadow-md rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
-                    Add New Product
+                   {id ? 'Edit Product' : 'Add New Product'} 
                 </h1>
-                {pageLoading ? <div className='flex justify-center items-center h-96'><FaSpinner className='animate-spin' /></div> :
+                {pageLoading ? <DemoProductSkeleton/> :
                     <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
                         <ProductBasicInfo data={productData.basicInfo} onChange={handleInputChange} />
                         <CategoryBrandSelection
@@ -448,7 +454,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             />
                             <label className="block  peer-focus:text-blue-500 text-sm font-medium text-gray-700 dark:text-gray-300">Short Description</label>
                         </FloatLabel>
-                        <span className="absolute right-2  bottom-2 text-xs text-gray-400 dark:text-gray-500">
+                        <span className="absolute right-2 bottom-2 text-xs text-gray-400 dark:text-gray-500">
                             {data.shortDescription?.length || 0}/160
                         </span>
                     </div>
@@ -458,6 +464,7 @@ const ProductBasicInfo = ({ data, onChange }) => {
                 {/* Long Description */}
                 <div className="space-y-2 md:col-span-2">
                     <FloatLabel>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                         <InputTextarea
                             value={data.longDescription}
                             onChange={(e) => onChange('basicInfo', 'longDescription', e.target.value)}
@@ -465,7 +472,6 @@ const ProductBasicInfo = ({ data, onChange }) => {
                             rows={3}
                             className="w-full peer px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
-                        <label className="block peer-focus:text-blue-500  text-sm font-medium text-gray-700 dark:text-gray-300">Long Description</label>
                     </FloatLabel>
 
                 </div>
@@ -669,12 +675,11 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
         <div className="bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
             <h2 className="md:text-xl text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                 {[
                     { label: 'Sell', value: 'sell', color: "green-500", hasData: !!singleProduct?.productFor?.sell },
                     { label: 'Rent', value: 'rent', color: "orange-500", hasData: !!singleProduct?.productFor?.rent },
                     { label: 'Service', value: 'service', color: "purple-500", hasData: !!singleProduct?.productFor?.service },
-                    // { label: 'Request a Quotation', value: 'quotation', color: "blue-500", hasData: !!singleProduct?.productFor?.requestQuotation },
                 ].map((option) => (
                     <label
                         key={option.value}
@@ -721,12 +726,7 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
                     />
                 )}
 
-                {/* {(selectedOptions.includes('quotation') || !!singleProduct?.productFor?.requestQuotation) && (
-                    <QuotationForm
-                        data={singleProduct?.productFor?.requestQuotation || pricing.quotation}
-                        onChange={(data) => onChange('pricing', 'quotation', data)}
-                    />
-                )} */}
+                
             </div>
         </div>
     );
@@ -777,13 +777,11 @@ const SellPricingForm = ({ data, onChange, }) => {
     };
 
     const handleChange = (field, value) => {
-
         const updated = {
             ...formData,
             [field]: value,
             isWarrantyAvailable: field === 'warrantPeriod' ? value !== null : formData.isWarrantyAvailable
         };
-
         setFormData(updated);
         onChange(updated);
     };
@@ -970,31 +968,12 @@ const RentPricingForm = ({ data, onChange }) => {
     const [discountType, setDiscountType] = useState('percentage');
 
     const handleChange = (field, value) => {
-        const updated = { ...formData, [field]: value };
-
-        // Discounted Price Calculation
-        if (field === 'monthlyPrice' || field === 'discount' || field === 'vatIncluded') {
-            let priceAfterDiscount = 0;
-
-            if (discountType === 'percentage') {
-                priceAfterDiscount =
-                    updated.monthlyPrice && updated.discount
-                        ? updated.monthlyPrice - (updated.monthlyPrice * updated.discount / 100)
-                        : updated.monthlyPrice;
-            } else {
-                priceAfterDiscount =
-                    updated.monthlyPrice && updated.discount
-                        ? updated.monthlyPrice - updated.discount
-                        : updated.monthlyPrice;
-            }
-
-            // VAT calculation (assume 5% VAT)
-            const vat = updated.vatIncluded && priceAfterDiscount ? (priceAfterDiscount * 0.05) : 0;
-
-            updated.discountedPrice = priceAfterDiscount ? (priceAfterDiscount + vat).toFixed(2) : '';
-            updated.vatAmount = vat.toFixed(2);
-        }
-
+        const updated = { 
+            ...formData, 
+            [field]: field === 'benefits' 
+                ? (Array.isArray(value) ? value.filter(b => b && b.trim() !== '') : [])
+                : value 
+        };
         setFormData(updated);
         onChange(updated);
     };
@@ -1122,7 +1101,7 @@ const RentPricingForm = ({ data, onChange }) => {
 
             </div>
 
-            {/* Rental Benefits Section */}
+
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <h4 className="text-md font-medium text-gray-700 dark:text-gray-200">Rental Benefits</h4>
@@ -1191,12 +1170,16 @@ const ServiceOptions = ({ services, onChange }) => {
     };
 
     const handleServiceChange = (service, data) => {
+        console.log(data,'0099')
         const serviceKey = service === 'ots' ? 'ots' : service;
         onChange({
             ...services,
             [serviceKey]: {
-                ...services?.[serviceKey], // Preserve existing properties
-                ...data // Update with new data
+                ...services?.[serviceKey],
+                price: data.price,
+                benefits: Array.isArray(data.benefits) 
+                    ? data.benefits.filter(benefit => benefit && benefit.trim() !== '')
+                    : []
             }
         });
     };

@@ -227,7 +227,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
 
   // Simulate loading delay
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); // 1.5s fake load
+    const timer = setTimeout(() => setLoading(false), 1500); 
     return () => clearTimeout(timer);
   }, []);
 

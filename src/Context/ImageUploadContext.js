@@ -23,13 +23,13 @@ const useImageUploadStore = create((set) => ({
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'skip_zrok_interstitial': 'true'
+                        // 'skip_zrok_interstitial': 'true'
                     },
                 }
             );
 
        
-            const formattedFiles = response.data.map((path) => ({ url: path }));
+            const formattedFiles = response?.data?.map((file) => file.fileUrl);
             set({ uploadedFiles: formattedFiles, isLoading: false });
 
             return formattedFiles;
@@ -58,4 +58,3 @@ const useImageUploadStore = create((set) => ({
 
 export default useImageUploadStore;
 
-// /api/v1/images/update/{entityType}/{entityId}

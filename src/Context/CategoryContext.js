@@ -38,11 +38,7 @@ const useCategoryStore = create((set, get) => ({
  
   getAllCategories: async () => {
     try {
-      const res = await axiosInstance.get('/categories',{
-        headers: {
-          'skip_zrok_interstitial': 'true'
-      },
-      });
+      const res = await axiosInstance.get('/categories');
       const allCategories = res?.data || [];
 
       const mainCats = allCategories.filter(cat => !cat.parentCategoryId);
