@@ -5,6 +5,8 @@ import axios from 'axios';
 const useBrandStore = create((set) => ({
     brands: [],
     image: "",
+    loading: false,
+    error: null,
 
     addBrand: async (brand) => {
         try {
@@ -58,7 +60,7 @@ const useBrandStore = create((set) => ({
 
     removeBrand: async (id) => {
         try {
-            await axios.delete(`/api/brands/${id}`);
+            await axiosInstance.delete(`/brands/${id}`);
             set((state) => ({
                 brands: state.brands.filter(brand => brand.id !== id)
             }));
@@ -79,6 +81,69 @@ const useBrandStore = create((set) => ({
             alert('Brand updated successfully');
         } catch (error) {
             alert("Update failed due to backend issue");
+        }
+    },
+
+    deleteImage: async (entityType, entityId) => {
+        try {
+            set({ loading: true, error: null });
+            
+            const response = await axiosInstance.delete(`/images/delete/${entityType}/${entityId}`);
+            
+            if (response.status === 200 || response.status === 204) {
+                // Update the brands state if needed
+                set((state) => ({
+                    brands: state.brands.map(brand => {
+                        if (brand.id === entityId) {
+                            return {
+                                ...brand,
+                                images: brand.images.filter(img => img !== entityId)
+                            };
+                        }
+                        return brand;
+                    })
+                }));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Delete image error:', error);
+            set({ error: error.message || 'Failed to delete image' });
+            throw error;
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    deleteBrandImage: async (brandId, imageId) => {
+        try {
+            set({ loading: true, error: null });
+            
+            const response = await axiosInstance.delete(`/images/delete/brand/${imageId}`);
+            
+            if (response.status === 200 || response.status === 204) {
+                // Update the specific brand's images
+                set((state) => ({
+                    brands: state.brands.map(brand => {
+                        if (brand.id === brandId) {
+                            return {
+                                ...brand,
+                                images: brand.images.filter(img => img !== imageId)
+                            };
+                        }
+                        return brand;
+                    })
+                }));
+                return { success: true, message: 'Image deleted successfully' };
+            }
+        } catch (error) {
+            console.error('Delete brand image error:', error);
+            set({ 
+                error: error.response?.data?.message || error.message || 'Failed to delete image' 
+            });
+            return { success: false, message: 'Failed to delete image' };
+        } finally {
+            set({ loading: false });
         }
     }
 }));

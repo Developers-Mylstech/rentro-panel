@@ -127,15 +127,15 @@ export default function BrandListing({ brands }) {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          {/* <img
+                          <img
                             className="h-10 w-10 rounded-full object-contain"
-                            src={ "/default-brand.png"}
+                            src={brand.images[0]}
                             // src={brand.images?.[0] || "/default-brand.png"}
                             alt={brand.name}
                             onError={(e) => {
                               e.target.src = "/default-brand.png";
                             }}
-                          /> */}
+                          />
                         </div>
                       </div>
                     </td>

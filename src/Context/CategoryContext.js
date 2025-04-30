@@ -41,12 +41,15 @@ const useCategoryStore = create((set, get) => ({
       const res = await axiosInstance.get('/categories');
       const allCategories = res?.data || [];
 
-      const mainCats = allCategories.filter(cat => !cat.parentCategoryId);
+      const mainCats = allCategories.filter(cat => cat.subCategories!=[]);
 
       set({
         flatCategoryList: allCategories,
         categoryList: mainCats,
       });
+
+      console.log(mainCats, "main cats");
+      console.log(allCategories, "filtered cats");
 
       return mainCats; 
     } catch (error) {
@@ -57,7 +60,7 @@ const useCategoryStore = create((set, get) => ({
 
   removeCategory: async (id) => {
     try {
-      const res = await axios.delete(`https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`);
+      const res = await axiosInstance.delete(`/categories/${id}`);
 
       if(res.status==204){
         alert(`Category  Deleted with Id ${id}`)
@@ -76,8 +79,8 @@ const useCategoryStore = create((set, get) => ({
 
   handleEditCategory : async (id, updatedCategory) => {
     try {
-      const response = await axios.put(
-        `https://proud-expression-production-6ebc.up.railway.app/api/v1/categories/${id}`,
+      const response = await axiosInstance.put(
+        `/categories/${id}`,
         updatedCategory
       );
   
