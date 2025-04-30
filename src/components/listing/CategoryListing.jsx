@@ -9,32 +9,83 @@ import { Dialog } from "primereact/dialog";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
 import { Tooltip } from "primereact/tooltip";
+import { Toast } from "primereact/toast";
 import CustomButton from "../../systemdesign/CustomeButton";
 import { useNavigate } from "react-router-dom";
+import useCategoryStore from "../../Context/CategoryContext";
 
-export default function CategoryList({ categoryList, removeCategory }) {
+export default function CategoryList() {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
+  const toast = React.useRef(null);
+  const { categoryList, getAllCategories, removeCategory } = useCategoryStore();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      await getAllCategories();
+    } catch (error) {
+      showError("Failed to load categories");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showError = (message) => {
+    toast.current.show({
+      severity: "error",
+      summary: "Error",
+      detail: message,
+      life: 3000,
+    });
+  };
+
+  const showSuccess = (message) => {
+    toast.current.show({
+      severity: "success",
+      summary: "Success",
+      detail: message,
+      life: 3000,
+    });
+  };
 
   const filteredCategories = categoryList.filter((category) =>
     category.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleDelete = () => {
-    if (categoryToDelete) {
-      removeCategory(categoryToDelete);
+  const handleDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setDeleting(true);
+    try {
+      const res = await removeCategory(categoryToDelete);
+      if(res.status==204){
+        alert("Category Deleted");
+        fetchCategories();
+        showSuccess("Category deleted successfully");
+
+      }else{
+
+        showError(res?.message || "Unexpected response while deleting category.");
+      }
+
+    } catch (error) {
+      showError("Failed to delete category");
+    } finally {
+      setDeleting(false);
       setVisible(false);
       setCategoryToDelete(null);
     }
   };
+
 
   const showDeleteDialog = (id) => {
     setCategoryToDelete(id);
@@ -45,24 +96,11 @@ export default function CategoryList({ categoryList, removeCategory }) {
     navigate("/categories/add", { state: { category } });
   };
 
-  const imageTemplate = (rowData) => {
-    const imageUrl = rowData.images?.[0] || "https://via.placeholder.com/150";
-    return (
-      <div className="flex items-center">
-        <img
-          src={imageUrl}
-          alt={rowData.name}
-          className="w-12 h-12 rounded-lg object-cover border border-gray-100 dark:border-gray-700 shadow-sm hover:scale-105 transition-transform duration-200"
-        />
-      </div>
-    );
-  };
-
   const subCategoryTemplate = (rowData) => {
     if (rowData.subCategories.length === 0) {
       return <span className="text-gray-400 dark:text-gray-500">None</span>;
     }
-    
+
     return (
       <div className="flex flex-wrap gap-1">
         {rowData.subCategories.slice(0, 3).map((sub, index) => (
@@ -77,7 +115,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
         {rowData.subCategories.length > 3 && (
           <Tag
             value={`+${rowData.subCategories.length - 3}`}
-            severity="secondary"
+            severity="black"
             rounded
             className="text-xs"
           />
@@ -125,6 +163,8 @@ export default function CategoryList({ categoryList, removeCategory }) {
 
   return (
     <div className="dark:text-gray-200 p-4 md:p-6 w-full h-full">
+      <Toast ref={toast} position="top-right" />
+
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
@@ -135,7 +175,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
             {categoryList.length} categories available
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3 w-full md:w-auto">
           <IconField className="w-full md:w-64">
             <InputIcon className="pi pi-search text-gray-400" />
@@ -146,7 +186,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
             />
           </IconField>
-          
+
           <CustomButton
             title="Add Category"
             icon="pi pi-plus"
@@ -179,14 +219,6 @@ export default function CategoryList({ categoryList, removeCategory }) {
             rowsPerPageOptions={[5, 10, 25]}
             paginatorClassName="border-t border-gray-100 dark:border-gray-700 px-4 py-3"
           >
-            {/* <Column
-              field="images"
-              header=""
-              body={imageTemplate}
-              style={{ width: '80px' }}
-              headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
-              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
-            /> */}
             <Column
               field="name"
               header="Category"
@@ -235,21 +267,13 @@ export default function CategoryList({ categoryList, removeCategory }) {
               key={category.categoryId}
               className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-300 dark:border-gray-700"
             >
-              {/* <div className="relative group">
-                <img
-                  src={category.images?.[0] || "https://via.placeholder.com/300"}
-                  alt={category.name}
-                  className="w-full h-40 object-cover group-hover:opacity-90 transition-opacity duration-300"
-                />
-              </div> */}
-              
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
                   {category.name}
                 </h3>
-                
-                <div className="flex flex-wrap gap-1 mb-4 bg-blue-50 rounded-lg p-2">
-                  <p >Subcaterories: </p>
+
+                <div className="flex flex-wrap gap-1 mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2">
+                  <p className="text-xs text-gray-600 dark:text-gray-300">Subcategories: </p>
                   {category.subCategories.length > 0 ? (
                     category.subCategories.slice(0, 3).map((sub, index) => (
                       <Tag
@@ -272,7 +296,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
                     />
                   )}
                 </div>
-                
+
                 <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <Button
                     icon="pi pi-pencil"
@@ -314,7 +338,7 @@ export default function CategoryList({ categoryList, removeCategory }) {
             Are you sure you want to delete this category? This action cannot be undone.
           </p>
         </div>
-        
+
         <div className="flex justify-center gap-4">
           <Button
             label="Cancel"
@@ -326,10 +350,11 @@ export default function CategoryList({ categoryList, removeCategory }) {
             }}
           />
           <Button
-            label="Delete"
-            icon="pi pi-trash"
+            label={deleting ? "Deleting..." : "Delete"}
+            icon={deleting ? "pi pi-spinner pi-spin" : "pi pi-trash"}
             className="p-button-danger"
             onClick={handleDelete}
+            disabled={deleting}
           />
         </div>
       </Dialog>

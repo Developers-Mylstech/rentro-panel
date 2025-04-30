@@ -61,17 +61,13 @@ const useCategoryStore = create((set, get) => ({
   removeCategory: async (id) => {
     try {
       const res = await axiosInstance.delete(`/categories/${id}`);
-
-      if(res.status==204){
-        alert(`Category  Deleted with Id ${id}`)
-      }
-
     
       set((state) => ({
         flatCategoryList: state.flatCategoryList.filter(cat => cat._id !== id),
         categoryList: state.categoryList.filter(cat => cat._id !== id),
         subCategories: state.subCategories.filter(cat => cat._id !== id),
       }));
+      return res;
     } catch (error) {
       console.error("Failed to delete category:", error);
     }

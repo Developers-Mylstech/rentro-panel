@@ -158,7 +158,7 @@ export default function ProductListing() {
                       AED {product.yearlyPrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-2">
+                      <div className="flex gap-10">
                         <button
                           onClick={() => navigate(`/products/edit/${product.id}`)}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
