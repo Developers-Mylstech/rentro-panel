@@ -72,7 +72,7 @@ const useBrandStore = create((set) => ({
 
     editBrand: async (id, updatedBrand) => {
         try {
-            await axios.put(`/api/brands/${id}`, updatedBrand);
+            await axiosInstance.put(`/brands/${id}`, updatedBrand);
             set((state) => ({
                 brands: state.brands.map((b) =>
                     b.id === id ? { ...b, ...updatedBrand } : b
