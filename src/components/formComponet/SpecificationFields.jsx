@@ -7,7 +7,7 @@ import useSpecificationFieldsStore from '../../Context/SpecificationFieldsContex
 
 const SpecificationFields = ({ specs, onChange }) => {
   const { specificationFields, getAllSpecificationFields, getCommonFieldTemplates } = useSpecificationFieldsStore();
-  
+
   const [selectedSpecification, setSelectedSpecification] = useState([]);
   const [customFields, setCustomFields] = useState([]);
   const [showNewFieldInput, setShowNewFieldInput] = useState(false);
@@ -19,7 +19,7 @@ const SpecificationFields = ({ specs, onChange }) => {
     const loadFields = async () => {
       await getAllSpecificationFields();
       const templates = getCommonFieldTemplates();
-      
+
       // Filter and format templates
       const formattedTemplates = templates
         .filter(template => template?.name)
@@ -28,7 +28,7 @@ const SpecificationFields = ({ specs, onChange }) => {
           name: template.name.trim(),
           unit: template.unit || ''
         }));
-      
+
       // Filter and format specification fields
       const validSpecFields = (specificationFields || [])
         .filter(field => field?.name)
@@ -36,7 +36,7 @@ const SpecificationFields = ({ specs, onChange }) => {
           ...field,
           name: field.name.trim()
         }));
-      
+
       setAvailableFields([...validSpecFields, ...formattedTemplates]);
     };
     loadFields();
@@ -46,7 +46,7 @@ const SpecificationFields = ({ specs, onChange }) => {
   useEffect(() => {
     if (specs && availableFields.length > 0) {
       const initialSpecs = Array.isArray(specs) ? specs : [];
-      
+
       // Process specs - remove nulls, trim names, remove duplicates
       const processedSpecs = initialSpecs
         .filter(spec => spec?.name)
@@ -55,7 +55,7 @@ const SpecificationFields = ({ specs, onChange }) => {
           name: spec.name.trim()
         }))
         .reduce((acc, spec) => {
-          const exists = acc.find(item => 
+          const exists = acc.find(item =>
             item.name.toLowerCase() === spec.name.toLowerCase()
           );
           if (!exists) acc.push(spec);
@@ -64,10 +64,10 @@ const SpecificationFields = ({ specs, onChange }) => {
 
       // Map to field objects with values
       const fieldsWithValues = processedSpecs.map(spec => {
-        const matchingField = availableFields.find(field => 
+        const matchingField = availableFields.find(field =>
           field.name.toLowerCase() === spec.name.toLowerCase()
         );
-        
+
         return {
           specificationFieldId: matchingField?.specificationFieldId || spec.specificationFieldId || `custom-${Date.now()}`,
           name: spec.name,
@@ -97,20 +97,20 @@ const SpecificationFields = ({ specs, onChange }) => {
         name: val.name.trim()
       }))
       .reduce((acc, val) => {
-        const exists = acc.find(item => 
+        const exists = acc.find(item =>
           item.name.toLowerCase() === val.name.toLowerCase()
         );
         if (!exists) acc.push(val);
         return acc;
       }, []);
-    
+
     // Merge with existing values
     const updatedFields = validSelectedValues.map(spec => {
-      const existingField = customFields.find(field => 
+      const existingField = customFields.find(field =>
         field.specificationFieldId === spec.specificationFieldId ||
         field.name.toLowerCase() === spec.name.toLowerCase()
       );
-      
+
       return existingField || {
         specificationFieldId: spec.specificationFieldId,
         name: spec.name,
@@ -121,7 +121,7 @@ const SpecificationFields = ({ specs, onChange }) => {
 
     setSelectedSpecification(updatedFields);
     setCustomFields(updatedFields);
-    
+
     const formattedFields = updatedFields.map(({ name, value }) => ({ name, value }));
     onChange?.('specifications', null, formattedFields);
   };
@@ -161,11 +161,11 @@ const SpecificationFields = ({ specs, onChange }) => {
     };
 
     const updatedFields = [...customFields, newField];
-    
+
     setSelectedSpecification(updatedFields);
     setCustomFields(updatedFields);
     setAvailableFields(prev => [...prev, newField]);
-    
+
     setNewFieldName('');
     setShowNewFieldInput(false);
 
@@ -179,44 +179,44 @@ const SpecificationFields = ({ specs, onChange }) => {
     );
     setSelectedSpecification(updatedFields);
     setCustomFields(updatedFields);
-    
+
     const formattedFields = updatedFields.map(({ name, value }) => ({ name, value }));
     onChange?.('specifications', null, formattedFields);
   };
 
   return (
     <div className="flex flex-col gap-6 w-full text-gray-800 dark:text-gray-200">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
-        <label className="font-semibold text-gray-700 dark:text-gray-300 text-left w-full md:w-auto">
-          Specifications
-        </label>
+      <div className="flex items-center justify-between bg-secondary bg-opacity-10  rounded-lg px-5">
+        <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Specifications</h2>
+      </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:w-[70%] w-full">
-          <MultiSelect
-            value={selectedSpecification}
-            onChange={(e) => handleSpecificationChange(e.value)}
-            options={availableFields}
-            optionLabel="name"
-            filter
-            placeholder="Select Specifications"
-            className="w-full md:w-[60%] border dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            panelClassName="border dark:border-gray-600 dark:bg-gray-800"
-            display="chip"
-            selectedItemsLabel={selectedSpecification.length > 0 ? `${selectedSpecification.length} selected` : "Select Specifications"}
-            maxSelectedLabels={0}
-            showClear={true}
-          />
+      <div className="grid grid-cols-2 gap-20 ">
+        <MultiSelect
+          value={selectedSpecification}
+          onChange={(e) => handleSpecificationChange(e.value)}
+          options={availableFields}
+          optionLabel="name"
+          filter
+          placeholder="Select Specifications"
+          className="w-full border dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          panelClassName="border dark:border-gray-600 dark:bg-gray-800"
+          display="chip"
+          selectedItemsLabel={selectedSpecification.length > 0 ? `${selectedSpecification.length} selected` : "Select Specifications"}
+          maxSelectedLabels={0}
+          showClear={true}
+        />
+        <div className=' flex justify-end'>
 
           {!showNewFieldInput ? (
             <button
               type="button"
               onClick={() => setShowNewFieldInput(true)}
-              className="flex justify-center items-center p-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition"
+              className="flex   justify-center items-center p-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition"
             >
               <FiPlus className="text-2xl" />
             </button>
           ) : (
-            <div className="flex gap-2 w-full md:w-[40%]">
+            <div className="flex gap-2 w-full">
               <input
                 type="text"
                 value={newFieldName}
@@ -240,6 +240,7 @@ const SpecificationFields = ({ specs, onChange }) => {
           )}
         </div>
       </div>
+
 
       {customFields.length > 0 && (
         <div className="flex flex-col gap-4 w-full mt-4">

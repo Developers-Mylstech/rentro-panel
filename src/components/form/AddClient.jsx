@@ -5,6 +5,7 @@ import Demo2 from './demo2'
 export default function AddClient() {
   return (
     <div>
-      <Demo2 />    </div>
+      Add Client
+    </div>
   )
 }

@@ -5,9 +5,18 @@ function CustomSidebar({ isDarkMode }) {
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [closingMenu, setClosingMenu] = useState(null);
 
   const toggleMenu = (menu) => {
-    setActiveMenu(activeMenu === menu ? null : menu);
+    if (activeMenu === menu) {
+      setClosingMenu(menu);
+      setTimeout(() => {
+        setActiveMenu(null);
+        setClosingMenu(null);
+      }, 200);
+    } else {
+      setActiveMenu(menu);
+    }
   };
 
   useEffect(() => {
@@ -45,12 +54,12 @@ function CustomSidebar({ isDarkMode }) {
     <>
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className={`fixed top-5 left-4 z-40 text-gray-700 dark:text-gray-100 text-3xl rounded-full lg:hidden ${
+        className={`fixed top-3 left-4 z-50 text-gray-700 text-3xl rounded-full lg:hidden ${
           isSidebarOpen ? "hidden" : ""
         }`}
         style={{ transition: "all 0.3s ease" }}
       >
-        <i className="pi pi-align-left"></i>
+        <i className="pi pi-align-left text-secondary"></i>
       </button>
 
       {isSidebarOpen && (
@@ -60,27 +69,27 @@ function CustomSidebar({ isDarkMode }) {
           style={{ transition: "opacity 0.3s ease" }}
         />
       )}
-
       <div
         className={`fixed top-0 left-0 h-full overflow-y-auto pl-2 z-50 w-64 
           bg-white dark:bg-gray-800 dark:text-gray-100 shadow-xl
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 lg:w-64`}
-        style={{ 
+        style={{
           transition: "transform 0.3s ease, background-color 0.3s ease",
           scrollbarWidth: "thin",
           scrollbarColor: "#3B82F6 #F3F4F6"
         }}
       >
-        <div 
+        <div
           className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700"
           style={{ transition: "border-color 0.3s ease" }}
         >
-          <img 
-            src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png" 
-            alt="Logo" 
-            className="w-24 h-auto" 
-          />
+          {/* <img
+            src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png"
+            alt="Logo"
+            className="w-24 h-auto"
+          /> */}
+          <h6 className="text-center w-full font-bold text-md animate-bounce text-secondary">Rent Ro</h6>
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-xl lg:hidden"
@@ -90,7 +99,7 @@ function CustomSidebar({ isDarkMode }) {
           </button>
         </div>
 
-        <div 
+        <div
           className="p-4 overflow-y-auto h-[calc(100vh-80px)]"
           style={{ scrollBehavior: "smooth" }}
         >
@@ -98,11 +107,10 @@ function CustomSidebar({ isDarkMode }) {
             <Link
               to="/"
               onClick={handleLinkClick}
-              className={`flex items-center gap-3 p-3 rounded-lg ${
-                location.pathname === "/"
-                  ? "bg-blue-600 text-white dark:bg-gray-700"
+              className={`flex items-center gap-3 p-3 rounded-lg ${location.pathname === "/"
+                  ? "bg-secondary text-white dark:bg-gray-700"
                   : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-              }`}
+                }`}
               style={{ transition: "all 0.2s ease" }}
             >
               <i className="pi pi-home text-lg"></i>
@@ -112,7 +120,7 @@ function CustomSidebar({ isDarkMode }) {
 
           <div className="mb-8">
             <div className="px-3 mb-4">
-              <h6 className="text-blue-600 dark:text-blue-400 font-semibold text-sm uppercase tracking-wider">
+              <h6 className="text-secondary dark:text-secondary font-semibold text-sm uppercase tracking-wider">
                 General
               </h6>
               <p className="text-gray-500 dark:text-gray-400 text-xs">
@@ -127,11 +135,10 @@ function CustomSidebar({ isDarkMode }) {
                   <li key={menu.name}>
                     <button
                       onClick={() => toggleMenu(menu.name)}
-                      className={`flex items-center justify-between w-full p-3 rounded-lg ${
-                        activeMenu === menu.name || isActive
-                          ? "bg-blue-600 text-white dark:bg-gray-700"
+                      className={`flex items-center justify-between w-full p-3 rounded-lg ${activeMenu === menu.name || isActive
+                          ? "bg-secondary text-white dark:bg-gray-700"
                           : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                      }`}
+                        }`}
                       style={{ transition: "all 0.2s ease" }}
                     >
                       <div className="flex items-center gap-3">
@@ -141,31 +148,29 @@ function CustomSidebar({ isDarkMode }) {
                         </span>
                       </div>
                       <i
-                        className={`pi ${
-                          activeMenu === menu.name ? "pi-chevron-down" : "pi-chevron-right"
-                        }`}
-                        style={{ transition: "transform 0.2s ease" }}
+                        className={`pi ${activeMenu === menu.name ? "pi-chevron-down" : "pi-chevron-right"
+                          }`}
+                        style={{
+                          transition: "transform 0.2s ease",
+                          transform: activeMenu === menu.name ? "rotate(0deg)" : "rotate(0deg)"
+                        }}
                       ></i>
                     </button>
 
-                    {activeMenu === menu.name && (
-                      <ul 
-                        className="pl-5 mt-1 space-y-1"
-                        style={{ 
-                          animation: "fadeIn 0.2s ease-out forwards",
-                          opacity: 0,
-                          transform: "translateY(-10px)"
-                        }}
+                    <div className={`submenu-container overflow-hidden transition-all duration-200 ease-in-out ${activeMenu === menu.name ? "max-h-96" : "max-h-0"
+                      }`}>
+                      <ul
+                        className={`pl-5 mt-1 space-y-1 ${closingMenu === menu.name ? "submenu-closing" : ""
+                          }`}
                       >
                         <li>
                           <Link
                             to={`/${menu.name}`}
                             onClick={handleLinkClick}
-                            className={`block p-2 text-sm rounded ${
-                              location.pathname === `/${menu.name}`
-                                ? "text-blue-600  font-medium dark:text-blue-400"
-                                : "text-gray-600 text-sm hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                            }`}
+                            className={`block p-2 text-sm rounded ${location.pathname === `/${menu.name}`
+                                ? "text-secondary font-medium dark:text-secondary"
+                                : "text-gray-600 text-sm hover:text-secondary dark:text-gray-400 dark:hover:text-secondary"
+                              }`}
                             style={{ transition: "color 0.2s ease" }}
                           >
                             All {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
@@ -175,21 +180,20 @@ function CustomSidebar({ isDarkMode }) {
                           <Link
                             to={`/${menu.name}/${menu.name === "orders" ? "quotation" : "add"}`}
                             onClick={handleLinkClick}
-                            className={`block p-2 text-sm rounded ${
-                              location.pathname === `/${menu.name}/add` ||
-                              location.pathname === `/${menu.name}/quotation`
-                                ? "text-secondary font-medium dark:text-blue-400"
-                                : "text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                            }`}
+                            className={`block p-2 text-sm rounded ${location.pathname === `/${menu.name}/add` ||
+                                location.pathname === `/${menu.name}/quotation`
+                                ? "text-secondary  dark:text-blue-400"
+                                : "text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary"
+                              }`}
                             style={{ transition: "color 0.2s ease" }}
                           >
-                            {menu.name === "orders" 
-                              ? "Quotation List" 
+                            {menu.name === "orders"
+                              ? "Quotation List"
                               : `Add New ${menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}`}
                           </Link>
                         </li>
                       </ul>
-                    )}
+                    </div>
                   </li>
                 );
               })}
@@ -198,7 +202,7 @@ function CustomSidebar({ isDarkMode }) {
 
           <div className="mb-8">
             <div className="px-3 mb-4">
-              <h6 className="text-blue-600 dark:text-blue-400 font-semibold text-sm uppercase tracking-wider">
+              <h6 className="text-secondary dark:text-secondary font-semibold text-sm uppercase tracking-wider">
                 Website
               </h6>
               <p className="text-gray-500 dark:text-gray-400 text-xs">
@@ -213,11 +217,10 @@ function CustomSidebar({ isDarkMode }) {
                   <li key={menu.name}>
                     <button
                       onClick={() => toggleMenu(menu.name)}
-                      className={`flex items-center justify-between w-full p-3 rounded-lg ${
-                        activeMenu === menu.name || isActive
-                          ? "bg-blue-600 text-white dark:bg-gray-700"
+                      className={`flex items-center justify-between w-full p-3 rounded-lg ${activeMenu === menu.name || isActive
+                          ? "bg-secondary text-white dark:bg-gray-700"
                           : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                      }`}
+                        }`}
                       style={{ transition: "all 0.2s ease" }}
                     >
                       <div className="flex items-center gap-3">
@@ -227,31 +230,29 @@ function CustomSidebar({ isDarkMode }) {
                         </span>
                       </div>
                       <i
-                        className={`pi ${
-                          activeMenu === menu.name ? "pi-chevron-down" : "pi-chevron-right"
-                        }`}
-                        style={{ transition: "transform 0.2s ease" }}
+                        className={`pi ${activeMenu === menu.name ? "pi-chevron-down" : "pi-chevron-right"
+                          }`}
+                        style={{
+                          transition: "transform 0.2s ease",
+                          transform: activeMenu === menu.name ? "rotate(0deg)" : "rotate(0deg)"
+                        }}
                       ></i>
                     </button>
 
-                    {activeMenu === menu.name && (
-                      <ul 
-                        className="pl-12 mt-1 space-y-1"
-                        style={{ 
-                          animation: "fadeIn 0.2s ease-out forwards",
-                          opacity: 0,
-                          transform: "translateY(-10px)"
-                        }}
+                    <div className={`submenu-container overflow-hidden transition-all duration-200 ease-in-out ${activeMenu === menu.name ? "max-h-96" : "max-h-0"
+                      }`}>
+                      <ul
+                        className={`pl-12 mt-1 space-y-1 ${closingMenu === menu.name ? "submenu-closing" : ""
+                          }`}
                       >
                         <li>
                           <Link
                             to={`/${menu.name}`}
                             onClick={handleLinkClick}
-                            className={`block p-2 rounded ${
-                              location.pathname === `/${menu.name}`
-                                ? "text-blue-600 font-medium dark:text-blue-400"
-                                : "text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                            }`}
+                            className={`block p-2 text-sm rounded ${location.pathname === `/${menu.name}`
+                                ? "text-secondary font-medium dark:text-secondary"
+                                : "text-gray-600 text-sm hover:text-secondary dark:text-gray-400 dark:hover:text-secondary"
+                              }`}
                             style={{ transition: "color 0.2s ease" }}
                           >
                             All {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
@@ -261,18 +262,17 @@ function CustomSidebar({ isDarkMode }) {
                           <Link
                             to={`/${menu.name}/add`}
                             onClick={handleLinkClick}
-                            className={`block p-2 rounded ${
-                              location.pathname === `/${menu.name}/add`
-                                ? "text-blue-600 font-medium dark:text-blue-400"
-                                : "text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                            }`}
+                            className={`block p-2 text-sm rounded ${location.pathname === `/${menu.name}/add`
+                                ? "text-secondary  dark:text-secondary"
+                                : "text-gray-600 text-sm hover:text-secondary dark:text-gray-400 dark:hover:text-secondary"
+                              }`}
                             style={{ transition: "color 0.2s ease" }}
                           >
                             Add New {menu.name.charAt(0).toUpperCase() + menu.name.slice(1)}
                           </Link>
                         </li>
                       </ul>
-                    )}
+                    </div>
                   </li>
                 );
               })}
@@ -287,6 +287,38 @@ function CustomSidebar({ isDarkMode }) {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+        
+        .submenu-container {
+          transition: max-height 0.2s ease-in-out;
+        }
+        
+        .submenu-container ul {
+          animation: fadeIn 0.2s ease-out forwards;
+        }
+        
+        .submenu-closing {
+          animation: fadeOut 0.2s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+        }
+        
+        .pi-chevron-right {
+          transition: transform 0.2s ease;
+        }
+        
+        .pi-chevron-down {
+          transition: transform 0.2s ease;
+          transform: rotate(90deg);
         }
       `}</style>
     </>
