@@ -31,6 +31,7 @@ import AddCareer from "./components/form/AddCareer";
 import Demo2 from "./components/form/demo2";
 import useAuthStore from "./Context/AuthContext";
 import { useEffect, useState } from "react";
+import ProductForm from "./components/formComponet/ProductForm";
 
 function App() {
   const { accessToken, initializeAuth } = useAuthStore();
@@ -53,8 +54,8 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="products">
               <Route index element={<Products />} />
-              <Route path="add" element={<Demo2 />} />
-              <Route path="edit/:id" element={<Demo2 />} />
+              <Route path="add" element={<ProductForm />} />
+              <Route path="edit/:id" element={<ProductForm />} />
             </Route>
             <Route path="categories" element={<Categories />} />
             <Route path="categories/add" element={<AddCategory />} />

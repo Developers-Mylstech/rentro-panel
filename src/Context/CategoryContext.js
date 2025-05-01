@@ -24,6 +24,8 @@ const useCategoryStore = create((set, get) => ({
     }
   },
 
+  
+
   setSelectedCategory: (mainCatId) => {
     const allCategories = get().flatCategoryList;
     const subCategories = allCategories.filter(
@@ -35,13 +37,13 @@ const useCategoryStore = create((set, get) => ({
     });
   },
 
- 
+
   getAllCategories: async () => {
     try {
       const res = await axiosInstance.get('/categories');
       const allCategories = res?.data || [];
 
-      const mainCats = allCategories.filter(cat => cat.subCategories!=[]);
+      const mainCats = allCategories.filter(cat => cat.subCategories != []);
 
       set({
         flatCategoryList: allCategories,
@@ -51,7 +53,7 @@ const useCategoryStore = create((set, get) => ({
       console.log(mainCats, "main cats");
       console.log(allCategories, "filtered cats");
 
-      return mainCats; 
+      return mainCats;
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];
@@ -61,7 +63,7 @@ const useCategoryStore = create((set, get) => ({
   removeCategory: async (id) => {
     try {
       const res = await axiosInstance.delete(`/categories/${id}`);
-    
+
       set((state) => ({
         flatCategoryList: state.flatCategoryList.filter(cat => cat._id !== id),
         categoryList: state.categoryList.filter(cat => cat._id !== id),
@@ -73,15 +75,15 @@ const useCategoryStore = create((set, get) => ({
     }
   },
 
-  handleEditCategory : async (id, updatedCategory) => {
+  handleEditCategory: async (id, updatedCategory) => {
     try {
       const response = await axiosInstance.put(
         `/categories/${id}`,
         updatedCategory
       );
-  
+
       const updatedData = response.data;
-  
+
       set((state) => ({
         flatCategoryList: state.flatCategoryList.map(cat =>
           cat._id === id ? { ...cat, ...updatedData } : cat
@@ -97,8 +99,8 @@ const useCategoryStore = create((set, get) => ({
       console.error('Failed to update category:', error);
     }
   }
-} ))
+}))
 
-;
+  ;
 
 export default useCategoryStore;
