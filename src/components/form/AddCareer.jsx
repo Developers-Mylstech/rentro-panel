@@ -745,7 +745,7 @@ function AddCareer() {
 
     try {
       const response = await axiosInstance.post(
-        '/product-images/batch-upload?quality=80&fallbackToJpeg=true',
+        '/images/batch-upload?quality=80&fallbackToJpeg=true',
         formData,
         {
           headers: {
