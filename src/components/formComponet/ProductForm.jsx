@@ -1,7 +1,7 @@
 // ProductForm.js
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
 import { FaSpinner } from 'react-icons/fa';
 import useProductStore from '../../Context/ProductContext';
@@ -24,7 +24,7 @@ const ProductForm = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [isImageUpload, setIsImageUpload] = useState(false);
-
+  const navigate = useNavigate()
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
       basicInfo: {
@@ -80,11 +80,76 @@ const ProductForm = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       if (location.pathname === '/products/add') {
+
+        reset({
+          basicInfo: {
+            name: '',
+            shortDescription: '',
+            longDescription: '',
+            manufacturer: '',
+            supplierName: '',
+            supplierCode: '',
+            modelNo: '',
+          },
+          category: {
+            main: null,
+            sub: null
+          },
+          brand: null,
+          pricing: {
+            sell: {
+              actualPrice: 0,
+              discountValue: 0,
+              discountUnit: '',
+              discountedPrice: 0,
+              isVatIncluded: false,
+              benefits: [],
+              warrantPeriod: 0,
+              isWarrantyAvailable: false
+            },
+            rent: {
+              monthlyPrice: 0,
+              discountValue: 0,
+              discountUnit: '',
+              discountedPrice: 0,
+              isVatIncluded: false,
+              benefits: []
+            },
+            services: {
+              ots: {
+                price: '',
+                benefits: []
+              },
+              mmc: {
+                price: '',
+                benefits: []
+              },
+              amcBasic: {
+                price: '',
+                benefits: []
+              },
+              amcGold: {
+                price: '',
+                benefits: []
+              }
+            }
+          },
+          inventory: {
+            sku: '',
+            quantity: 1,
+            stockStatus: 'IN_STOCK'
+          },
+          keyFeatures: [''],
+          specifications: [{ name: '', value: '' }],
+          images: [],
+          tagandkeywords: ['']
+        });
         setPageLoading(false);
       } else if (id) {
+
         setPageLoading(true);
         const res = await getProductsById(id);
-        
+
         if (res?.name) {
           reset({
             basicInfo: {
@@ -139,6 +204,12 @@ const ProductForm = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log(isImageSelected, 'isImageSelected', isImageUpload, 'isImageUpload');
+
+    if (!isImageSelected) {
+      showToast('warn', 'Warning', 'Please select a Image.');
+      return;
+    }
 
     if (!data?.category?.main) {
       showToast('warn', 'Warning', 'Please select a Category.');
@@ -149,7 +220,7 @@ const ProductForm = () => {
       showToast('warn', 'Warning', 'Please select a Brand.');
       return;
     }
-
+    
     if (!isImageSelected && singleProduct?.imageUrls?.length === 0) {
       showToast('warn', 'Warning', 'Please select Image');
       return;
@@ -163,15 +234,82 @@ const ProductForm = () => {
     try {
       setLoading(true);
       const payload = preparePayload(data);
-      
+
       let response;
       if (id) {
         response = await updateProduct(id, payload);
+        if (response?.status == 200) {
+          navigate('/products')
+        }
         showToast('success', 'Success', 'Product updated successfully!');
       } else {
         response = await createProduct(payload);
+        setIsImageSelected(false);
         showToast('success', 'Success', 'Product created successfully!');
-        reset();
+        reset({
+          basicInfo: {
+            name: '',
+            shortDescription: '',
+            longDescription: '',
+            manufacturer: '',
+            supplierName: '',
+            supplierCode: '',
+            modelNo: '',
+          },
+          category: {
+            main: null,
+            sub: null
+          },
+          brand: null,
+          pricing: {
+            sell: {
+              actualPrice: 0,
+              discountValue: 0,
+              discountUnit: '',
+              discountedPrice: 0,
+              isVatIncluded: false,
+              benefits: [],
+              warrantPeriod: 0,
+              isWarrantyAvailable: false
+            },
+            rent: {
+              monthlyPrice: 0,
+              discountValue: 0,
+              discountUnit: '',
+              discountedPrice: 0,
+              isVatIncluded: false,
+              benefits: []
+            },
+            services: {
+              ots: {
+                price: '',
+                benefits: []
+              },
+              mmc: {
+                price: '',
+                benefits: []
+              },
+              amcBasic: {
+                price: '',
+                benefits: []
+              },
+              amcGold: {
+                price: '',
+                benefits: []
+              }
+            }
+          },
+          inventory: {
+            sku: '',
+            quantity: 1,
+            stockStatus: 'IN_STOCK'
+          },
+          keyFeatures: [''],
+          specifications: [{ name: '', value: '' }],
+          images: [],
+          tagandkeywords: ['']
+        });
+    
       }
       setLoading(false);
     } catch (error) {
@@ -185,17 +323,17 @@ const ProductForm = () => {
 
     const imageUrls = Array.isArray(data.images)
       ? data.images
-          .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-          .filter(url => url)
+        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+        .filter(url => url)
       : [];
 
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
-          .filter(spec => spec?.name && spec?.value)
-          .map(spec => ({
-            name: spec.name,
-            value: spec.value
-          }))
+        .filter(spec => spec?.name && spec?.value)
+        .map(spec => ({
+          name: spec.name,
+          value: spec.value
+        }))
       : [];
 
     const getServicePayload = (service) => {
@@ -224,20 +362,20 @@ const ProductForm = () => {
         sell: {
           actualPrice: data.pricing?.sell?.actualPrice || 0,
           discountValue: data.pricing?.sell?.discountValue || 0,
-          discountUnit: data.pricing?.sell?.discountUnit || '',
+          discountUnit: data.pricing?.sell?.discountUnit || 'PERCENTAGE',
           discountPrice: data.pricing?.sell?.discountedPrice || 0,
           isVatIncluded: data.pricing?.sell?.isVatIncluded || false,
           benefits: Array.isArray(data.pricing?.sell?.benefits)
-          ? data.pricing.sell.benefits.filter(b => b)
-          : [],
-          warrantPeriod: +(data.pricing?.sell?.warrantPeriod )
+            ? data.pricing.sell.benefits.filter(b => b)
+            : [],
+          warrantPeriod: +(data.pricing?.sell?.warrantPeriod)
         },
         rent: {
-            monthlyPrice: data.pricing?.rent?.monthlyPrice || 0,
-            discountPrice: data.pricing?.rent?.discountedPrice || 0,
-            discountValue: data.pricing?.rent?.discountValue || 0,
-            discountUnit: data.pricing?.rent?.discountUnit || '',
-            isVatIncluded: data.pricing?.rent?.isVatIncluded || false,
+          monthlyPrice: data.pricing?.rent?.monthlyPrice || 0,
+          discountPrice: data.pricing?.rent?.discountedPrice || 0,
+          discountValue: data.pricing?.rent?.discountValue || 0,
+          discountUnit: data.pricing?.rent?.discountUnit || 'PERCENTAGE',
+          isVatIncluded: data.pricing?.rent?.isVatIncluded || false,
           benefits: Array.isArray(data.pricing?.rent?.benefits)
             ? data.pricing.rent.benefits.filter(b => b)
             : [],
@@ -249,8 +387,8 @@ const ProductForm = () => {
           amcGold: getServicePayload(data.pricing?.services?.amcGold)
         }
       },
-      categoryId: +(data.category?.main?.categoryId || 0),
-      subCategoryId: +(data?.category?.sub?.categoryId),
+      categoryId: (data.category?.main),
+      subCategoryId: (data?.category?.sub),
       inventory: {
         quantity: +(data.inventory?.quantity),
         sku: data.inventory?.sku || '',
@@ -273,7 +411,7 @@ const ProductForm = () => {
         <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
           {id ? 'Edit Product' : 'Add New Product'}
         </h1>
-        
+
         {pageLoading ? (
           <div className='flex justify-center items-center h-96'>
             <FaSpinner className='animate-spin' />
@@ -281,7 +419,7 @@ const ProductForm = () => {
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 text-gray-700 dark:text-gray-300">
             <ProductBasicInfo control={control} errors={errors} />
-            <CategoryBrandSelection control={control} errors={errors} singleProduct={singleProduct} />
+            <CategoryBrandSelection control={control} errors={errors} singleProduct={singleProduct} setValue={setValue} />
             <PricingOptions control={control} watch={watch} setValue={setValue} singleProduct={singleProduct} />
             <SpecificationFields2 control={control} watch={watch} setValue={setValue} />
             <InventorySection control={control} />

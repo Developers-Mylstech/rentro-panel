@@ -92,7 +92,7 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                 Rent Pricing
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-6">
                 {/* Monthly Price */}
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -124,24 +124,7 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                     </div>
                 </div>
 
-                {displayDiscountPrice && (
-                    <div className="space-y-1">
-                        <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">
-                            Discount Price (AED) - Display Only
-                        </label>
-                        <div className="relative rounded-md shadow-sm">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-800 dark:text-gray-100">
-                                <span className="sm:text-sm">AED</span>
-                            </div>
-                            <input
-                                type="text"
-                                readOnly
-                                value={displayDiscountPrice}
-                                className="block w-full pl-12 pr-12 py-2 border-b border-gray-200 bg-gray-100 dark:border-gray-500 dark:bg-gray-700 focus:outline-none focus:ring-0 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                )}
+
 
                 {/* Discount Section */}
                 <div className="space-y-1">
@@ -187,15 +170,32 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                     />
                 </div>
 
+
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">
+                        Final Price
+                    </label>
+                    <div className='flex space-x-2 items-center border-b p-2 gap-5'>
+                        <p>AED</p>
+                        <input
+                            type="text"
+                            readOnly
+                            value={displayDiscountPrice}
+                            className="block w-full font-semibold  dark:border-gray-500 dark:bg-gray-700 focus:outline-none focus:ring-0 focus:border-blue-500"
+                        />
+                    </div>
+                </div>
+
+
                 {/* Discounted Price & VAT */}
                 <div className="space-y-1">
-                    <div className='flex justify-between'>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Final Price (AED)
-                        </label>
-                        <div className="">
+                    <div className='flex justify-between items-center bg-gray-50 h-full p-5 rounded-lg'>
+
+                        <div>
+
+
                             <div className="flex space-x-4 items-center">
-                                <label className="block text-base font-medium text-secondary dark:text-gray-300">
+                                <label className="block text-lg font-medium text-secondary dark:text-gray-300">
                                     VAT ({rentData?.vat || 0}%)
                                 </label>
                                 <label className="inline-flex items-center">
@@ -205,7 +205,7 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                                         onChange={() => handleVatChange(true)}
                                         className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                                     />
-                                    <span className="ml-2 text-xs font-semibold uppercase text-green-700 dark:text-gray-300">
+                                    <span className="ml-2 text-sm font-semibold uppercase text-green-700 dark:text-gray-300">
                                         Include
                                     </span>
                                 </label>
@@ -216,19 +216,16 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                                         onChange={() => handleVatChange(false)}
                                         className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
                                     />
-                                    <span className="ml-2 text-xs font-semibold uppercase text-red-700 dark:text-gray-300">
+                                    <span className="ml-2 text-sm font-semibold uppercase text-red-700 dark:text-gray-300">
                                         Exclude
                                     </span>
                                 </label>
                             </div>
-                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                {isVatIncluded
-                                    ? `5% VAT included (${(parseFloat(rentData?.discountedPrice || 0) * 0.05).toFixed(2)} AED)`
-                                    : "No VAT applied"}
-                            </p>
+
                         </div>
+
                     </div>
-                    <Controller
+                    {/* <Controller
                         name="pricing.rent.discountedPrice"
                         control={control}
                         render={({ field }) => (
@@ -240,8 +237,9 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                                 className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 font-semibold"
                             />
                         )}
-                    />
+                    /> */}
                 </div>
+
             </div>
 
             {/* Benefits Section */}

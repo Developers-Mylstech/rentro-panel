@@ -19,7 +19,6 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
     const loadFields = async () => {
       await getAllSpecificationFields();
       const templates = getCommonFieldTemplates();
-
       const formattedTemplates = templates
         .filter(template => template?.name)
         .map((template, index) => ({
@@ -28,7 +27,8 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
           unit: template.unit || ''
         }));
 
-      // Filter and format specification fields
+
+
       const validSpecFields = (specificationFields || [])
         .filter(field => field?.name)
         .map(field => ({
@@ -36,17 +36,18 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
           name: field.name.trim()
         }));
 
+
       setAvailableFields([...validSpecFields, ...formattedTemplates]);
     };
     loadFields();
   }, []);
 
-  // Initialize from form values
+
   useEffect(() => {
     if (formSpecifications && availableFields.length > 0) {
       const initialSpecs = Array.isArray(formSpecifications) ? formSpecifications : [];
 
-      // Process specs - remove nulls, trim names, remove duplicates
+
       const processedSpecs = initialSpecs
         .filter(spec => spec?.name)
         .map(spec => ({
@@ -61,11 +62,16 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
           return acc;
         }, []);
 
-      // Map to field objects with values
+
+
+
+
+
       const fieldsWithValues = processedSpecs.map(spec => {
         const matchingField = availableFields.find(field =>
           field.name.toLowerCase() === spec.name.toLowerCase()
         );
+
 
         return {
           specificationFieldId: matchingField?.specificationFieldId || spec.specificationFieldId || `custom-${Date.now()}`,
@@ -128,7 +134,7 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
         ? { ...field, value }
         : field
     );
-    
+
     setSelectedSpecification(updatedFields);
 
     const formattedFields = updatedFields.map(({ name, value }) => ({ name, value }));
@@ -177,7 +183,7 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
     const formattedFields = updatedFields.map(({ name, value }) => ({ name, value }));
     setValue('specifications', formattedFields);
   };
-
+  console.log(selectedSpecification, 'selectedSpecification');
   return (
     <div className="flex flex-col gap-6 w-full text-gray-800 dark:text-gray-200">
       <div className="flex items-center justify-between bg-secondary bg-opacity-10 rounded-lg px-5">
@@ -198,10 +204,20 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
               placeholder="Select Specifications"
               className="w-full border dark:bg-gray-800 dark:text-white dark:border-gray-600"
               panelClassName="border dark:border-gray-600 dark:bg-gray-800"
-              display="chip"
-              selectedItemsLabel={selectedSpecification.length > 0 ? `${selectedSpecification.length} selected` : "Select Specifications"}
-              maxSelectedLabels={0}
               showClear={true}
+              selectedItemTemplate={(option) => (
+                option && (
+                  <div className="inline-flex items-center bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded mr-1 mb-1">
+                  {option?.name}
+                </div>
+                )
+              )}
+              itemTemplate={(option) => (
+                <div className="flex items-center">
+                  <span>{option?.name}</span>
+                </div>
+              )}
+              compareWith={(a, b) => a?.specificationFieldId === b?.specificationFieldId}
             />
           )}
         />

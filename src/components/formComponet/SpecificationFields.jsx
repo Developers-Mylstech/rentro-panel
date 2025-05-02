@@ -14,7 +14,6 @@ const SpecificationFields = ({ specs, onChange }) => {
   const [newFieldName, setNewFieldName] = useState('');
   const [availableFields, setAvailableFields] = useState([]);
 
-  // Load all available fields
   useEffect(() => {
     const loadFields = async () => {
       await getAllSpecificationFields();

@@ -112,8 +112,8 @@ export default function AddCategory() {
       </div>
     
       <form onSubmit={handleSubmit} className="space-y-7">
-        <div className={`transition-all relative duration-200 ease-in-out ${isParentSelected ? 'opacity-60' : ''}`}>
-          <FloatLabel>
+      <div className={`transition-all relative duration-200 ease-in-out ${(isSubcategory || mainCategoryID !== '') ? 'opacity-60' : ''}`}>
+      <FloatLabel>
             <InputText
               id="mainCategory"
               type="text"
