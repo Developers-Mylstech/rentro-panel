@@ -204,13 +204,18 @@ const ProductForm = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log(isImageSelected, 'isImageSelected', isImageUpload, 'isImageUpload');
+    console.log(data);
 
-    if (!isImageSelected) {
-      showToast('warn', 'Warning', 'Please select a Image.');
+    if (data?.images?.length === 0 && !isImageSelected) {
+      showToast('warn', 'Warning', 'Please select an image.');
       return;
     }
-
+    if (data?.images?.length === 0 && isImageSelected) {
+      showToast('warn', 'Warning', 'Please Upload Image first.');
+      return;
+    }
+    
+    
     if (!data?.category?.main) {
       showToast('warn', 'Warning', 'Please select a Category.');
       return;
@@ -218,11 +223,6 @@ const ProductForm = () => {
 
     if (!data?.brand) {
       showToast('warn', 'Warning', 'Please select a Brand.');
-      return;
-    }
-    
-    if (!isImageSelected && singleProduct?.imageUrls?.length === 0) {
-      showToast('warn', 'Warning', 'Please select Image');
       return;
     }
 
@@ -244,72 +244,22 @@ const ProductForm = () => {
         showToast('success', 'Success', 'Product updated successfully!');
       } else {
         response = await createProduct(payload);
-        setIsImageSelected(false);
         showToast('success', 'Success', 'Product created successfully!');
-        reset({
-          basicInfo: {
-            name: '',
-            shortDescription: '',
-            longDescription: '',
-            manufacturer: '',
-            supplierName: '',
-            supplierCode: '',
-            modelNo: '',
-          },
-          category: {
-            main: null,
-            sub: null
-          },
-          brand: null,
-          pricing: {
-            sell: {
-              actualPrice: 0,
-              discountValue: 0,
-              discountUnit: '',
-              discountedPrice: 0,
-              isVatIncluded: false,
-              benefits: [],
-              warrantPeriod: 0,
-              isWarrantyAvailable: false
-            },
-            rent: {
-              monthlyPrice: 0,
-              discountValue: 0,
-              discountUnit: '',
-              discountedPrice: 0,
-              isVatIncluded: false,
-              benefits: []
-            },
-            services: {
-              ots: {
-                price: '',
-                benefits: []
-              },
-              mmc: {
-                price: '',
-                benefits: []
-              },
-              amcBasic: {
-                price: '',
-                benefits: []
-              },
-              amcGold: {
-                price: '',
-                benefits: []
-              }
+        if (response?.status == 200 || response?.status == 201) {
+          reset({
+            ...data,
+            category: {
+              ...data.category,
+              main: null,  // Reset only the main category
+              sub: null   // Also reset subcategory if needed
             }
-          },
-          inventory: {
-            sku: '',
-            quantity: 1,
-            stockStatus: 'IN_STOCK'
-          },
-          keyFeatures: [''],
-          specifications: [{ name: '', value: '' }],
-          images: [],
-          tagandkeywords: ['']
-        });
-    
+          });
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 500);
+        }
+        
+
       }
       setLoading(false);
     } catch (error) {
@@ -320,25 +270,21 @@ const ProductForm = () => {
   };
 
   const preparePayload = (data) => {
-
     const imageUrls = Array.isArray(data.images)
       ? data.images
-        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-        .filter(url => url)
+          .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+          .filter(url => url)
       : [];
-
+  
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
-        .filter(spec => spec?.name && spec?.value)
-        .map(spec => ({
-          name: spec.name,
-          value: spec.value
-        }))
+          .filter(spec => spec?.name && spec?.value)
+          .map(spec => ({ name: spec.name, value: spec.value }))
       : [];
-
+  
     const getServicePayload = (service) => {
       if (!service) return { price: 0, benefits: [] };
-
+  
       return {
         price: Number(service.price) || 0,
         benefits: Array.isArray(service.benefits)
@@ -346,7 +292,44 @@ const ProductForm = () => {
           : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
       };
     };
-
+  
+    const productFor = {
+      service: {
+        ots: getServicePayload(data.pricing?.services?.ots),
+        mmc: getServicePayload(data.pricing?.services?.mmc),
+        amcBasic: getServicePayload(data.pricing?.services?.amcBasic),
+        amcGold: getServicePayload(data.pricing?.services?.amcGold)
+      }
+    };
+  
+    if (data.pricing?.sell?.actualPrice) {
+      productFor.sell = {
+        actualPrice: data.pricing.sell.actualPrice,
+        discountValue: data.pricing.sell.discountValue || 0,
+        discountUnit: data.pricing.sell.discountUnit || 'PERCENTAGE',
+        discountPrice: data.pricing.sell.discountedPrice || 0,
+        isVatIncluded: data.pricing.sell.isVatIncluded || false,
+        benefits: Array.isArray(data.pricing.sell.benefits)
+          ? data.pricing.sell.benefits.filter(b => b)
+          : [],
+        warrantPeriod: +(data.pricing.sell.warrantPeriod || 0)
+      };
+    }
+  
+    // Conditionally add 'rent' if monthlyPrice is truthy
+    if (data.pricing?.rent?.monthlyPrice) {
+      productFor.rent = {
+        monthlyPrice: data.pricing.rent.monthlyPrice,
+        discountPrice: data.pricing.rent.discountedPrice || 0,
+        discountValue: data.pricing.rent.discountValue || 0,
+        discountUnit: data.pricing.rent.discountUnit || 'PERCENTAGE',
+        isVatIncluded: data.pricing.rent.isVatIncluded || false,
+        benefits: Array.isArray(data.pricing.rent.benefits)
+          ? data.pricing.rent.benefits.filter(b => b)
+          : [],
+      };
+    }
+  
     return {
       name: data.basicInfo.name || '',
       description: data.basicInfo.shortDescription || '',
@@ -358,37 +341,9 @@ const ProductForm = () => {
       modelNo: data.basicInfo.modelNo || '',
       supplierName: data.basicInfo.supplierName || '',
       supplierCode: data.basicInfo.supplierCode || '',
-      productFor: {
-        sell: {
-          actualPrice: data.pricing?.sell?.actualPrice || 0,
-          discountValue: data.pricing?.sell?.discountValue || 0,
-          discountUnit: data.pricing?.sell?.discountUnit || 'PERCENTAGE',
-          discountPrice: data.pricing?.sell?.discountedPrice || 0,
-          isVatIncluded: data.pricing?.sell?.isVatIncluded || false,
-          benefits: Array.isArray(data.pricing?.sell?.benefits)
-            ? data.pricing.sell.benefits.filter(b => b)
-            : [],
-          warrantPeriod: +(data.pricing?.sell?.warrantPeriod)
-        },
-        rent: {
-          monthlyPrice: data.pricing?.rent?.monthlyPrice || 0,
-          discountPrice: data.pricing?.rent?.discountedPrice || 0,
-          discountValue: data.pricing?.rent?.discountValue || 0,
-          discountUnit: data.pricing?.rent?.discountUnit || 'PERCENTAGE',
-          isVatIncluded: data.pricing?.rent?.isVatIncluded || false,
-          benefits: Array.isArray(data.pricing?.rent?.benefits)
-            ? data.pricing.rent.benefits.filter(b => b)
-            : [],
-        },
-        service: {
-          ots: getServicePayload(data.pricing?.services?.ots),
-          mmc: getServicePayload(data.pricing?.services?.mmc),
-          amcBasic: getServicePayload(data.pricing?.services?.amcBasic),
-          amcGold: getServicePayload(data.pricing?.services?.amcGold)
-        }
-      },
-      categoryId: (data.category?.main),
-      subCategoryId: (data?.category?.sub),
+      productFor,
+      categoryId: data.category?.main,
+      subCategoryId: data?.category?.sub,
       inventory: {
         quantity: +(data.inventory?.quantity),
         sku: data.inventory?.sku || '',
@@ -402,6 +357,7 @@ const ProductForm = () => {
         : []
     };
   };
+  
 
   return (
     <div className="mx-auto px-0 py-0">

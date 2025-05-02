@@ -34,8 +34,15 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
 
             if (mainCat ) {
                 setSelectedCategory(mainCat.categoryId);
-                setSelectedMainCategory(mainCat);
+          
                 setValue('category.main', mainCat.categoryId);
+            }else{
+                setValue('category.main', null);
+
+            }
+
+            if(singleProduct && location.pathname === '/products/add'){
+                setValue('category.main', '');
             }
 
             if (singleProduct?.subCategory?.categoryId && subCategories.length > 0) {
@@ -49,7 +56,6 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
                 }
             }
 
-            // Set brand
             const brand = brands.find(
                 b => b.brandId === singleProduct.brand
             );
