@@ -16,7 +16,7 @@ import { Toast } from 'primereact/toast';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
 import "../../index.css"
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 
 
@@ -27,13 +27,59 @@ const demo2 = () => {
     const [loading, setLoading] = useState(false)
     const [pageLoading, setPageLoading] = useState(false)
     const toast = useRef(null);
+    const location = useLocation();
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [isImageSelected, setIsImageSelected] = useState(false)
+    const [isImageUpload, setIsImageUplaod] = useState(false)
+
+
+
 
     useEffect(() => {
         const fetchProduct = async () => {
-            if (id) {
+            if (location.pathname === '/products/add') {
+                // Reset form for creating new product
+                setProductData({
+                    basicInfo: {
+                        name: '',
+                        shortDescription: '',
+                        longDescription: '',
+                        manufacturer: '',
+                        supplierName: '',
+                        supplierCode: '',
+                        modelNo: '',
+                    },
+                    category: {
+                        main: null,
+                        sub: null
+                    },
+                    brand: null,
+                    pricing: {
+                        sell: null,
+                        rent: null,
+                        services: {
+                            ots: null,
+                            mmc: null,
+                            amcBasic: null,
+                            amcGold: null
+                        }
+                    },
+                    inventory: {
+                        sku: '',
+                        quantity: '',
+                        stockStatus: 'IN_STOCK'
+                    },
+                    keyFeatures: [],
+                    specifications: [],
+                    images: [],
+                    tagandkeywords: []
+                });
+                setPageLoading(false);
+            } else if (id) {
+                // Editing existing product
                 setPageLoading(true);
                 const res = await getProductsById(id);
-    
+
                 if (res?.name) {
                     setProductData({
                         basicInfo: {
@@ -62,22 +108,22 @@ const demo2 = () => {
                         },
                         inventory: {
                             sku: res.inventory?.sku || '',
-                            quantity: res.inventory?.quantity || 0,
+                            quantity: res.inventory?.quantity || 1,
                             stockStatus: res.inventory?.stockStatus || 'IN_STOCK'
                         },
                         keyFeatures: res.keyFeatures || [],
                         specifications: res.specifications || [],
                         images: res.imageUrls || [],
-                        tagandkeywords : res.tagNKeywords || []
+                        tagandkeywords: res.tagNKeywords || []
                     });
-    
-                    setPageLoading(false);
                 }
+                setPageLoading(false);
             }
         };
+
         fetchProduct();
-    }, [id]);
-    
+    }, [location.pathname, id]);
+
     const [productData, setProductData] = useState({
         basicInfo: {
             name: singleProduct?.name || '',
@@ -106,13 +152,13 @@ const demo2 = () => {
         },
         inventory: {
             sku: singleProduct?.inventory?.sku || '',
-            quantity: singleProduct?.inventory?.quantity || 0,
+            quantity: singleProduct?.inventory?.quantity || 1,
             stockStatus: singleProduct?.inventory?.stockStatus || 'IN_STOCK'
         },
         keyFeatures: singleProduct?.keyFeatures || [],
         specifications: singleProduct?.specifications || [],
         images: singleProduct?.imageUrls || [],
-        tagandkeywords : singleProduct?.tagNKeywords || []
+        tagandkeywords: singleProduct?.tagNKeywords || []
     });
 
     const handleInputChange = (section, field, value) => {
@@ -168,6 +214,18 @@ const demo2 = () => {
             return;
         }
 
+        if (!isImageSelected && singleProduct?.imageUrls?.length === 0) {
+            showToast('warn', 'Warning', 'Please select Image');
+            return;
+        }
+
+        if (!isImageUpload && singleProduct?.imageUrls?.length === 0) {
+            console.log('asdasd')
+            showToast('warn', 'Warning', 'Please Upload Image First');
+            return;
+        }
+
+
         try {
             setLoading(true);
             let response;
@@ -179,6 +237,58 @@ const demo2 = () => {
                 response = await createProduct(payload);
                 showToast('success', 'Success', 'Product created successfully!');
                 setLoading(false);
+                setFormSubmitted(true);
+
+                setProductData({
+                    basicInfo: {
+                        name: '',
+                        shortDescription: '',
+                        longDescription: '',
+                        manufacturer: '',
+                        supplierName: '',
+                        supplierCode: '',
+                        modelNo: '',
+                    },
+                    category: {
+                        main: null,
+                        sub: null
+                    },
+                    brand: null,
+                    pricing: {
+                        sell: {
+                            price: '',
+                            discount: '',
+                            discountedPrice: '',
+                            benefits: [''],
+                            vatIncluded: false,
+                            isWarrantyAvailable: false,
+                            warrantPeriod: 1
+                        },
+                        rent: {
+                            monthlyPrice: '',
+                            discount: '',
+                            discountedPrice: '',
+                            benefits: [''],
+                            vatIncluded: true,
+                            // isWarrantyAvailable: false,
+                        },
+                        services: {
+                            ots: { price: '', benefits: [''] },
+                            mmc: { price: '', benefits: [''] },
+                            amcBasic: { price: '', benefits: [''] },
+                            amcGold: { price: '', benefits: [''] }
+                        }
+                    },
+                    inventory: {
+                        sku: '',
+                        quantity: 1,
+                        stockStatus: 'IN_STOCK'
+                    },
+                    keyFeatures: [''],
+                    specifications: [{ name: '', value: '' }],
+                    images: [],
+                    tagandkeywords: ['']
+                });
             }
         } catch (error) {
             setLoading(false);
@@ -194,9 +304,9 @@ const demo2 = () => {
         <div className="mx-auto px-0 py-0">
             <Toast ref={toast} position="top-right" />
 
-            <div className="bg-white dark:bg-gray-800 p-2 shadow-md rounded-md">
+            <div className="bg-white dark:bg-gray-800 p-2 rounded-md">
                 <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b dark:border-gray-600 pb-2">
-                    Add New Product
+                    {id ? 'Edit Product' : 'Add New Product'}
                 </h1>
                 {pageLoading ? <div className='flex justify-center items-center h-96'><FaSpinner className='animate-spin' /></div> :
                     <form onSubmit={handleSubmit} className="space-y-8 text-gray-700 dark:text-gray-300">
@@ -211,9 +321,10 @@ const demo2 = () => {
                             singleProduct={singleProduct}
                             pricing={productData.pricing}
                             onChange={handleInputChange}
-                        />
+                            formSubmitted={formSubmitted}
+                            />
                         <SpecificationFields
-                        singleProduct
+                            // singleProduct
                             specs={productData.specifications}
                             onChange={handleInputChange}
                         />
@@ -222,14 +333,19 @@ const demo2 = () => {
                             onChange={handleInputChange}
                         />
                         <KeyFeaturesFields
+                            formSubmitted={formSubmitted}
                             features={productData.keyFeatures}
                             onChange={handleInputChange}
                         />
                         <TagsAndKeywords
+                            formSubmitted={formSubmitted}
                             features={productData.tagandkeywords}
                             onChange={handleInputChange}
                         />
                         <ImageUploader
+                            isImageUpload={isImageUpload}
+                            setIsImageSelected={setIsImageSelected}
+                            setIsImageUplaod={setIsImageUplaod}
                             singleProduct={singleProduct}
                             images={productData.images}
                             onChange={(images) => handleInputChange('images', 'images', images)}
@@ -257,28 +373,28 @@ const preparePayload = (productData) => {
     console.log(productData, 'productData')
 
     const imageUrls = Array.isArray(productData.images)
-    ? productData.images
-        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-        .filter(url => url)
-    : [];
+        ? productData.images
+            .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+            .filter(url => url)
+        : [];
 
 
     const specifications = Array.isArray(productData.specifications)
         ? productData.specifications
-              .filter(spec => spec?.name && spec?.value)
-              .map(spec => ({
-                  name: spec.name,
-                  value: spec.value
-              }))
+            .filter(spec => spec?.name && spec?.value)
+            .map(spec => ({
+                name: spec.name,
+                value: spec.value
+            }))
         : [];
 
     // Helper function to safely handle service benefits
     const getServicePayload = (service) => {
         if (!service) return { price: 0, benefits: [] };
-        
+
         return {
             price: Number(service.price) || 0,
-            benefits: Array.isArray(service.benefits) 
+            benefits: Array.isArray(service.benefits)
                 ? service.benefits.filter(benefit => benefit && benefit.trim() !== '')
                 : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
         };
@@ -328,7 +444,7 @@ const preparePayload = (productData) => {
         categoryId: +(productData.category?.main?.categoryId || 0),
         subCategoryId: +(productData?.category?.sub?.categoryId),
         inventory: {
-            quantity: +(productData.inventory?.quantity || 0),
+            quantity: +(productData.inventory?.quantity),
             sku: productData.inventory?.sku || '',
             stockStatus: productData.inventory?.stockStatus || 'IN_STOCK'
         },
@@ -340,7 +456,7 @@ const preparePayload = (productData) => {
             : []
     };
     console.log(payload, 'payload')
-    
+
     return payload;
 };
 
@@ -352,10 +468,10 @@ export default demo2;
 
 const ProductBasicInfo = ({ data, onChange }) => {
     return (
-        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Product Information</h2>
-                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
+        <div className="bg-white dark:bg-gray-900 border-gray-200 rounded dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6 bg-secondary bg-opacity-10 rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Product Information</h2>
+                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary  px-1 py-1 rounded max-w-28">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -590,10 +706,10 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Category & Brand</h2>
-                <span className="text-xs bg-blue-50 text-secondary dark:bg-blue-900 dark:text-blue-300 px-1 py-1 rounded">Required fields*</span>
+        <div className="bg-white dark:bg-gray-900 rounded-lg  border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6 bg-secondary bg-opacity-10 rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Category & Brand</h2>
+                <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary  px-1 py-1 rounded max-w-28">Required fields*</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -687,7 +803,7 @@ const CategoryBrandSelection = ({ category, brand, onChange, singleProduct }) =>
 
 
 
-const PricingOptions = ({ pricing, onChange, singleProduct }) => {
+const PricingOptions = ({ pricing, onChange, singleProduct,formSubmitted }) => {
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const handleOptionChange = (option) => {
@@ -699,9 +815,10 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h2 className="md:text-xl text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">Pricing Options</h2>
-
+        <div className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6 bg-secondary bg-opacity-10 rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Pricing Options </h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {[
                     { label: 'Sell', value: 'sell', color: "green-500", hasData: !!singleProduct?.productFor?.sell },
@@ -724,7 +841,7 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
                             className="form-checkbox h-5 w-5 text-secondary dark:text-blue-500 focus:ring-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
                             disabled={option.hasData}
                         />
-                        <span className="text-sm font-medium">{option.label}</span> 
+                        <span className="text-sm font-medium">{option.label}</span>
                         {option.hasData && (
                             <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">(configured)</span>
                         )}
@@ -735,13 +852,15 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
             <div className="space-y-6">
                 {(selectedOptions.includes('sell') || !!singleProduct?.productFor?.sell) && (
                     <SellPricingForm
-                        data={singleProduct?.productFor?.sell || pricing.sell}
-                        onChange={(data) => onChange('pricing', 'sell', data)}
+                    formSubmitted={formSubmitted}
+                    data={singleProduct?.productFor?.sell || pricing.sell}
+                    onChange={(data) => onChange('pricing', 'sell', data)}
                     />
                 )}
 
                 {(selectedOptions.includes('rent') || !!singleProduct?.productFor?.rent) && (
                     <RentPricingForm
+                    formSubmitted={formSubmitted}
                         data={singleProduct?.productFor?.rent || pricing.rent}
                         onChange={(data) => onChange('pricing', 'rent', data)}
                     />
@@ -766,12 +885,12 @@ const PricingOptions = ({ pricing, onChange, singleProduct }) => {
 };
 
 
-const SellPricingForm = ({ data, onChange, }) => {
+const SellPricingForm = ({ data, onChange,}) => {
     const [formData, setFormData] = useState(data || {
         price: '' || data?.actualPrice,
         discount: '',
         discountedPrice: '' || data?.discountPrice,
-        benefits: [''],
+        benefits: [''] || data?.benefits,
         vatIncluded: false,
         isWarrantyAvailable: false,
         warrantPeriod: 1,
@@ -780,7 +899,7 @@ const SellPricingForm = ({ data, onChange, }) => {
 
     useEffect(() => {
         calculateDiscountedPrice();
-    }, [formData.price, formData.discount, discountType, formData.vatIncluded]);
+    }, [formData.price, formData.discount, discountType, formData.vatIncluded]);    
 
     const calculateDiscountedPrice = () => {
         let basePrice = parseFloat(formData.price) || 0;
@@ -838,11 +957,11 @@ const SellPricingForm = ({ data, onChange, }) => {
     };
 
     return (
-        <div className="p-4 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-            <h3 className="text-lg font-medium mb-4 text-gray-800 dark:text-white">Sell Pricing</h3>
+        <div className="p-4 rounded-lg border  border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+            <h3 className="text-lg font-medium mb-4  dark:text-white text-green-700 bg-green-50/75 p-3 flex items-center border-gray-300 rounded-lg">Sell Pricing</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="space-y-1">
+                <div className="space-y-">
                     <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">Price (AED)</label>
                     <div className="relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-800 dark:text-gray-100">
@@ -903,49 +1022,54 @@ const SellPricingForm = ({ data, onChange, }) => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Discounted Price (AED)</label>
+                    <div className='flex justify-between'>
+
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Discounted Price (AED)</label>
+                        <div className="">
+                            <div className="flex space-x-4 items-center">
+                                <label className="block text-base font-medium text-secondary dark:text-gray-300">VAT (5%)</label>
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="radio"
+                                        checked={formData.vatIncluded}
+                                        onChange={() => handleChange('vatIncluded', true)}
+                                        className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                    />
+                                    <span className="ml-2 text-sm uppercase text-green-700 dark:text-gray-300">Included</span>
+                                </label>
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="radio"
+                                        checked={!formData.vatIncluded}
+                                        onChange={() => handleChange('vatIncluded', false)}
+                                        className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                    />
+                                    <span className="ml-2 text-sm uppercase text-red-700 dark:text-gray-300">Excluded</span>
+                                </label>
+                            </div>
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                {formData.vatIncluded
+                                    ? "5% VAT is included in the displayed prices"
+                                    : "5% VAT will be added at checkout"}
+                            </p>
+                        </div>
+                    </div>
                     <input
                         type="text"
                         value={formData.discountedPrice}
                         readOnly
                         className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
+
                 </div>
 
             </div>
 
-            <div className="mb-6">
-                <div className="flex space-x-4 items-center">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">VAT (5%)</label>
-                    <label className="inline-flex items-center">
-                        <input
-                            type="radio"
-                            checked={formData.vatIncluded}
-                            onChange={() => handleChange('vatIncluded', true)}
-                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
-                    </label>
-                    <label className="inline-flex items-center">
-                        <input
-                            type="radio"
-                            checked={!formData.vatIncluded}
-                            onChange={() => handleChange('vatIncluded', false)}
-                            className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
-                    </label>
-                </div>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    {formData.vatIncluded
-                        ? "5% VAT is included in the displayed prices"
-                        : "5% VAT will be added at checkout"}
-                </p>
-            </div>
+
 
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                    <h4 className="text-md font-medium text-gray-700 dark:text-gray-300">Purchase Benefits</h4>
+                    <h4 className="text-md font-medium text-green-700 dark:text-gray-300">Sell Benefits</h4>
                     <button
                         type="button"
                         onClick={addBenefit}
@@ -954,29 +1078,36 @@ const SellPricingForm = ({ data, onChange, }) => {
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add 
+                        Add
                     </button>
                 </div>
 
-                {formData.benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                        <input
-                            type="text"
-                            value={benefit}
-                            onChange={(e) => handleBenefitChange(index, e.target.value)}
-                            className="flex-grow px-3 py-2 border-b  border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => removeBenefit(index)}
-                            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-500"
-                        >
-                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                        </button>
-                    </div>
-                ))}
+                <div className='grid grid-cols-3 gap-5'>
+
+                    {formData.benefits.map((benefit, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={benefit}
+                                placeholder={`Benefit ${index + 1}`}
+                                onChange={(e) => handleBenefitChange(index, e.target.value)}
+                                className="flex-grow px-3 py-2 border-b  border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500"
+                            />
+                            {formData.benefits.length > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => removeBenefit(index)}
+                                    className="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
+                                    title="Remove benefit"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
 
@@ -984,11 +1115,7 @@ const SellPricingForm = ({ data, onChange, }) => {
 };
 
 
-
-
-
-
-const RentPricingForm = ({ data, onChange }) => {
+const RentPricingForm = ({ data, onChange,formSubmitted }) => {
     const [formData, setFormData] = useState(data || {
         monthlyPrice: '',
         discount: '',
@@ -996,8 +1123,7 @@ const RentPricingForm = ({ data, onChange }) => {
         benefits: [''],
         vatIncluded: true,
         vatAmount: '',
-        isWarrantyAvailable: false,
-        warrantPeriod: 1,
+
     });
     const [discountType, setDiscountType] = useState('percentage');
 
@@ -1031,6 +1157,8 @@ const RentPricingForm = ({ data, onChange }) => {
         onChange(updated);
     };
 
+    
+
     const handleBenefitChange = (index, value) => {
         const updatedBenefits = [...formData.benefits];
         updatedBenefits[index] = value;
@@ -1046,12 +1174,12 @@ const RentPricingForm = ({ data, onChange }) => {
 
     return (
         <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-100 mb-4">Rent Pricing</h3>
+            <h3 className="text-lg font-medium mb-4  dark:text-white text-orange-700 bg-orange-50/75 p-3 flex items-center border-gray-300 rounded-lg">Rent Pricing</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {/* Monthly Price */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-6">
+
                 <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Monthly Price (AED)</label>
+                    <label className="block ml-5 text-sm font-medium text-gray-700 dark:text-gray-200">Monthly Price (AED)</label>
                     <div className="relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 sm:text-sm">AED</span>
@@ -1071,7 +1199,7 @@ const RentPricingForm = ({ data, onChange }) => {
 
                 <div className="space-y-1">
                     <div className="flex space-x-4 mb-1">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Discount</label>
+                        <label className="block ml-5 text-sm font-medium text-gray-700 dark:text-gray-200">Discount</label>
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
@@ -1100,17 +1228,9 @@ const RentPricingForm = ({ data, onChange }) => {
                         className="block w-full px-3 py-2 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500"
                     />
                 </div>
-                <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Warranty Period (Months)</label>
-                    <input
-                        type="number"
-                        value={formData.warrantPeriod || ''}
-                        onChange={(e) => handleChange('warrantPeriod', e.target.value || null)}
-                        className="block w-full px-3 py-2 border-b shadow-sm border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
-                    />
-                </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Discounted Price (AED)</label>
+                    <label className="block ml-5 text-sm font-medium text-gray-700 dark:text-gray-200">Discounted Price (AED)</label>
                     <input
                         type="text"
                         value={formData.discountedPrice}
@@ -1119,45 +1239,43 @@ const RentPricingForm = ({ data, onChange }) => {
                     />
                 </div>
 
-            </div>
 
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="mb-6">
-                    <div className="flex space-x-4 items-center">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">VAT (5%)</label>
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                checked={formData.vatIncluded}
-                                onChange={() => handleChange('vatIncluded', true)}
-                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Included</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                checked={!formData.vatIncluded}
-                                onChange={() => handleChange('vatIncluded', false)}
-                                className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Excluded</span>
-                        </label>
+                <div className="flex">
+                    <div>
+                        <div className="flex space-x-4">
+                            <label className="block text-sm md:text-xl font-medium text-secondary dark:text-gray-300">VAT (5%)</label>
+                            <label className="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    checked={formData.vatIncluded}
+                                    onChange={() => handleChange('vatIncluded', true)}
+                                    className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                />
+                                <span className="ml-2 text-base font-semibold  dark:text-gray-300 uppercase text-green-500">Included</span>
+                            </label>
+                            <label className="inline-flex items-center">
+                                <input
+                                    type="radio"
+                                    checked={!formData.vatIncluded}
+                                    onChange={() => handleChange('vatIncluded', false)}
+                                    className="h-4 w-4 text-secondary focus:ring-blue-500 border-gray-300 dark:border-gray-500"
+                                />
+                                <span className="ml-2 text-base font-semibold text-red-500 dark:text-gray-300 uppercase">Excluded</span>
+                            </label>
+                        </div>
+                        <p className="mt-1 text-base text-gray-500 dark:text-gray-400">
+                            {formData.vatIncluded
+                                ? "5% VAT is included in the displayed prices"
+                                : "5% VAT will be added at checkout"}
+                        </p>
                     </div>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {formData.vatIncluded
-                            ? "5% VAT is included in the displayed prices"
-                            : "5% VAT will be added at checkout"}
-                    </p>
                 </div>
 
             </div>
 
-            {/* Rental Benefits Section */}
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                    <h4 className="text-md font-medium text-gray-700 dark:text-gray-200">Rental Benefits</h4>
+                    <h4 className="text-md font-medium text-orange-700 dark:text-gray-200">Rental Benefits</h4>
                     <button
                         type="button"
                         onClick={addBenefit}
@@ -1166,33 +1284,34 @@ const RentPricingForm = ({ data, onChange }) => {
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add 
+                        Add
                     </button>
                 </div>
-
-                {formData.benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                        <input
-                            type="text"
-                            value={benefit}
-                            onChange={(e) => handleBenefitChange(index, e.target.value)}
-                            placeholder={`Benefit ${index + 1}`}
-                            className="flex-1 px-3 py-2 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500 shadow-sm"
-                        />
-                        {formData.benefits.length > 1 && (
-                            <button
-                                type="button"
-                                onClick={() => removeBenefit(index)}
-                                className="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
-                                title="Remove benefit"
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-                ))}
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                    {formData.benefits.map((benefit, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={benefit}
+                                onChange={(e) => handleBenefitChange(index, e.target.value)}
+                                placeholder={`Benefit ${index + 1}`}
+                                className="flex-1 px-3 py-2 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-0 focus:border-blue-500 shadow-sm"
+                            />
+                            {formData.benefits.length > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => removeBenefit(index)}
+                                    className="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
+                                    title="Remove benefit"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
@@ -1206,11 +1325,11 @@ const ServiceOptions = ({ services, onChange }) => {
         amcBasic: services?.amcBasic || null,
         amcGold: services?.amcGold || null
     });
-    
+
 
     const handleServiceToggle = (service) => {
         const updated = { ...selectedServices };
-    
+
         if (updated[service]) {
             // Toggle off
             updated[service] = null;
@@ -1221,11 +1340,11 @@ const ServiceOptions = ({ services, onChange }) => {
             // Toggle on with default or previous form state
             updated[service] = services?.[service] || { price: '', benefits: [''] };
         }
-    
+
         setSelectedServices(updated);
     };
-    
-    
+
+
 
     const handleServiceChange = (service, data) => {
         const updated = {
@@ -1241,15 +1360,17 @@ const ServiceOptions = ({ services, onChange }) => {
             [service]: updated[service]
         });
     };
-    
-    
+
+
 
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6">Service Options</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="bg-white dark:bg-gray-800 border rounded-lg border-purple-300  dark:border-gray-700  dark:shadow-none">
+            <div className="flex items-center justify-between mb-6 bg-purple-50  rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-purple-700  rounded-lg  p-3 dark:text-gray-100">Service Options</h2>
+                {/* <span className="text-xs bg-blue-50 dark:bg-blue-900 text-secondary  px-1 py-1 rounded max-w-28">Required fields*</span> */}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
                     { key: 'ots', label: 'One Time Service', dataKey: 'ots' },
                     { key: 'mmc', label: 'MMC Service', dataKey: 'mmc' },
@@ -1260,18 +1381,18 @@ const ServiceOptions = ({ services, onChange }) => {
                     const isChecked = selectedServices[key] || hasData;
 
                     return (
-                        <label key={key} className="relative flex items-start cursor-pointer group">
-                            <div className="flex items-center h-5">
+                        <label key={key} className="relative flex  items-center justify-center cursor-pointer group place-items-center place-content-center">
+                            <div className="flex items-center justify-center h-5">
                                 <input
                                     type="checkbox"
                                     checked={isChecked}
                                     onChange={() => handleServiceToggle(key)}
-                                    className="w-4 h-4 text-secondary border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    className="w-4 h-full text-secondary text-xl border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     disabled={hasData}
                                 />
                             </div>
-                            <div className="ml-3">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
+                            <div className="mx-3">
+                                <span className="text-lg font-semibold text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
                                     {label}
                                 </span>
                                 {hasData && (
@@ -1294,7 +1415,6 @@ const ServiceOptions = ({ services, onChange }) => {
                     />
                 )}
 
-                {/* Other service forms remain the same */}
                 {(selectedServices.mmc || !!services?.mmc) && (
                     <ServiceForm
                         service={services?.mmc || { price: '', benefits: [''] }}
@@ -1328,8 +1448,6 @@ const ServiceOptions = ({ services, onChange }) => {
         </div>
     );
 };
-
-
 
 
 const ServiceForm = ({ service, onChange, label, priceLabel }) => {
@@ -1372,11 +1490,11 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
     };
 
     return (
-        <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 transition-colors duration-200">
-            <h4 className="font-medium text-gray-800 dark:text-gray-100 mb-4 text-lg">{label}</h4>
+        <div className=" dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 transition-colors duration-200">
+            <h3 className="text-lg font-medium mb-4  dark:text-white text-purple-700 bg-purple-50/75 p-3 flex items-center border-gray-300 rounded-lg">{label}</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Price Input */}
+
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         {priceLabel}
@@ -1434,7 +1552,7 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
                             <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                             </svg>
-                            Add 
+                            Add
                         </button>
                     </div>
                 </div>
@@ -1446,30 +1564,29 @@ const ServiceForm = ({ service, onChange, label, priceLabel }) => {
 
 
 const InventorySection = ({ inventory, onChange }) => {
+    console.log(inventory, 'inventory')
     return (
-        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
-            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
-                Inventory Management
-            </h2>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 transition-colors duration-200 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg">
+                    Inventory Management
+                </h2>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* SKU Field */}
-                <div className="space-y-2">
-
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Product SKU */}
+                <div className="space-y-2 border border-gray-200 dark:border-gray-700 p-4 rounded-lg bg-gray-50/50 dark:bg-gray-700/30">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Product SKU
                     </label>
                     <div className="relative">
-
-
                         <input
                             type="text"
                             value={inventory.sku}
                             onChange={(e) => onChange('inventory', 'sku', e.target.value)}
                             placeholder="SKU-12345"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-200 dark:bg-gray-800 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         />
-
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 dark:text-gray-400 text-xs">UNIQUE</span>
                         </div>
@@ -1477,8 +1594,8 @@ const InventorySection = ({ inventory, onChange }) => {
                 </div>
 
                 {/* Quantity Field */}
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div className="space-y-2 border border-gray-200 dark:border-gray-700 p-4 rounded-lg bg-gray-50/50 dark:bg-gray-700/30">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Available Quantity
                     </label>
                     <div className="relative">
@@ -1486,9 +1603,9 @@ const InventorySection = ({ inventory, onChange }) => {
                             type="number"
                             value={inventory.quantity}
                             onChange={(e) => onChange('inventory', 'quantity', parseInt(e.target.value))}
-                            placeholder="0"
+                            placeholder="Enter Quantity"
                             min="0"
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-200 dark:bg-gray-800 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 dark:text-gray-400 text-sm">QTY</span>
@@ -1496,38 +1613,59 @@ const InventorySection = ({ inventory, onChange }) => {
                     </div>
                 </div>
 
-                {/* Stock Status Field */}
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+
+                <div className="space-y-2 border border-gray-200 dark:border-gray-700 p-4 rounded-lg bg-gray-50/50 dark:bg-gray-700/30">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Stock Status
                     </label>
-                    <div className="relative">
-                        <select
-                            value={inventory.stockStatus}
-                            onChange={(e) => onChange('inventory', 'stockStatus', e.target.value)}
-                            className="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        <button
+                            type="button"
+                            onClick={() => onChange('inventory', 'stockStatus', 'IN_STOCK')}
+                            className={`px-3 py-1.5 uppercase rounded-full text-xs font-medium flex items-center transition-colors ${inventory.stockStatus === 'IN_STOCK'
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                }`}
                         >
-                            <option value="IN_STOCK" className="text-gray-900 dark:text-gray-100">In Stock</option>
-                            <option value="OUT_OF_STOCK" className="text-gray-900 dark:text-gray-100">Out of Stock</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                        </div>
+                            <span className={`w-2 h-2 rounded-full mr-2 ${inventory.stockStatus === 'IN_STOCK' ? 'bg-green-500' : 'bg-gray-400'
+                                }`}></span>
+                            In Stock
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => onChange('inventory', 'stockStatus', 'OUT_OF_STOCK')}
+                            className={`px-3 py-1.5 uppercase rounded-full text-xs font-medium flex items-center transition-colors ${inventory.stockStatus === 'OUT_OF_STOCK'
+                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                }`}
+                        >
+                            <span className={`w-2 h-2 rounded-full mr-2  ${inventory.stockStatus === 'OUT_OF_STOCK' ? 'bg-red-500' : 'bg-gray-400'
+                                }`}></span>
+                            Out of Stock
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-                <div className={`px-3 py-1.5 rounded-full text-xs font-medium ${inventory.stockStatus === 'IN_STOCK' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
+            {/* <div className="mt-6 flex flex-wrap gap-3">
+                <div onChange={(e) => onChange('inventory', 'stockStatus', 'IN_STOCK')} className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center ${inventory.stockStatus === 'IN_STOCK'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300'
+                    }`}>
+                    <span className={`w-2 h-2 rounded-full mr-2 ${inventory.stockStatus === 'IN_STOCK' ? 'bg-green-500' : 'bg-gray-400'
+                        }`}></span>
                     In Stock
                 </div>
-                <div className={`px-3 py-1.5 rounded-full text-xs font-medium ${inventory.stockStatus === 'OUT_OF_STOCK' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
+                <div className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center ${inventory.stockStatus === 'OUT_OF_STOCK'
+                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300'
+                    }`}>
+                    <span className={`w-2 h-2 rounded-full mr-2 ${inventory.stockStatus === 'OUT_OF_STOCK' ? 'bg-red-500' : 'bg-gray-400'
+                        }`}></span>
                     Out of Stock
                 </div>
-
-            </div>
+            </div> */}
         </div>
     );
 };
@@ -1536,7 +1674,7 @@ const InventorySection = ({ inventory, onChange }) => {
 
 
 
-const KeyFeaturesFields = ({ features = [], onChange }) => {
+const KeyFeaturesFields = ({ features = [], onChange, formSubmitted }) => {
     const [keyFeatures, setKeyFeatures] = useState(features.length > 0 ? features : ['']);
 
     useEffect(() => {
@@ -1544,6 +1682,12 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
             setKeyFeatures(['']);
         }
     }, []);
+
+    useEffect(() => {
+        if (formSubmitted) {
+            setKeyFeatures(['']);
+        }
+    }, [formSubmitted])
 
     useEffect(() => {
         const nonEmptyFeatures = keyFeatures.filter(feature => feature.trim() !== '');
@@ -1562,7 +1706,6 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
 
     const removeFeature = (index) => {
         if (keyFeatures.length <= 1) {
-            // If it's the last feature, just clear it instead of removing
             const updatedFeatures = [...keyFeatures];
             updatedFeatures[index] = '';
             setKeyFeatures(updatedFeatures);
@@ -1573,23 +1716,27 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-200">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100">Key Features</h2>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {keyFeatures.filter(f => f.trim() !== '').length} added
-                </span>
+        <div className="bg-white dark:bg-gray-800  border-gray-200 dark:border-gray-700 transition-colors duration-200">
+            <div className="flex items-center justify-between mb-5 bg-secondary bg-opacity-10  rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Key Features</h2>
+                <button
+                    type="button"
+                    onClick={addFeature}
+                    className="inline-flex bg-secondary text-white items-center px-4 py-2.5 border-gray-300 dark:border-gray-600 text-sm font-medium rounded dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
+                    Add Feature
+                </button>
             </div>
 
-            <div className="space-y-4">
+
+            <div className="grid grid-cols-3 ">
                 {keyFeatures.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3 group">
                         <div className="flex-1 relative">
-                            {/* <div className="absolute top-3 left-4 flex items-center">
-                                <span className="text-xs font-medium text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-700 px-1 rounded">
-                                    {index + 1}
-                                </span>
-                            </div> */}
+
                             <InputTextarea
                                 value={feature}
                                 onChange={(e) => handleFeatureChange(index, e.target.value)}
@@ -1614,29 +1761,17 @@ const KeyFeaturesFields = ({ features = [], onChange }) => {
                 ))}
             </div>
 
-            <div className="mt-6">
-                <button
-                    type="button"
-                    onClick={addFeature}
-                    className="inline-flex items-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg shadow-sm text-secondary dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                    </svg>
-                    Add Feature
-                </button>
-            </div>
+
         </div>
     );
 };
 
 
-
-
-const ImageUploader = ({ images, onChange, singleProduct }) => {
+const ImageUploader = ({ images, onChange, singleProduct, setIsImageSelected, setIsImageUplaod }) => {
     const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [imagesNeedUpload, setImagesNeedUpload] = useState(false);
     const handleChooseFiles = async (e) => {
         const files = Array.from(e.target.files || e.dataTransfer.files);
         await validateAndSetFiles(files);
@@ -1666,6 +1801,12 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                 const sizeKB = (file.size / 1024).toFixed(2);
                 alert(`"${file.name}" is either not 500x500 pixels or larger than 500KB (${sizeKB}KB). It will be skipped.`);
             }
+        }
+
+
+
+        if (validImages.length > 0) {
+            setIsImageSelected(true)
         }
 
         setSelectedFiles(prev => [...prev, ...validImages]);
@@ -1711,17 +1852,26 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
 
     const handleUpload = async (entityType, entityId) => {
         if (selectedFiles.length === 0) return;
-        const uploaded = await uploadFiles(selectedFiles);
-        if (uploaded) {
-            onChange([...images, ...uploaded]);
-            setSelectedFiles([]);
+        try {
+            const uploaded = await uploadFiles(selectedFiles);
+            if (uploaded) {
+                console.log("object")
+                setIsImageUplaod(true);
+                onChange([...images, ...uploaded]);
+                setSelectedFiles([]);
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
         }
     };
+
+
     return (
-        <section className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-md dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
-            <h2 className="md:text-xl text-base font-semibold text-gray-800 dark:text-gray-100 border-b pb-2 dark:border-gray-700">
-                Product Images
-            </h2>
+        <section className="bg-white dark:bg-gray-800 dark:shadow-gray-700/50 space-y-6 transition-colors duration-300">
+
+            <div className="flex items-center justify-between mb-5 bg-secondary bg-opacity-10  rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Product Images</h2>
+            </div>
 
             <div className="space-y-4">
                 <div
@@ -1780,8 +1930,10 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                             </>
                         ) : (
                             <>
+
                                 <FiSend className="h-4 w-4 mr-2" />
                                 Upload {selectedFiles.length > 0 && `(${selectedFiles.length})`}
+
                             </>
                         )}
                     </button>
@@ -1837,7 +1989,7 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                     </div>
                 )}
 
-                {/* Display uploaded images */}
+
                 {(images?.length > 0 || singleProduct?.images?.length > 0) && (
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -1853,7 +2005,7 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
                                         src={img?.url?.fileUrl || img}
                                         alt={`Product ${index + 1}`}
                                         className="w-full h-full object-cover"
-                                        
+
                                     />
                                     {index === 0 && (
                                         <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md shadow">
@@ -1883,18 +2035,24 @@ const ImageUploader = ({ images, onChange, singleProduct }) => {
 
 
 
-const TagsAndKeywords = ({ features = [], onChange }) => {
+const TagsAndKeywords = ({ features = [], onChange, formSubmitted }) => {
     const [keywords, setKeywords] = useState(() => {
         // Initialize with features if available, otherwise start with one empty string
         return features && features.length > 0 ? features : [''];
     });
 
-    // Update keywords when features prop changes
     useEffect(() => {
         if (features && features.length > 0) {
             setKeywords(features);
         }
     }, []);
+
+    useEffect(() => {
+        if (formSubmitted) {
+            setKeywords(['']);
+        }
+    }, [formSubmitted])
+
 
     useEffect(() => {
         if (keywords.length === 0) {
@@ -1930,8 +2088,8 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
     };
 
     return (
-        <div className="border p-2 rounded-lg shadow bg-white mb-6 dark:bg-gray-800">
-            <div className="flex justify-between items-center mb-4">
+        <div className=" bg-white mb-6 dark:bg-gray-800">
+            {/* <div className="flex justify-between items-center mb-4">
                 <h2 className="md:text-xl text-base font-semibold dark:text-gray-100">Tags & Keywords</h2>
                 <button
                     type="button"
@@ -1940,9 +2098,49 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
                 >
                     Add Tag
                 </button>
+            </div> */}
+            <div className="flex items-center justify-between mb-5 bg-secondary bg-opacity-10  rounded-lg px-5">
+                <h2 className="md:text-lg text-base font-semibold text-secondary  rounded-lg  p-3 dark:text-gray-100">Tags & Keywords </h2>
+                <button
+                    type="button"
+                    onClick={addKeyword}
+                    className="inline-flex bg-secondary text-white items-center px-4 py-2.5 border-gray-300 dark:border-gray-600 text-sm font-medium rounded dark:text-blue-400 hover:bg-blue-500 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
+                    Add Tag
+                </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-3 ">
+                {keywords.map((keyword, index) => (
+                    <div key={index} className="flex items-start gap-3 group">
+                        <div className="flex-1 relative">
+
+                            <InputText
+                                value={keyword}
+                                onChange={(e) => handleKeywordChange(index, e.target.value)}
+                                placeholder={`Enter tag/keyword #${index + 1}...`}
+                                className="w-full px-4 py-3 border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500  resize-y"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => removeKeyword(index)}
+                            className="mt-3 px-2 py-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                            title="Remove Tag"
+                            aria-label="Remove Tag"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {/* <div className="grid grid-cols-3">
                 {keywords.map((keyword, index) => (
                     <div key={index} className="flex items-start gap-3 group">
                         <div className="flex-1 relative">
@@ -1959,12 +2157,12 @@ const TagsAndKeywords = ({ features = [], onChange }) => {
                             className="text-red-500 hover:text-red-700 transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                         </button>
                     </div>
                 ))}
-            </div>
+            </div> */}
         </div>
     );
 };

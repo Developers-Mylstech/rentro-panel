@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Layout from "./Layout";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
-import AddProduct from "./components/form/AddProduct";
 import Categories from "./pages/Category";
 import AddCategory from "./components/form/AddCategory";
 import Brands from "./pages/Brand";
@@ -27,10 +26,9 @@ import AddAboutUs from "./components/form/AddAboutUs";
 import RequestQuotationListing from "./components/listing/RequestQuotationListing";
 import Career from "./pages/Career";
 import AddCareer from "./components/form/AddCareer";
-// import DemoProduct from "./components/form/DemoAddProduct";
-import Demo2 from "./components/form/demo2";
 import useAuthStore from "./Context/AuthContext";
 import { useEffect, useState } from "react";
+import ProductForm from "./components/formComponet/ProductForm";
 
 function App() {
   const { accessToken, initializeAuth } = useAuthStore();
@@ -53,8 +51,8 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="products">
               <Route index element={<Products />} />
-              <Route path="add" element={<Demo2 />} />
-              <Route path="edit/:id" element={<Demo2 />} />
+              <Route path="add" element={<ProductForm />} />
+              <Route path="edit/:id" element={<ProductForm />} />
             </Route>
             <Route path="categories" element={<Categories />} />
             <Route path="categories/add" element={<AddCategory />} />

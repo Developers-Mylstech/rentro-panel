@@ -87,7 +87,7 @@ export default function BrandListing({ brands }) {
                 setFirst(0);
               }}
               placeholder="Search brands..."
-              className="w-full pl-8"
+              className="w-full pl-8 p-2 border"
             />
           </IconField>
 
@@ -101,7 +101,7 @@ export default function BrandListing({ brands }) {
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden md:block">
+      <div className="hidden md:block min-h-screen">
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">

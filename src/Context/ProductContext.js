@@ -19,7 +19,7 @@ const useProductStore = create((set) => ({
       set((state) => ({
         products: [...state.products, response.data],
       }));
-      return response.data
+      return response
     } catch (error) {
       set({ error: error.message });
     } finally {
@@ -64,7 +64,7 @@ const useProductStore = create((set) => ({
           product.id === id ? { ...product, ...response.data } : product
         ),
       }));
-
+      return response
     } catch (error) {
       set({ error: error.message });
     } finally {

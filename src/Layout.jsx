@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import { useState } from "react";
 
 function Layout() {
-  const [isDarkMode, setIsDarkMode] = useState();
+  const [isDarkMode, setIsDarkMode] = useState(false);
   return (
     <div className="flex bg-white text-black dark:bg-gray-900 h-[100%] dark:text-gray-100">
     <Sidebar isDarkMode={isDarkMode} />
@@ -15,7 +15,7 @@ function Layout() {
         <div className=" p-2 pt-20   ">
           <Outlet />
         </div>
-        {/* <Footer/> */}
+       
       </div>
     </div>
   );
