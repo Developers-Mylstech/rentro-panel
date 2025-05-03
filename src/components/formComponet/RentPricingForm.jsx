@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 
 const RentPricingForm = ({ control, setValue, singleProduct }) => {
@@ -10,41 +10,65 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
     const [isVatIncluded, setIsVatIncluded] = useState(false);
     const [displayDiscountPrice, setDisplayDiscountPrice] = useState('');
 
+
+    const finalPrice = useMemo(() => {
+        const price = parseFloat(rentData.monthlyPrice) || 0;
+        const discount = parseFloat(rentData.discountValue) || 0;
+        const vat = parseFloat(singleProduct?.vat) || 0;
+
+        let discountedPrice = discountType === 'PERCENTAGE'
+            ? price * (1 - discount / 100)
+            : price - discount;
+
+        if (isVatIncluded && vat > 0) {
+            return discountedPrice * (1 + vat / 100);
+        }
+
+        return discountedPrice;
+    }, [rentData.monthlyPrice, rentData.discountValue, rentData.vat, discountType, isVatIncluded]);
+
+
     useEffect(() => {
         const productRentData = singleProduct || {};
 
         if (singleProduct) {
+            const initialVatIncluded = productRentData.vat > 0;
+            setIsVatIncluded(initialVatIncluded);
 
             const initialDiscountType = productRentData?.discountUnit === 'AED' ? 'AED' : 'PERCENTAGE';
             setDiscountType(initialDiscountType);
 
-
+            
             setValue('pricing.rent.monthlyPrice', productRentData.monthlyPrice || '');
-
-            const initialVatIncluded = productRentData.vat > 0;
-            setIsVatIncluded(initialVatIncluded);
-
+            
             setDisplayDiscountPrice(productRentData.discountPrice || '');
 
             setValue('pricing.rent.discountedPrice', productRentData?.discountedPrice || '');
             setValue('pricing.rent.discountValue', productRentData?.discountValue || '');
             setValue('pricing.rent.discountUnit', initialDiscountType);
             setValue('pricing.rent.benefits', productRentData.benefits?.length > 0 ? productRentData.benefits : ['']);
-            setValue('pricing.rent.vat', productRentData.vat !== undefined ? productRentData.vat : 5);
             setValue('pricing.rent.isVatIncluded', initialVatIncluded);
         } else {
 
             setDisplayDiscountPrice('');
-            setValue('pricing.rent.monthlyPrice', '');
-            setValue('pricing.rent.discountValue', '');
-            setValue('pricing.rent.discountedPrice', '');
-            setValue('pricing.rent.discountUnit', discountType);
-            setValue('pricing.rent.benefits', ['']);
-            setValue('pricing.rent.vat', 5);
-            setValue('pricing.rent.isVatIncluded', false);
             setIsVatIncluded(false);
+            setValue('pricing.rent', {
+                monthlyPrice: '',
+                discountedPrice: '',
+                discountValue: '',
+                discountUnit: discountType,
+                benefits: [''],
+                vat: 0,
+                isVatIncluded: false
+            });
         }
     }, [singleProduct, setValue]);
+
+    const handleVatChange = (includeVat) => {
+        console.log(includeVat,'includeVat')
+        setIsVatIncluded(includeVat);
+        setValue('pricing.rent.isVatIncluded', includeVat);
+    };
 
     const handleAddBenefit = () => {
         const currentBenefits = Array.isArray(rentData?.benefits)
@@ -59,13 +83,6 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
         if (type !== discountType) {
             setValue('pricing.rent.discountValue', '');
         }
-    };
-
-
-    const handleVatChange = (includeVat) => {
-        setIsVatIncluded(includeVat);
-        setValue('pricing.rent.vat', includeVat ? 5 : 0);
-        setValue('pricing.rent.isVatIncluded', includeVat);
     };
 
     const handleRemoveBenefit = (index) => {
@@ -180,7 +197,7 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
                         <input
                             type="text"
                             readOnly
-                            value={displayDiscountPrice}
+                            value={finalPrice.toFixed(2) || displayDiscountPrice}
                             className="block w-full font-semibold  dark:border-gray-500 dark:bg-gray-700 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />
                     </div>
@@ -196,7 +213,7 @@ const RentPricingForm = ({ control, setValue, singleProduct }) => {
 
                             <div className="flex space-x-4 items-center">
                                 <label className="block text-lg font-medium text-secondary dark:text-gray-300">
-                                    VAT ({rentData?.vat || 0}%)
+                                VAT ({isVatIncluded ? '5%' : '0%'})
                                 </label>
                                 <label className="inline-flex items-center">
                                     <input

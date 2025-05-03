@@ -21,11 +21,11 @@ export default function ProductListing() {
   }, []);
 
   const showToast = (severity, summary, detail) => {
-    toast.current.show({ 
-      severity, 
-      summary, 
-      detail, 
-      life: 3000 
+    toast.current.show({
+      severity,
+      summary,
+      detail,
+      life: 3000
     });
   };
 
@@ -158,7 +158,24 @@ export default function ProductListing() {
                       AED {product.yearlyPrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-10">
+                      <div className="border grid grid-cols-2 p-[2px] rounded gap-1">
+                        <button
+                          onClick={() => navigate(`/products/edit/${product.id}`)}
+                          className="w-full h-full text-black hover:text-blue-500 flex justify-center items-center bg-gray-100 rounded px-3 py-1"
+                          title="Edit"
+                        >
+                          <i className="pi pi-pencil"></i>
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(product)}
+                          className="w-full h-full text-red-500 rounded px-3 py-1"
+                          title="Delete"
+                        >
+                          <i className="pi pi-trash"></i>
+                        </button>
+
+                      </div>
+                      {/* <div className="flex gap-10">
                         <button
                           onClick={() => navigate(`/products/edit/${product.id}`)}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
@@ -167,13 +184,11 @@ export default function ProductListing() {
                           <i className="pi pi-pencil"></i>
                         </button>
                         <button
-                          onClick={() => confirmDelete(product)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           title="Delete"
                         >
-                          <i className="pi pi-trash"></i>
                         </button>
-                      </div>
+                      </div> */}
                     </td>
                   </tr>
                 )

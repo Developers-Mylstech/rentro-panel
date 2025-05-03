@@ -67,12 +67,12 @@ export default function CategoryList() {
     setDeleting(true);
     try {
       const res = await removeCategory(categoryToDelete);
-      if(res.status==204){
+      if (res.status == 204) {
         alert("Category Deleted");
         fetchCategories();
         showSuccess("Category deleted successfully");
 
-      }else{
+      } else {
 
         showError(res?.message || "Unexpected response while deleting category.");
       }
@@ -125,24 +125,27 @@ export default function CategoryList() {
   };
 
   const actionsTemplate = (rowData) => (
-    <div className="flex gap-2">
-      <Tooltip target=".edit-btn" position="top" content="Edit Category" />
-      <Button
-        icon="pi pi-pencil"
-        className="edit-btn p-2 rounded-full text-green-500 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-200"
-        onClick={() => editCategory(rowData)}
-        text
-        raised
-      />
-      <Tooltip target=".delete-btn" position="top" content="Delete Category" />
-      <Button
-        icon="pi pi-trash"
-        className="delete-btn p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-200"
-        onClick={() => showDeleteDialog(rowData.categoryId)}
-        text
-        raised
-      />
-    </div>
+    <>
+
+      <div className="border grid grid-cols-2 p-[2px] rounded gap-1">
+        <button
+          onClick={() => editCategory(rowData)} className="w-full h-full text-black hover:text-blue-500 flex justify-center items-center bg-gray-100 rounded px-3 py-1"
+          title="Edit"
+        >
+          <i className="pi pi-pencil"></i>
+        </button>
+        <button
+          onClick={() => showDeleteDialog(rowData.categoryId)}
+          className="w-full h-full text-red-500 rounded px-3 py-1"
+          title="Delete"
+        >
+          <i className="pi pi-trash"></i>
+        </button>
+
+      </div>
+
+      
+    </>
   );
 
   const skeletons = Array.from({ length: 5 }, (_, i) => (
@@ -162,7 +165,7 @@ export default function CategoryList() {
   ));
 
   return (
-    <div className="dark:text-gray-200 p-4 md:p-6 w-full h-full">
+    <div className="dark:text-gray-200 p-4 md:p-6 w-full h-full bg-white dark:bg-gray-900">
       <Toast ref={toast} position="top-right" />
 
       {/* Header Section */}
@@ -178,12 +181,12 @@ export default function CategoryList() {
 
         <div className="flex items-center gap-3 w-full md:w-auto">
           <IconField className="w-full md:w-64">
-            <InputIcon className="pi pi-search text-gray-400" />
+            <InputIcon className="pi pi-search text-gray-400 dark:text-gray-500" />
             <InputText
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search categories..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </IconField>
 
@@ -191,14 +194,14 @@ export default function CategoryList() {
             title="Add Category"
             icon="pi pi-plus"
             onClick={() => navigate("/categories/add")}
-            className="px-4 py-2 rounded-lg shadow-sm"
+            className="px-4 py-2 rounded-lg shadow-sm bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
           />
         </div>
       </div>
 
       {/* Desktop Table View */}
       {loading ? (
-        <div className="hidden lg:block border border-gray-100 dark:border-gray-700 rounded-lg">
+        <div className="hidden lg:block border border-gray-100 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
           {skeletons}
         </div>
       ) : (
@@ -208,34 +211,34 @@ export default function CategoryList() {
             paginator
             rows={8}
             stripedRows
-            className="border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm"
+            className="border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm bg-white dark:bg-gray-800"
             emptyMessage={
-              <div className="flex flex-col items-center justify-center py-12">
-                <i className="pi pi-inbox text-4xl text-gray-400 mb-4" />
+              <div className="flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-800">
+                <i className="pi pi-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4" />
                 <p className="text-gray-500 dark:text-gray-400">No categories found</p>
               </div>
             }
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             rowsPerPageOptions={[5, 10, 25]}
-            paginatorClassName="border-t border-gray-100 dark:border-gray-700 px-4 py-3"
+            paginatorClassName="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
           >
             <Column
               field="name"
               header="Category"
               headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
-              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700 font-medium text-gray-800 dark:text-gray-100"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-600 font-medium text-gray-800 dark:text-gray-100 dark:bg-gray-700"
             />
             <Column
               header="Subcategories"
               body={subCategoryTemplate}
               headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
-              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-600 font-medium text-gray-800 dark:text-gray-100 dark:bg-gray-700"
             />
             <Column
               header="Actions"
               body={actionsTemplate}
               headerClassName="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-medium px-4 py-3"
-              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-700"
+              bodyClassName="px-4 py-3 border-b border-gray-100 dark:border-gray-600 font-medium text-gray-800 dark:text-gray-100 dark:bg-gray-700"
               style={{ width: '140px' }}
             />
           </DataTable>
@@ -250,12 +253,12 @@ export default function CategoryList() {
               key={i}
               className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm animate-pulse"
             >
-              <Skeleton height="140px" className="mb-3 rounded-lg" />
-              <Skeleton width="70%" height="20px" className="mb-2" />
-              <Skeleton width="90%" height="16px" className="mb-4" />
+              <Skeleton height="140px" className="mb-3 rounded-lg bg-gray-200 dark:bg-gray-700" />
+              <Skeleton width="70%" height="20px" className="mb-2 bg-gray-200 dark:bg-gray-700" />
+              <Skeleton width="90%" height="16px" className="mb-4 bg-gray-200 dark:bg-gray-700" />
               <div className="flex gap-2">
-                <Skeleton width="100%" height="36px" className="rounded" />
-                <Skeleton width="100%" height="36px" className="rounded" />
+                <Skeleton width="100%" height="36px" className="rounded bg-gray-200 dark:bg-gray-700" />
+                <Skeleton width="100%" height="36px" className="rounded bg-gray-200 dark:bg-gray-700" />
               </div>
             </div>
           ))}
@@ -265,7 +268,7 @@ export default function CategoryList() {
           {filteredCategories.map((category) => (
             <div
               key={category.categoryId}
-              className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-300 dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700"
             >
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
@@ -281,18 +284,23 @@ export default function CategoryList() {
                         value={sub.name || sub}
                         severity="info"
                         rounded
-                        className="text-[8px]"
+                        className="text-[8px] bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200"
                       />
                     ))
                   ) : (
-                    <Tag value="No subcategories" severity="secondary" rounded className="text-[8px]" />
+                    <Tag 
+                      value="No subcategories" 
+                      severity="secondary" 
+                      rounded 
+                      className="text-[8px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300" 
+                    />
                   )}
                   {category.subCategories.length > 3 && (
                     <Tag
                       value={`+${category.subCategories.length - 3}`}
                       severity="secondary"
                       rounded
-                      className="text-xs"
+                      className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                     />
                   )}
                 </div>
@@ -327,10 +335,10 @@ export default function CategoryList() {
           setVisible(false);
           setCategoryToDelete(null);
         }}
-        className="w-11/12 sm:w-96"
-        headerClassName="border-b border-gray-100 dark:border-gray-700 p-4"
-        contentClassName="p-4"
-        footerClassName="border-t border-gray-100 dark:border-gray-700 p-4"
+        className="w-11/12 sm:w-96 bg-white dark:bg-gray-800"
+        headerClassName="border-b border-gray-100 dark:border-gray-700 p-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+        contentClassName="p-4 bg-white dark:bg-gray-800"
+        footerClassName="border-t border-gray-100 dark:border-gray-700 p-4 bg-white dark:bg-gray-800"
       >
         <div className="flex flex-col items-center text-center">
           <i className="pi pi-exclamation-triangle text-5xl text-red-500 mb-4" />
@@ -343,7 +351,7 @@ export default function CategoryList() {
           <Button
             label="Cancel"
             icon="pi pi-times"
-            className="p-button-text"
+            className="p-button-text text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={() => {
               setVisible(false);
               setCategoryToDelete(null);
@@ -352,7 +360,7 @@ export default function CategoryList() {
           <Button
             label={deleting ? "Deleting..." : "Delete"}
             icon={deleting ? "pi pi-spinner pi-spin" : "pi pi-trash"}
-            className="p-button-danger"
+            className="p-button-danger bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
             onClick={handleDelete}
             disabled={deleting}
           />

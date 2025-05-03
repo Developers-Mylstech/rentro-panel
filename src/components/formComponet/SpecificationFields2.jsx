@@ -183,7 +183,6 @@ const SpecificationFields2 = ({ control, watch, setValue }) => {
     const formattedFields = updatedFields.map(({ name, value }) => ({ name, value }));
     setValue('specifications', formattedFields);
   };
-  console.log(selectedSpecification, 'selectedSpecification');
   return (
     <div className="flex flex-col gap-6 w-full text-gray-800 dark:text-gray-200">
       <div className="flex items-center justify-between bg-secondary bg-opacity-10 rounded-lg px-5">

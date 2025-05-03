@@ -93,8 +93,6 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
                         control={control}
                         rules={{ required: 'Please select a main category' }}
                         render={({ field }) => {
-                            console.log('Current field value:', field.value);
-
                             return (
                                 <Dropdown
                                     {...field}

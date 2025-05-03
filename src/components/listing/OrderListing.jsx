@@ -74,51 +74,51 @@ export default function OrderListing({ orders }) {
         paginator
         rows={5}
         stripedRows
-        className="border border-gray-300 rounded-md mb-8 hidden lg:block dark:bg-gray-800 dark:text-gray-100"
+        className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block dark:bg-gray-800 dark:text-gray-100"
         paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
         footerClassName="dark:bg-gray-800 dark:text-gray-100"
       >
         <Column
           field="orderCode"
           header="Order Id"
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:border-gray-700  font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="dateTime"
           header="Date Time"
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="customerId"
           header="Customer Id"
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="customerName"
           header="Customer Name"
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700  text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="paymentMethod"
           header="Payment Method"
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           field="deliveryStatus"
           header="Delivery Status"
           body={statusTemplate}
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
@@ -129,15 +129,15 @@ export default function OrderListing({ orders }) {
               ? `AED ${Number(rowData.amount).toFixed(2)}`
               : "N/A"
           }
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
         <Column
           header="Option"
           body={actionsTemplate}
-          headerClassName="bg-gray-100 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
+          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
+          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
           footerClassName="dark:bg-gray-800 dark:text-gray-100"
         />
       </DataTable>

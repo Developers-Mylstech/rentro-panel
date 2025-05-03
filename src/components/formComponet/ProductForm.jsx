@@ -48,7 +48,7 @@ const ProductForm = () => {
           discountUnit: '',
           discountValue: '',
           benefits: [''],
-          isVatIncluded: false,
+          vat: 0,
           warrantPeriod: 1
         },
         rent: {
@@ -105,7 +105,7 @@ const ProductForm = () => {
               isVatIncluded: false,
               benefits: [],
               warrantPeriod: 0,
-              isWarrantyAvailable: false
+              vat: 0
             },
             rent: {
               monthlyPrice: 0,
@@ -214,8 +214,8 @@ const ProductForm = () => {
       showToast('warn', 'Warning', 'Please Upload Image first.');
       return;
     }
-    
-    
+
+
     if (!data?.category?.main) {
       showToast('warn', 'Warning', 'Please select a Category.');
       return;
@@ -237,12 +237,14 @@ const ProductForm = () => {
 
       let response;
       if (id) {
+        console.log(payload,'preparePayload')
         response = await updateProduct(id, payload);
         if (response?.status == 200) {
           navigate('/products')
         }
         showToast('success', 'Success', 'Product updated successfully!');
       } else {
+
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');
         if (response?.status == 200 || response?.status == 201) {
@@ -250,15 +252,15 @@ const ProductForm = () => {
             ...data,
             category: {
               ...data.category,
-              main: null,  // Reset only the main category
-              sub: null   // Also reset subcategory if needed
+              main: null,
+              sub: null
             }
           });
           setTimeout(() => {
             window.location.reload(false);
           }, 500);
         }
-        
+
 
       }
       setLoading(false);
@@ -270,21 +272,22 @@ const ProductForm = () => {
   };
 
   const preparePayload = (data) => {
+  
     const imageUrls = Array.isArray(data.images)
       ? data.images
-          .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-          .filter(url => url)
+        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+        .filter(url => url)
       : [];
-  
+
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
-          .filter(spec => spec?.name && spec?.value)
-          .map(spec => ({ name: spec.name, value: spec.value }))
+        .filter(spec => spec?.name && spec?.value)
+        .map(spec => ({ name: spec.name, value: spec.value }))
       : [];
-  
+
     const getServicePayload = (service) => {
       if (!service) return { price: 0, benefits: [] };
-  
+
       return {
         price: Number(service.price) || 0,
         benefits: Array.isArray(service.benefits)
@@ -292,7 +295,7 @@ const ProductForm = () => {
           : (service.benefits ? [service.benefits].filter(b => b && b.trim() !== '') : [])
       };
     };
-  
+
     const productFor = {
       service: {
         ots: getServicePayload(data.pricing?.services?.ots),
@@ -301,7 +304,7 @@ const ProductForm = () => {
         amcGold: getServicePayload(data.pricing?.services?.amcGold)
       }
     };
-  
+
     if (data.pricing?.sell?.actualPrice) {
       productFor.sell = {
         actualPrice: data.pricing.sell.actualPrice,
@@ -315,8 +318,7 @@ const ProductForm = () => {
         warrantPeriod: +(data.pricing.sell.warrantPeriod || 0)
       };
     }
-  
-    // Conditionally add 'rent' if monthlyPrice is truthy
+
     if (data.pricing?.rent?.monthlyPrice) {
       productFor.rent = {
         monthlyPrice: data.pricing.rent.monthlyPrice,
@@ -329,7 +331,7 @@ const ProductForm = () => {
           : [],
       };
     }
-  
+
     return {
       name: data.basicInfo.name || '',
       description: data.basicInfo.shortDescription || '',
@@ -357,7 +359,7 @@ const ProductForm = () => {
         : []
     };
   };
-  
+
 
   return (
     <div className="mx-auto px-0 py-0">

@@ -13,23 +13,26 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
     const finalPrice = useMemo(() => {
         const price = parseFloat(sellData.actualPrice) || 0;
         const discount = parseFloat(sellData.discountValue) || 0;
-        const vat = parseFloat(sellData.vat) || 0;
-      
-        // Apply discount
-        let discounted = discountType === 'PERCENTAGE'
-          ? price * (1 - discount / 100)
-          : price - discount;
-      
-        return isVatIncluded ? discounted * (1 + vat / 100) : discounted;
-      }, [sellData.actualPrice, sellData.discountValue, sellData.vat, discountType, isVatIncluded]);
-      
+        const vat = parseFloat(singleProduct?.vat) || 0;
+
+        let discountedPrice = discountType === 'PERCENTAGE'
+            ? price * (1 - discount / 100)
+            : price - discount;
+
+        if (isVatIncluded && vat > 0) {
+            return discountedPrice * (1 + vat / 100);
+        }
+
+        return discountedPrice;
+    }, [sellData.actualPrice, sellData.discountValue, sellData.vat, discountType, isVatIncluded]);
+
 
     useEffect(() => {
         const productSellData = singleProduct;
 
         if (productSellData) {
-            // Initialize VAT inclusion based on product data
-            const initialVatIncluded = productSellData.vat > 0;
+      
+            const initialVatIncluded = productSellData?.vat > 0;
             setIsVatIncluded(initialVatIncluded);
 
             setValue('pricing.sell.actualPrice',
@@ -46,8 +49,8 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
             setValue('pricing.sell.discountValue', productSellData.discountValue || '');
             setValue('pricing.sell.discountUnit', productSellData.discountUnit || (discountType === 'percentage' ? 'PERCENTAGE' : 'AED'));
             setValue('pricing.sell.benefits', productSellData.benefits?.length > 0 ? productSellData.benefits : ['']);
-            setValue('pricing.sell.vat', productSellData.vat !== undefined ? productSellData.vat : 0);
-            setValue('pricing.sell.isVatIncluded', initialVatIncluded);
+           
+            setValue('pricing.sell.isVatIncluded', productSellData?.vat > 0 || false);
             setValue('pricing.sell.isWarrantyAvailable', productSellData.isWarrantyAvailable || false);
             setValue('pricing.sell.warrantPeriod', productSellData.warrantPeriod || 0);
 
@@ -80,8 +83,8 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
     };
 
     const handleVatChange = (includeVat) => {
+        console.log(includeVat,'includeVat')
         setIsVatIncluded(includeVat);
-        setValue('pricing.sell.vat', includeVat ? 5 : 0);
         setValue('pricing.sell.isVatIncluded', includeVat);
     };
 
@@ -90,6 +93,8 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
     //     const unit = discountType === 'PERCENTAGE' ? 'PERCENTAGE' : 'AED';
     //     setValue('pricing.sell.discountUnit', unit);
     // }, [discountType, setValue]);
+
+    
 
     const handleAddBenefit = () => {
         const currentBenefits = Array.isArray(sellData?.benefits)
@@ -249,8 +254,7 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
                         <div className="">
                             <div className="flex space-x-4 items-center">
                                 <label className="block text-base font-medium text-secondary dark:text-gray-300">
-                                    VAT ({sellData?.vat || 0}%)
-                                </label>
+                                VAT ({isVatIncluded ? '5%' : '0%'})                                </label>
                                 <label className="inline-flex items-center">
                                     <input
                                         type="radio"
@@ -287,7 +291,7 @@ const SellPricingForm = ({ control, watch, setValue, singleProduct }) => {
                         <input
                             type="text"
                             readOnly
-                            value={finalPrice.toFixed(2) ||displayDiscountPrice  }
+                            value={finalPrice.toFixed(2) || displayDiscountPrice}
                             // value={displayDiscountPrice}
                             className="block w-full font-semibold  dark:border-gray-500 dark:bg-gray-700 focus:outline-none focus:ring-0 focus:border-blue-500"
                         />

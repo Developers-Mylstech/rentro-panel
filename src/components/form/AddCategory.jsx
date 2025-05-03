@@ -101,7 +101,9 @@ export default function AddCategory() {
   const selectedParentCategory = flatCategoryList.find(cat => cat.categoryId === mainCategoryID);
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className='min-h-screen  dark:bg-gray-900 p-4'>
+
+    <div className="max-w-2xl mx-auto p-6 bg-white  dark:bg-gray-800 rounded-lg shadow-md">
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-light text-secondary dark:text-gray-200 mb-1 tracking-tight">
           {isEditMode ? 'Edit Category' : 'Create New Category'}
@@ -111,7 +113,7 @@ export default function AddCategory() {
         </p>
       </div>
     
-      <form onSubmit={handleSubmit} className="space-y-7">
+      <form onSubmit={handleSubmit} className="space-y-7 ">
       <div className={`transition-all relative duration-200 ease-in-out ${(isSubcategory || mainCategoryID !== '') ? 'opacity-60' : ''}`}>
       <FloatLabel>
             <InputText
@@ -187,6 +189,7 @@ export default function AddCategory() {
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 }

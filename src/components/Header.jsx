@@ -2,12 +2,14 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Menu } from 'primereact/menu';
 import { useNavigate } from 'react-router-dom';
 import { ColorPicker } from 'primereact/colorpicker';
+import useAuthStore from '../Context/AuthContext';
 
-export default function Header({setIsDarkMode}) {
+export default function Header({ setIsDarkMode }) {
 
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+    const { logout } = useAuthStore();
 
     useEffect(() => {
         if (darkMode) {
@@ -23,7 +25,7 @@ export default function Header({setIsDarkMode}) {
 
     const toggleDarkMode = () => {
         setDarkMode(prevMode => !prevMode);
-        
+
     };
 
     const items = [
@@ -34,12 +36,12 @@ export default function Header({setIsDarkMode}) {
                     label: 'Setting',
                     icon: 'pi pi-cog',
                     command: () => console.log("Settings Clicked")
-                    
+
                 },
                 {
                     label: 'Log out',
                     icon: 'pi pi-sign-out',
-                    command: () => navigate('/')
+                    command: () => logout()
                 }
             ]
         }
@@ -48,7 +50,7 @@ export default function Header({setIsDarkMode}) {
     return (
         <div className=" flex justify-end py-1 border-b fixed right-0 left-0 z-40 px-10 gap-5 top-0 transition-all duration-300 
                          text-black bg-white dark:bg-gray-900 dark:text-dark">
-            <Menu   model={items}   popup ref={menuRef} id="popup_menu_left" className=' bg-white dark:text-gray-100 dark:bg-gray-800 '  />
+            <Menu model={items} popup ref={menuRef} id="popup_menu_left" className=' bg-white dark:text-gray-100 dark:bg-gray-800 ' />
 
 
 
@@ -67,7 +69,7 @@ export default function Header({setIsDarkMode}) {
             </div>
 
             <style>
-        {`.dark  #popup_menu_left_sub_0{
+                {`.dark  #popup_menu_left_sub_0{
           background: #1F2937;
           color:#F3F4F6
         }
@@ -77,7 +79,7 @@ export default function Header({setIsDarkMode}) {
         }
       
         `}
-      </style>
+            </style>
         </div>
     );
 }
