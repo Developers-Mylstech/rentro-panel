@@ -29,6 +29,7 @@ import AddCareer from "./components/form/AddCareer";
 import useAuthStore from "./Context/AuthContext";
 import { useEffect, useState } from "react";
 import ProductForm from "./components/formComponet/ProductForm";
+import OrderDetail from "./pages/OrderDetail";
 
 function App() {
   const { accessToken, initializeAuth } = useAuthStore();
@@ -56,9 +57,11 @@ function App() {
             </Route>
             <Route path="categories" element={<Categories />} />
             <Route path="categories/add" element={<AddCategory />} />
+
             <Route path="brands" element={<Brands />} />
             <Route path="brands/add" element={<AddBrand />} />
             <Route path="orders" element={<Orders />} />
+            <Route path = "order/:id" element={<OrderDetail />} />
             <Route path="orders/quotation" element={<RequestQuotationListing />} />
             <Route path="clients" element={<Clients />} />
             <Route path="clients/add" element={<AddClient />} />

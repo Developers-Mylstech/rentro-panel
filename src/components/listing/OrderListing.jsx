@@ -1,223 +1,401 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
-import { IconField } from "primereact/iconfield";
-import { InputIcon } from "primereact/inputicon";
-import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
-import CustomButton from "../../systemdesign/CustomeButton";
+import { InputText } from "primereact/inputtext";
+import { Skeleton } from "primereact/skeleton";
 import { useNavigate } from "react-router-dom";
+import { FiSearch, FiEye, FiEdit2, FiTrash2, FiChevronDown, FiCalendar } from "react-icons/fi";
+import { BsBoxSeam, BsTruck, BsCheckCircle } from "react-icons/bs";
 
-export default function OrderListing({ orders }) {
+export default function OrderManagement({ orders }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [expandedRows, setExpandedRows] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Filter Orders Based on Search
   const filteredOrders = orders.filter((order) =>
-    order.customerName.toLowerCase().includes(search.toLowerCase())
+    order.userName?.toLowerCase().includes(search.toLowerCase()) ||
+    order.orderNumber?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Handle Delete
   const handleDelete = () => {
-    console.log(`Order with ID ${selectedOrder?.id} deleted`);
+    console.log(`Order with ID ${selectedOrder?.orderId} deleted`);
     setVisible(false);
   };
 
   // Status Template for Table
   const statusTemplate = (rowData) => {
-    const status = rowData.deliveryStatus;
-    let className = "text-white px-2 py-1  rounded-md font-bold";
-  
-    if (status === "In Progress") {
-      className += " bg-orange-500";
-    } else {
-      className += " bg-green-500";
-    }
-  
-    return <Tag  value={rowData.deliveryStatus} className={className} />;
+    if (loading) return <Skeleton width="100%" height="1.5rem" />;
+    
+    const status = rowData.status;
+    const getStatusConfig = () => {
+      switch (status) {
+        case "PENDING":
+          return { 
+            severity: "warning", 
+            icon: <BsBoxSeam className="mr-1" />,
+            color: "bg-amber-100 text-amber-800 border-amber-200"
+          };
+        case "PROCESSING":
+          return { 
+            severity: "info", 
+            icon: <BsBoxSeam className="mr-1" />,
+            color: "bg-blue-100 text-blue-800 border-blue-200"
+          };
+        case "SHIPPED":
+          return { 
+            severity: "primary", 
+            icon: <BsTruck className="mr-1" />,
+            color: "bg-indigo-100 text-indigo-800 border-indigo-200"
+          };
+        case "DELIVERED":
+          return { 
+            severity: "success", 
+            icon: <BsCheckCircle className="mr-1" />,
+            color: "bg-green-100 text-green-800 border-green-200"
+          };
+        case "CANCELLED":
+          return { 
+            severity: "danger", 
+            icon: <FiTrash2 className="mr-1" />,
+            color: "bg-red-100 text-red-800 border-red-200"
+          };
+        default:
+          return { 
+            severity: "info", 
+            icon: <BsBoxSeam className="mr-1" />,
+            color: "bg-gray-100 text-gray-800 border-gray-200"
+          };
+      }
+    };
+
+    const config = getStatusConfig();
+    return (
+      <Tag 
+        value={status} 
+        severity={config.severity} 
+        icon={config.icon}
+        className={`flex items-center px-3 py-1 rounded-full border ${config.color}`}
+      />
+    );
+  };
+
+  // Payment Status Template
+  const paymentStatusTemplate = (rowData) => {
+    if (loading) return <Skeleton width="100%" height="1.5rem" />;
+    
+    return rowData.isPaid ? (
+      <Tag 
+        value="PAID" 
+        severity="success" 
+        icon={<BsCheckCircle className="mr-1" />}
+        className="flex items-center px-3 py-1 rounded-full border bg-green-100 text-green-800 border-green-200"
+      />
+    ) : (
+      <Tag 
+        value="PENDING" 
+        severity="warning" 
+        icon={<FiCalendar className="mr-1" />}
+        className="flex items-center px-3 py-1 rounded-full border bg-orange-100 text-orange-800 border-orange-200"
+      />
+    );
+  };
+
+  // Loading Skeleton for Rows
+  const loadingTemplate = () => {
+    return <Skeleton width="100%" height="2rem" />;
+  };
+
+  // Items Count Template
+  const itemsTemplate = (rowData) => {
+    if (loading) return <Skeleton width="100%" height="1.5rem" />;
+    
+    return (
+      <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium border border-blue-100">
+        {rowData.items?.length || 0} item{rowData.items?.length !== 1 ? 's' : ''}
+      </span>
+    );
+  };
+
+  // Amount Template
+  const amountTemplate = (rowData) => {
+    if (loading) return <Skeleton width="100%" height="1.5rem" />;
+    
+    return (
+      <span className="font-semibold text-gray-800">
+        AED {rowData.totalAmount?.toFixed(2) || '0.00'}
+      </span>
+    );
+  };
+
+  // Date Template
+  const dateTemplate = (dateString) => {
+    if (loading) return <Skeleton width="100%" height="1.5rem" />;
+    
+    const date = new Date(dateString);
+    return (
+      <div className="flex flex-col">
+        <span className="text-sm font-semibold text-gray-800">
+          {date.toLocaleDateString("en-US", { month: 'short', day: 'numeric' })}
+        </span>
+        <span className="text-xs text-gray-500">
+          {date.toLocaleDateString("en-US", { year: 'numeric' })}
+        </span>
+      </div>
+    );
+  };
+
+  // Row Expansion Template
+  const rowExpansionTemplate = (data) => {
+    return (
+      <div className="p-4 bg-gray-50 border-t border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-3">
+            <h4 className="font-semibold text-gray-700">Customer Details</h4>
+            <div className="bg-white p-3 rounded-lg border border-gray-200">
+              <p className="font-medium text-gray-800">{data.userName}</p>
+              <p className="text-sm text-gray-600 mt-1">{data.deliveryAddress?.formattedAddress}</p>
+              {data.userMobile && (
+                <p className="text-sm text-gray-600 mt-1">
+                  <span className="font-medium">Contact:</span> {data.userMobile}
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <h4 className="font-semibold text-gray-700">Order Items</h4>
+            <div className="bg-white p-3 rounded-lg border border-gray-200 space-y-3">
+              {data.items?.map((item, index) => (
+                <div key={index} className="flex items-start">
+                  <div className="w-10 h-10 rounded-md bg-gray-100 mr-3 overflow-hidden flex items-center justify-center">
+                    {item.productImage ? (
+                      <img 
+                        src={item.productImage} 
+                        alt={item.productName} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <BsBoxSeam className="text-gray-400" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-800">{item.productName}</p>
+                    <p className="text-sm text-gray-500">{item.productType}</p>
+                    <p className="text-sm font-medium text-gray-700 mt-1">
+                      {item.quantity} × AED {item.price?.toFixed(2) || '0.00'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <h4 className="font-semibold text-gray-700">Payment Info</h4>
+            <div className="bg-white p-3 rounded-lg border border-gray-200 space-y-2">
+              <p className="text-sm">
+                <span className="font-medium text-gray-700">Method:</span> 
+                <span className="ml-2 capitalize text-gray-600">{data.paymentMethod?.toLowerCase()}</span>
+              </p>
+              {paymentStatusTemplate(data)}
+              {data.isPaid && (
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Paid on:</span> {new Date(data.paidAt).toLocaleDateString()}
+                </p>
+              )}
+              <p className="text-sm pt-2 border-t border-gray-100">
+                <span className="font-medium text-gray-700">Total:</span> 
+                <span className="ml-2 font-semibold text-gray-800">
+                  AED {data.totalAmount?.toFixed(2) || '0.00'}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Actions Template for Table
-  const actionsTemplate = (rowData) => (
-    <div className="flex gap-2">
-      <Button
-        icon="pi pi-eye"
-        className="text-white p-2 rounded-lg bg-purple-500 "
-      />
-      <Button
-        icon="pi pi-pencil"
-        className="text-white p-2 rounded-lg bg-blue-500 "
-      />
-      <Button
-        icon="pi pi-trash"
-        onClick={() => {
-          setSelectedOrder(rowData);
-          setVisible(true);
-        }}
-        className="text-white p-2 rounded-lg bg-red-500 "
-      />
-    </div>
-  );
+  const actionsTemplate = (rowData) => {
+    // if (loading) return <div className="flex gap-2"><Skeleton width="2rem" height="2rem" shape="circle" /><Skeleton width="2rem" height="2rem" shape="circle" /></div>;
+    
+    return (
+      <div className="flex gap-2">
+        <Button
+          icon={<FiEye className="text-blue-500" />}
+          className="p-button-rounded p-button-text p-button-plain hover:bg-blue-50"
+          onClick={() => navigate(`/order/${rowData.orderId}`, { state: { order: rowData } })}
+          tooltip="View Details"
+          tooltipOptions={{ position: 'top', className: 'text-xs' }}
+        />
+        <Button
+          icon={<FiTrash2 className="text-red-500" />}
+          className="p-button-rounded p-button-text p-button-plain hover:bg-red-50"
+          onClick={() => {
+            setSelectedOrder(rowData);
+            setVisible(true);
+          }}
+          tooltip="Delete Order"
+          tooltipOptions={{ position: 'top', className: 'text-xs' }}
+        />
+      </div>
+    );
+  };
 
   return (
-    <div className="">
-      {/* Header Section */}
-      
+    <div className="p-6 bg-white rounded-xl shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Order Management</h2>
+          <p className="text-gray-500 mt-1">View and manage customer orders</p>
+        </div>
+        <div className="mt-4 md:mt-0 relative">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FiSearch className="text-gray-400" />
+          </span>
+          <InputText
+            placeholder="Search orders..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 w-full md:w-64 p-2 border rounded-lg focus:ring-0 focus:outline-none"
+            disabled={loading}
+          />
+        </div>
+      </div>
 
       {/* Table Section */}
       <DataTable
-        value={filteredOrders}
+        value={loading ? Array(5).fill({}) : filteredOrders}
         paginator
-        rows={5}
+        rows={10}
+        rowsPerPageOptions={[5, 10, 25]}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
         stripedRows
-        className="border border-gray-300 dark:border-gray-700 rounded-md mb-8 hidden lg:block dark:bg-gray-800 dark:text-gray-100"
-        paginatorClassName="dark:bg-gray-800 dark:text-gray-100"
-        footerClassName="dark:bg-gray-800 dark:text-gray-100"
+        className={`p-datatable-sm border border-gray-200 rounded-lg ${loading ? 'opacity-75' : ''}`}
+        emptyMessage={loading ? "Loading orders..." : "No orders found"}
+        expandedRows={expandedRows}
+        onRowToggle={(e) => setExpandedRows(e.data)}
+        rowExpansionTemplate={rowExpansionTemplate}
+        loading={loading}
       >
+        {/* <Column expander style={{ width: '3em' }} body={loading ? loadingTemplate : null} /> */}
         <Column
-          field="orderCode"
-          header="Order Id"
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center dark:border-gray-700  font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          field="orderNumber"
+          header="Order #"
+          sortable
+          headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          style={{ minWidth: '120px' }}
+          body={loading ? loadingTemplate : (rowData) => (
+            <span className="font-bold text-blue-600">#{rowData.orderNumber}</span>
+          )}
         />
         <Column
-          field="dateTime"
-          header="Date Time"
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          field="createdAt"
+          header="Date"
+          body={loading ? loadingTemplate : (rowData) => dateTemplate(rowData.createdAt)}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          sortable
+          style={{ minWidth: '100px' }}
         />
         <Column
-          field="customerId"
-          header="Customer Id"
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          field="userName"
+          header="Customer"
+          sortable
+          style={{ minWidth: '150px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          body={loading ? loadingTemplate : null}
         />
         <Column
-          field="customerName"
-          header="Customer Name"
-          headerClassName="bg-gray-100 dark:border-gray-700  text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          header="Items"
+          body={itemsTemplate}
+          style={{ minWidth: '80px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
         />
         <Column
-          field="paymentMethod"
-          header="Payment Method"
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
-        />
-        <Column
-          field="deliveryStatus"
-          header="Delivery Status"
-          body={statusTemplate}
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center  dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
-        />
-        <Column
-          field="amount"
           header="Amount"
-          body={(rowData) =>
-            rowData.amount
-              ? `AED ${Number(rowData.amount).toFixed(2)}`
-              : "N/A"
-          }
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          body={amountTemplate}
+          sortable
+          sortField="totalAmount"
+          style={{ minWidth: '120px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
         />
         <Column
-          header="Option"
+          header="Payment"
+          body={paymentStatusTemplate}
+          sortable
+          sortField="isPaid"
+          style={{ minWidth: '120px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+        />
+        <Column
+          header="Status"
+          body={statusTemplate}
+          sortable
+          sortField="status"
+          style={{ minWidth: '140px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+        />
+        <Column
+          header="Actions"
           body={actionsTemplate}
-          headerClassName="bg-gray-100 dark:border-gray-700 text-gray-500 font-light text-sm border text-center dark:bg-gray-800 dark:text-gray-100"
-          bodyClassName="text-center dark:border-gray-700 font-semibold text-sm border-b dark:bg-gray-800 dark:text-gray-100"
-          footerClassName="dark:bg-gray-800 dark:text-gray-100"
+          style={{ minWidth: '120px' }}
+           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
         />
       </DataTable>
 
-      {/* Card View Section */}
-      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6  ">
-        {filteredOrders.map((order) => (
-          <div
-            key={order.id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-          >
-            <div className="p-4 dark:bg-gray-800 dark:text-gray-100">
-              <h3 className="text-lg font-bold text-gray-800 dark:bg-gray-800 dark:text-gray-100">
-                {order.customerName}
-              </h3>
-              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
-                <span className="font-semibold">Order Code:</span>{" "}
-                {order.orderCode}
-              </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
-                <span className="font-semibold">Date Time:</span>{" "}
-                {order.dateTime}
-              </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
-                <span className="font-semibold">Payment Method:</span>{" "}
-                {order.paymentMethod}
-              </p>
-              <p className="text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-100">
-                <span className="font-semibold">Amount:</span>{" "}
-                ₹
-                {Number(order.amount)
-                  ? Number(order.amount).toFixed(2)
-                  : "N/A"}
-              </p>
-              <div className="flex justify-center mt-4 gap-3">
-                <Button
-                  icon="pi pi-eye"
-                  className="p-button-sm text-white p-2 w-full bg-secondary "
-                />
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-sm text-white p-2 w-full bg-green-300 "
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-sm text-white p-2 w-full bg-red-300 "
-                  onClick={() => {
-                    setSelectedOrder(order);
-                    setVisible(true);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Delete Confirmation Dialog */}
       <Dialog
-        header="Confirmation"
-        position="top"
-        draggable={false}
+        header={<span className="font-bold text-gray-800">Confirm Deletion</span>}
         visible={visible}
+        style={{ width: '450px' }}
         onHide={() => setVisible(false)}
+        footer={
+          <div className="flex justify-end space-x-3">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              onClick={() => setVisible(false)}
+              className="p-button-text p-button-plain hover:bg-gray-100"
+            />
+            <Button
+              label="Delete"
+              icon="pi pi-trash"
+              onClick={handleDelete}
+              className="p-button-danger bg-red-500 hover:bg-red-600 border-red-500"
+              autoFocus
+            />
+          </div>
+        }
       >
-        <p className="mb-10">
-          Do you want to delete this order with ID{" "}
-          <strong>{selectedOrder?.id}</strong>?
-        </p>
-        <div className="flex justify-between">
-          <CustomButton
-            title={"Yes"}
-            icon={"pi pi-check"}
-            onClick={handleDelete}
-          />
-          <CustomButton
-            title={"No"}
-            icon={"pi pi-times"}
-            onClick={() => setVisible(false)}
-          />
+        <div className="flex items-start">
+          <div className="bg-red-100 p-2 rounded-full mr-3 mt-1">
+            <FiTrash2 className="text-red-500 text-lg" />
+          </div>
+          <div>
+            <p className="font-bold text-gray-800 mb-1">Delete order #{selectedOrder?.orderNumber}?</p>
+            <p className="text-gray-600 text-sm">
+              This action cannot be undone. All order data will be permanently removed.
+            </p>
+          </div>
         </div>
       </Dialog>
     </div>
