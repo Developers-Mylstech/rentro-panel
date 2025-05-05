@@ -48,7 +48,7 @@ axiosInstance.interceptors.response.use(
                 try {
                     delete axiosInstance.defaults.headers.common['Authorization'];
 
-                    const response = await axios.post(`https://1f1ktbg1qncu.share.zrok.io/api/v1/auth/refresh-token`,
+                    const response = await axiosInstance.post(`/auth/refresh-token`,
                         { refreshToken: refreshToken }, {
                         headers: {
                             'skip_zrok_interstitial': 'true',

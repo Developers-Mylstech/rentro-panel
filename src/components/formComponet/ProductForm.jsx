@@ -247,19 +247,19 @@ const ProductForm = () => {
 
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');
-        if (response?.status == 200 || response?.status == 201) {
-          reset({
-            ...data,
-            category: {
-              ...data.category,
-              main: null,
-              sub: null
-            }
-          });
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 500);
-        }
+        // if (response?.status == 200 || response?.status == 201) {
+        //   reset({
+        //     ...data,
+        //     category: {
+        //       ...data.category,
+        //       main: null,
+        //       sub: null
+        //     }
+        //   });
+        //   setTimeout(() => {
+        //     window.location.reload(false);
+        //   }, 500);
+        // }
 
 
       }
