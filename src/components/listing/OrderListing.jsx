@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { FiSearch, FiEye, FiEdit2, FiTrash2, FiChevronDown, FiCalendar } from "react-icons/fi";
 import { BsBoxSeam, BsTruck, BsCheckCircle } from "react-icons/bs";
 
+
 export default function OrderManagement({ orders }) {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
@@ -17,6 +18,8 @@ export default function OrderManagement({ orders }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+
 
   useEffect(() => {
     // Simulate loading delay
@@ -237,24 +240,15 @@ export default function OrderManagement({ orders }) {
     // if (loading) return <div className="flex gap-2"><Skeleton width="2rem" height="2rem" shape="circle" /><Skeleton width="2rem" height="2rem" shape="circle" /></div>;
     
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2 ">
         <Button
-          icon={<FiEye className="text-blue-500" />}
+          icon={<FiEye size={20} className="text-blue-500 " />}
           className="p-button-rounded p-button-text p-button-plain hover:bg-blue-50"
           onClick={() => navigate(`/order/${rowData.orderId}`, { state: { order: rowData } })}
           tooltip="View Details"
           tooltipOptions={{ position: 'top', className: 'text-xs' }}
         />
-        <Button
-          icon={<FiTrash2 className="text-red-500" />}
-          className="p-button-rounded p-button-text p-button-plain hover:bg-red-50"
-          onClick={() => {
-            setSelectedOrder(rowData);
-            setVisible(true);
-          }}
-          tooltip="Delete Order"
-          tooltipOptions={{ position: 'top', className: 'text-xs' }}
-        />
+      
       </div>
     );
   };
@@ -374,13 +368,13 @@ export default function OrderManagement({ orders }) {
               label="Cancel"
               icon="pi pi-times"
               onClick={() => setVisible(false)}
-              className="p-button-text p-button-plain hover:bg-gray-100"
+              className="p-button-text p-2 rounded-md p-button-plain hover:bg-gray-100"
             />
             <Button
               label="Delete"
               icon="pi pi-trash"
               onClick={handleDelete}
-              className="p-button-danger bg-red-500 hover:bg-red-600 border-red-500"
+              className="p-button-danger p-2 rounded-md bg-red-500 hover:bg-red-600 border-red-500"
               autoFocus
             />
           </div>

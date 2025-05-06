@@ -39,7 +39,9 @@ export default function Orders() {
   }, [fetchOrders]);
 
   return (
-    <div className='md:h-screen dark:bg-gray-900'>
+    <div className='h-full dark:bg-gray-900'>
+
+      
       
 
       <OrdersTable orders={orders} search={search} />

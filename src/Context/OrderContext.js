@@ -44,6 +44,18 @@ const useOrderStore = create((set) => ({
       throw error;
     }
   },
+  deleteOrder: async (orderId) => {
+    try {
+      await axiosInstance.delete(`/orders/${orderId}`);
+      set((state) => ({
+        orders: state.orders.filter(order => order.orderId !== orderId),
+        selectedOrder: state.selectedOrder?.orderId === orderId ? null : state.selectedOrder,
+      }));
+    } catch (error) {
+      console.error('Failed to delete order:', error);
+      throw error;
+    }
+  },
 
 }));
 
