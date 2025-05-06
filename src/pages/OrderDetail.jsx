@@ -220,7 +220,7 @@ const OrderDetail = () => {
   const handleStatusChange = async () => {
     if (!newStatus) return;
     try {
-      await updateOrderStatus(orderId, newStatus);
+      await updateOrderStatus(order.orderId, newStatus);
       alert('Order status updated successfully');
     } catch (err) {
       alert('Failed to update order status');
@@ -229,12 +229,26 @@ const OrderDetail = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'PENDING': return 'bg-amber-50 border-amber-200 text-amber-800';
-      case 'CONFIRMED': return 'bg-blue-50 border-blue-200 text-blue-800';
-      case 'SHIPPED': return 'bg-indigo-50 border-indigo-200 text-indigo-800';
-      case 'DELIVERED': return 'bg-emerald-50 border-emerald-200 text-emerald-800';
-      case 'CANCELLED': return 'bg-rose-50 border-rose-200 text-rose-800';
-      default: return 'bg-gray-50 border-gray-200 text-gray-800';
+      case 'PENDING':
+        return 'bg-amber-50 border-amber-200 text-amber-800';
+      case 'PAYMENT_CONFIRMED':
+        return 'bg-blue-50 border-blue-200 text-blue-800';
+      case 'PROCESSING':
+        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      case 'READY_FOR_DELIVERY':
+        return 'bg-indigo-50 border-indigo-200 text-indigo-800';
+      case 'OUT_FOR_DELIVERY':
+        return 'bg-purple-50 border-purple-200 text-purple-800';
+      case 'DELIVERED':
+        return 'bg-emerald-50 border-emerald-200 text-emerald-800';
+      case 'COMPLETED':
+        return 'bg-green-50 border-green-200 text-green-800';
+      case 'CANCELLED':
+        return 'bg-rose-50 border-rose-200 text-rose-800';
+      case 'PAYMENT_FAILED':
+        return 'bg-red-50 border-red-200 text-red-800';
+      default:
+        return 'bg-gray-50 border-gray-200 text-gray-800';
     }
   };
 
@@ -346,10 +360,16 @@ const OrderDetail = () => {
               >
                 <option className='pr-4' value="">Select new status</option>
                 <option value="PENDING">Pending</option>
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="SHIPPED">Shipped</option>
+                <option value="PAYMENT_CONFIRMED">Confirmed</option>
+                <option value="PROCESSING">Processing</option>
+                <option value="READY_FOR_DELIVERY">Ready for Delivery</option>
+                <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
                 <option value="DELIVERED">Delivered</option>
                 <option value="CANCELLED">Cancelled</option>
+                <option value="PAYMENT_FAILED">Payment Failed</option>
+                <option value="COMPLETED">Completed</option>
+                
+
               </select>
               <button 
                 onClick={handleStatusChange} 

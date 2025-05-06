@@ -32,9 +32,7 @@ const useOrderStore = create((set) => ({
   },
   updateOrderStatus: async (orderId, newStatus) => {
     try {
-      const res = await axiosInstance.put(`/orders/${orderId}/status`, {
-        status: newStatus,
-      });
+      const res = await axiosInstance.put(`/orders/${orderId}/status?status=${newStatus}`, );
       set((state) => ({
         selectedOrder: { ...state.selectedOrder, status: newStatus },
       }));
