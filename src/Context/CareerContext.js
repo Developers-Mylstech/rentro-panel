@@ -58,7 +58,7 @@ const useCareerStore = create((set, get) => ({
 
   getJobApplicants: async (id) => {
     try {
-      const res = await axios.get(`https://proud-expression-production-6ebc.up.railway.app/api/v1/job-applicants/job-post/${id}`);
+      const res = await axiosInstance.get(`/job-applicants/job-post/${id}`);
      
       
       set({ 

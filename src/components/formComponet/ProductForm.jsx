@@ -256,9 +256,10 @@ const ProductForm = () => {
               sub: null
             }
           });
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 500);
+          
+//           setTimeout(() => {
+// navigate('/products')
+//           }, 500);
         }
 
 
