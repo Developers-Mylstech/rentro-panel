@@ -4,8 +4,8 @@ import { FiUploadCloud, FiSend, FiTrash2, FiX, FiUpload } from 'react-icons/fi';
 import { FaSpinner } from 'react-icons/fa';
 import useImageUploadStore from '../../Context/ImageUploadContext';
 
-const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, setIsImageUpload,watch }) => {
-  const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
+const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, setIsImageUpload, watch }) => {
+  const { uploadFiles, isLoading, deleteImage, isDeleting } = useImageUploadStore();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const images = watch('images') || [];
@@ -71,16 +71,21 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
     setSelectedFiles(prev => prev.filter((e) => e.name !== name));
   };
 
-  const handleDeleteImage = async (image) => {
+  const handleDeleteImage = async (imageId) => {
     try {
-      const newImages = images.filter(img => img !== image);
+      await deleteImage(imageId); // pass only the ID to the store method
+  
+      const newImages = images.filter(img => {
+        if (typeof img === 'string') return img !== imageId;
+        return img.imageId !== imageId;
+      });
+  
       setValue('images', newImages);
-
-      await deleteImage(singleProduct.productId);
     } catch (error) {
       console.error('Error deleting image:', error);
     }
   };
+  
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
@@ -94,6 +99,17 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
     } catch (error) {
       console.error('Error uploading images:', error);
     }
+  };
+
+  
+  const getImageUrl = (img) => {
+    console.log(img,'imgurllss');
+    if (typeof img === 'string') return img;
+    return img.imageUrl || img.url;
+  };
+
+  const isExistingProductImage = (img) => {
+    return typeof img === 'string' && singleProduct?.images?.includes(img);
   };
 
   return (
@@ -221,13 +237,13 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
               Uploaded Images ({images?.length || singleProduct?.images?.length})
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {(images || singleProduct?.images)?.map((img, index) => (
+              {( singleProduct?.images || images)?.map((img, index) => (
                 <div
                   key={index}
                   className="relative group aspect-square rounded-lg overflow-hidden shadow-sm border dark:border-gray-700"
                 >
                   <img
-                    src={img?.url?.fileUrl || img}
+                    src={getImageUrl(img)}
                     alt={`Product ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
@@ -237,14 +253,19 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
                     </span>
                   )}
                   <button
-                    onClick={() => handleDeleteImage(img)}
+                    onClick={() => handleDeleteImage(img?.imageId)}
+                    disabled={isDeleting}
                     className="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-700 transition opacity-0 group-hover:opacity-100"
                   >
-                    <FiX className="h-4 w-4 text-red-500" />
+                    {isDeleting ? (
+                      <FaSpinner className="h-4 w-4 animate-spin text-gray-500" />
+                    ) : (
+                      <FiX className="h-4 w-4 text-red-500" />
+                    )}
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
                     <p className="text-xs text-white truncate">
-                      {img?.name || `Image ${index + 1}`}
+                      {img?.name || (isExistingProductImage(img) ? 'Existing Image' : `Image ${index + 1}`)}
                     </p>
                   </div>
                 </div>

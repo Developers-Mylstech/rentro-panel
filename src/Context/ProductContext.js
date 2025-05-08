@@ -8,6 +8,7 @@ const useProductStore = create((set) => ({
   error: null,
   singleProduct: {},
   createProduct: async (newProduct) => {
+    console.log(newProduct, 'newProduct');
     try {
       set({ loading: true, error: null });
 

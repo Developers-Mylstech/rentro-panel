@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import useBrandStore from '../../Context/BrandContext';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FloatLabel } from 'primereact/floatlabel';
 import axiosInstance from '../../utils/axiosInstance';
-        
+
 
 export default function AddBrandWithImageUploader() {
     const { addBrand, editBrand } = useBrandStore();
@@ -19,12 +19,14 @@ export default function AddBrandWithImageUploader() {
     const [message, setMessage] = useState("");
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentBrandId, setCurrentBrandId] = useState(null);
-    
+
     const location = useLocation();
     const navigate = useNavigate();
 
     const {
+        control,
         register,
+        watch,
         handleSubmit,
         formState: { errors },
         setValue,
@@ -42,13 +44,13 @@ export default function AddBrandWithImageUploader() {
             setCurrentBrandId(brandId);
             setValue('name', name);
             setUploadedUrl(images || []);
-            setPreviewUrls(images || []); // Show existing images as previews
+            setPreviewUrls(images || []); 
         }
     }, [location.state, setValue]);
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        
+
         // Combine with existing files if any
         const newFiles = [...selectedFiles, ...files];
         setSelectedFiles(newFiles);
@@ -56,7 +58,7 @@ export default function AddBrandWithImageUploader() {
         // Create new preview URLs
         const newPreviews = files.map(file => URL.createObjectURL(file));
         setPreviewUrls([...previewUrls, ...newPreviews]);
-        
+
         setMessage("");
     };
 
@@ -86,11 +88,11 @@ export default function AddBrandWithImageUploader() {
             );
 
             const uploadedFiles = response.data.map(item => item.fileUrl).filter(Boolean);
-            
+
             // Combine with existing uploaded URLs if any
             const combinedUrls = [...uploadedUrl, ...uploadedFiles];
             setUploadedUrl(combinedUrls);
-            
+
             setMessage(uploadedFiles.length ? "Images uploaded successfully" : "Upload completed but no URLs returned");
 
             // Clear selected files after successful upload
@@ -123,7 +125,7 @@ export default function AddBrandWithImageUploader() {
             } else {
                 await addBrand(payload);
                 setMessage("Brand created successfully!");
-                
+
                 // Reset all states
                 reset();
                 setSelectedFiles([]);
@@ -134,7 +136,7 @@ export default function AddBrandWithImageUploader() {
                 });
                 setUploadedUrl([]);
             }
-            
+
         } catch (error) {
             console.error(error);
             setMessage(`Failed to ${isEditMode ? 'update' : 'create'} brand. Please try again.`);
@@ -146,7 +148,7 @@ export default function AddBrandWithImageUploader() {
         const newUrls = [...uploadedUrl];
         newUrls.splice(index, 1);
         setUploadedUrl(newUrls);
-        
+
         // Remove from preview URLs
         const newPreviews = [...previewUrls];
         newPreviews.splice(index, 1);
@@ -166,8 +168,8 @@ export default function AddBrandWithImageUploader() {
 
     return (
         <div className="h-screen flex items-center justify-center bg-gray-50 p-4 dark:bg-gray-900 dark:text-gray-100">
-            <form 
-                onSubmit={handleSubmit(onSubmit)} 
+            <form
+                onSubmit={handleSubmit(onSubmit)}
                 className="w-full max-w-2xl bg-white rounded-xl overflow-hidden border border-gray-300 transition-all hover:shadow-md dark:bg-gray-900 dark:text-gray-100"
             >
                 {/* Header */}
@@ -194,25 +196,45 @@ export default function AddBrandWithImageUploader() {
                     {/* Brand Name */}
                     <div className="space-y-2">
 
-                    <FloatLabel>
-    <InputText
-        id="username"
-        className={`peer w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50 transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''}`}
-        {...register('name', {
-            required: 'Brand name is required',
-            minLength: {
-                value: 2,
-                message: 'Minimum 2 characters required'
-            }
-        })}
-    />
-    <label
-        htmlFor="username"
-        className={`block  text-sm font-medium text-gray-700 peer-focus:text-blue-600 uppercase tracking-wider transition-colors duration-200`}
-    >
-        Brand Name
-    </label>
-</FloatLabel>
+                        <FloatLabel>
+                            <InputText
+                                id="username"
+                                className={`peer w-full px-4 py-3 text-sm border-0 border-b border-gray-200 focus:border-blue-500 focus:ring-0 dark:bg-gray-900 dark:text-gray-100 bg-gray-50 transition-all duration-200 ${errors.name ? 'border-b-red-500' : ''
+                                    } ${watch('name') ? 'pt-5' : ''}`}
+                                {...register('name', {
+                                    required: 'Brand name is required',
+                                    minLength: {
+                                        value: 2,
+                                        message: 'Minimum 2 characters required'
+                                    }
+                                })}
+                            />
+                            <label
+                                htmlFor="username"
+                                className={`absolute left-4 transition-all duration-200 ${watch('name')
+                                        ? '-top-1 text-xs text-blue-600 dark:text-blue-400'
+                                        : 'top-3 text-sm text-gray-500 dark:text-gray-400'
+                                    } uppercase tracking-wider font-medium peer-focus:text-blue-600 peer-focus:dark:text-blue-400 peer-focus:-top-1 peer-focus:text-xs`}
+                            >
+                                Brand Name
+                            </label>
+                        </FloatLabel>
+                        {/* <FloatLabel className='active:text-blue-500'>
+                            <Controller
+                                id="username"
+                                control={control}
+                                rules={{ required: 'Brand name is required' }}
+                                render={({ field }) => (
+                                    <InputText
+                                        {...field}
+                                        id='name'
+                                        className="w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                                    />
+                                )}
+                            />
+                            <label htmlFor='name' className="block text-sm peer-focus:text-blue-500 font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500">Brand Name</label>
+                        </FloatLabel> */}
+
                         {errors.name && (
                             <p className="text-xs text-red-500 mt-1 animate-fade-in">{errors.name.message}</p>
                         )}
@@ -233,12 +255,12 @@ export default function AddBrandWithImageUploader() {
                                         </p>
                                         <p className="text-xs text-gray-400">PNG, JPG, WEBP (MAX. 5 images)</p>
                                     </div>
-                                    <input 
-                                        type="file" 
-                                        multiple 
-                                        onChange={handleFileChange} 
-                                        accept="image/*" 
-                                        className="hidden" 
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={handleFileChange}
+                                        accept="image/*"
+                                        className="hidden"
                                     />
                                 </label>
                             </div>
