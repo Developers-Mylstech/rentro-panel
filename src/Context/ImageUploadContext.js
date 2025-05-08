@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import axiosInstance from '../utils/axiosInstance';
 
-const useImageUploadStore = create((set) => ({
-    uploadedFiles: [], 
+const useImageUploadStore = create((set, get) => ({
+    uploadedFiles: [], // [{ imageId, imageUrl }]
     isLoading: false,
     error: null,
+    isDeleting: false,
 
     uploadFiles: async (files) => {
         set({ isLoading: true, error: null });
@@ -18,19 +19,26 @@ const useImageUploadStore = create((set) => ({
             }
 
             const response = await axiosInstance.post(
-                '/images/batch-upload?quality=80&fallbackToJpeg=true',
+                '/image-entities/batch-upload',
                 formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        // 'skip_zrok_interstitial': 'true'
                     },
                 }
             );
 
-       
-            const formattedFiles = response?.data?.map((file) => file.fileUrl);
-            set({ uploadedFiles: formattedFiles, isLoading: false });
+            // Extract and format files
+            const formattedFiles = response?.data?.map((file) => ({
+                imageId: file.image?.imageId,
+                imageUrl: file.image?.imageUrl,
+            }));
+
+            const currentFiles = get().uploadedFiles || [];
+            set({
+                uploadedFiles: [...currentFiles, ...formattedFiles],
+                isLoading: false,
+            });
 
             return formattedFiles;
         } catch (error) {
@@ -39,12 +47,24 @@ const useImageUploadStore = create((set) => ({
         }
     },
 
-    deleteImage: async (productId ) => {
-        console.log(productId,'00999')
+    deleteImage: async (imageId) => {
         set({ isDeleting: true, error: null });
-        
+
         try {
-            await axiosInstance.delete(`/images/delete/product/${productId}`);
+           const response = await axiosInstance.delete(`/image-entities/${imageId}`);
+
+            const currentFiles = get().uploadedFiles || [];
+            console.log('All files before filter:', currentFiles);
+
+            const updatedFiles = currentFiles.filter(file => {
+                return file?.imageId && file.imageId !== imageId;
+            });
+
+            console.log('Deleting imageId:', imageId);
+            console.log('Current files before delete:', currentFiles);
+
+
+            set({ uploadedFiles: updatedFiles, isDeleting: false });
 
             return true;
         } catch (error) {
@@ -57,4 +77,3 @@ const useImageUploadStore = create((set) => ({
 }));
 
 export default useImageUploadStore;
-

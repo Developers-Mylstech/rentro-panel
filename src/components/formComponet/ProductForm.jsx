@@ -183,7 +183,7 @@ const ProductForm = () => {
             },
             keyFeatures: res.keyFeatures || [''],
             specifications: res.specifications || [{ name: '', value: '' }],
-            images: res.imageUrls || [],
+            images: res.images || [],
             tagandkeywords: res.tagNKeywords || ['']
           });
         }
@@ -234,33 +234,32 @@ const ProductForm = () => {
     try {
       setLoading(true);
       const payload = preparePayload(data);
-
+console.log(payload,'payload final')
       let response;
       if (id) {
         console.log(payload,'preparePayload')
         response = await updateProduct(id, payload);
-        if (response?.status == 200) {
-          navigate('/products')
-        }
+        // if (response?.status == 200) {
+        //   navigate('/products')
+        // }
         showToast('success', 'Success', 'Product updated successfully!');
       } else {
 
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');
-        if (response?.status == 200 || response?.status == 201) {
-          reset({
-            ...data,
-            category: {
-              ...data.category,
-              main: null,
-              sub: null
-            }
-          });
-          
-//           setTimeout(() => {
-// navigate('/products')
-//           }, 500);
-        }
+        // if (response?.status == 200 || response?.status == 201) {
+        //   reset({
+        //     ...data,
+        //     category: {
+        //       ...data.category,
+        //       main: null,
+        //       sub: null
+        //     }
+        //   });
+        //   setTimeout(() => {
+        //     window.location.reload();
+        //   }, 500);
+        // }
 
 
       }
@@ -273,12 +272,12 @@ const ProductForm = () => {
   };
 
   const preparePayload = (data) => {
-  
-    const imageUrls = Array.isArray(data.images)
-      ? data.images
-        .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-        .filter(url => url)
-      : [];
+  console.log(data,'preparePayload');
+    // const imageUrls = Array.isArray(data.images)
+    //   ? data.images
+    //     .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
+    //     .filter(url => url)
+    //   : [];
 
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
@@ -339,7 +338,7 @@ const ProductForm = () => {
       longDescription: data.basicInfo.longDescription || '',
       manufacturer: data.basicInfo.manufacturer || '',
       brandId: +(data?.brand?.brandId || 0),
-      imageUrls,
+      imageIds: data.images?.map((item)=>item.imageId),
       specifications,
       modelNo: data.basicInfo.modelNo || '',
       supplierName: data.basicInfo.supplierName || '',
