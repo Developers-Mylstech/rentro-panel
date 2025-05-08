@@ -1,194 +1,653 @@
+// // // src/components/forms/AddAboutUs.jsx
+// // import React, { useState, useEffect } from "react";
+// // import { useForm } from "react-hook-form";
+// // import axiosInstance from "../../utils/axiosInstance";
+// // import  useAboutUsStore  from "../../Context/AboutUsContext";
+// // import { useNavigate, useLocation } from "react-router-dom";
+
+// // export default function AddAboutUs() {
+// //   const navigate = useNavigate();
+// //   const location = useLocation();
+// //   const isEdit = !!location.state?.aboutData;
+// //   const existing = location.state?.aboutData || {};
+
+// //   const { register, handleSubmit, reset, setValue } = useForm({
+// //     defaultValues: {
+// //       title: existing.title || "",
+// //       subtitle: existing.subtitle || "",
+// //       description: existing.description || "",
+// //     },
+// //   });
+
+// //   // local UI state
+// //   const [selectedFile, setSelectedFile] = useState(null);
+// //   const [previewUrl, setPreviewUrl] = useState(existing.imageUrl || "");
+// //   const [uploading, setUploading] = useState(false);
+// //   const [uploadedData, setUploadedData] = useState({
+// //     imageUrl: existing.imageUrl || "",
+// //     imageId: existing.imageId || null,
+// //   });
+//   // const [uploadedImage, setUploadedImage] = useState(null)
+//   // const [uploadedImageId, setUploadedImageId] = useState(null)
 
 
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { InputText } from 'primereact/inputtext';
-import { FileUpload } from 'primereact/fileupload';
-import { Button } from 'primereact/button';
 
-export default function AddRent() {
+// //   const {createAboutUs, updateAboutUs} = useAboutUsStore()
+
+// //   // on mount, if edit mode populate form
+// //   useEffect(() => {
+// //     if (isEdit) {
+// //       setValue("title", existing.title);
+// //       setValue("subtitle", existing.subtitle);
+// //       setValue("description", existing.description);
+// //     }
+// //   }, [isEdit, existing, setValue]);
+
+// //   // when user selects a new file
+// //   const handleFileChange = (e) => {
+// //     const file = e.target.files[0];
+// //     if (!file) return;
+// //     setSelectedFile(file);
+// //     setPreviewUrl(URL.createObjectURL(file));
+// //     // clear previous uploadedData so user must re-upload
+// //     setUploadedData({ imageUrl: "", imageId: null });
+// //   };
+
+// //   // upload helper
+// //   const uploadImage = async () => {
+// //     if (!selectedFile) return null;
+// //     setUploading(true);
+// //     const formData = new FormData();
+// //     formData.append("file", selectedFile);
+
+// //     try {
+// //       const resp = await axiosInstance.post(
+// //         "/image-entities/upload?quality=80&fallbackToJpeg=true", 
+// //         formData,
+// //         { headers: { "Content-Type": "multipart/form-data" } }
+// //       );
+// //       // assume resp.data = { imageUrl: "...", imageId: 12345 }
+//       // setUploadedImage(resp.data.image.imageUrl)
+//       // setUploadedImageId(resp.data.image.imageId)
+// //       console.log(uploadedImage,'gg')
+// //       console.log(uploadedImageId,"hhh")
+// //       return resp.data;
+// //     } catch (err) {
+// //       console.error("Image upload failed:", err);
+// //       alert("Image upload failed. Please try again.");
+// //       return null;
+// //     } finally {
+// //       setUploading(false);
+// //     }
+// //   };
+
+
+// //   // when user clicks Upload Image button
+// //   const handleUploadClick = async () => {
+// //     const result = await uploadImage();
+// //     if (result) {
+// //       setUploadedData(result);
+// //       setSelectedFile(null);
+// //     }
+// //   };
+
+// //   // final form submit
+// //   const onSubmit = async (data) => {
+// //     try {
+// //       // if user never clicked upload but selected file, upload now
+// //       let imgData = uploadedData;
+// //       if (selectedFile && !uploadedData.imageUrl) {
+// //         const result = await uploadImage();
+// //         if (result) imgData = result;
+// //         else return; // abort if upload failed
+// //       }
+
+// //       const payload = {
+// //         title:       data.title,
+// //         subtitle:    data.subtitle,
+// //         description: data.description,
+// //         imageUrl:    uploadedImage,
+// //         imageId:     uploadedImageId,
+// //       };
+
+// //       if (isEdit) {
+// //         await updateAboutUs(existing.aboutUsId, payload);
+// //       } else {
+// //         await createAboutUs(payload);
+// //       }
+
+// //       navigate("/about-us/listing");
+// //     } catch (err) {
+// //       console.error("Submit failed:", err);
+// //       alert("Failed to save. Please try again.");
+// //     }
+// //   };
+
+// //   return (
+// //     <div className="max-w-xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+// //       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+// //         {isEdit ? "Edit" : "Add"} About Us
+// //       </h2>
+
+// //       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+// //         <div>
+// //           <label className="block mb-1">Title</label>
+// //           <input
+// //             {...register("title", { required: true })}
+// //             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+// //           />
+// //         </div>
+
+// //         <div>
+// //           <label className="block mb-1">Subtitle</label>
+// //           <input
+// //             {...register("subtitle")}
+// //             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+// //           />
+// //         </div>
+
+// //         <div>
+// //           <label className="block mb-1">Description</label>
+// //           <textarea
+// //             {...register("description")}
+// //             rows={4}
+// //             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+// //           />
+// //         </div>
+
+// //         <div>
+// //           <label className="block mb-1">Image</label>
+// //           <input type="file" accept="image/*" onChange={handleFileChange} />
+// //         </div>
+
+// //         {/* Preview */}
+// //         {previewUrl && (
+// //           <div className="mt-3">
+// //             <img
+// //               src={previewUrl}
+// //               alt="Preview"
+// //               className="h-32 w-32 object-cover rounded-md border"
+// //             />
+// //           </div>
+// //         )}
+
+// //         {/* Upload button if a new file is selected and not yet uploaded */}
+// //         {selectedFile && !uploading && !uploadedData.imageUrl && (
+// //           <button
+// //             type="button"
+// //             onClick={handleUploadClick}
+// //             className="mt-2 bg-blue-600 text-white py-1 px-4 rounded hover:bg-blue-700"
+// //           >
+// //             Upload Image
+// //           </button>
+// //         )}
+// //         {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
+
+// //         <button
+// //           type="submit"
+// //           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+// //         >
+// //           {isEdit ? "Update About Us" : "Create About Us"}
+// //         </button>
+// //       </form>
+// //     </div>
+// //   );
+// // }
+
+
+// // src/components/forms/AddAboutUs.jsx
+// // src/components/forms/AddAboutUs.jsx
+
+
+// import React, { useState, useEffect } from "react";
+// import { useForm } from "react-hook-form";
+// import axiosInstance from "../../utils/axiosInstance";
+// import useAboutUsStore from "../../Context/AboutUsContext";
+// import { useNavigate, useLocation } from "react-router-dom";
+
+// export default function AddAboutUs() {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const isEdit = !!location.state?.about;
+//   const existing = location.state?.about || {};
+
+//   const { register, handleSubmit, setValue } = useForm({
+//     defaultValues: {
+//       title:       existing.title || "",
+//       subtitle:    existing.subtitle || "",
+//       description: existing.description || "",
+//     },
+//   });
+
+//   // Single source of truth for the image
+//   const [uploadedData, setUploadedData] = useState({
+//     imageUrl: existing.imageUrl || "",
+//     imageId:  existing.imageId  || null,
+//   });
+
+//   // For immediate preview (either blob or uploaded URL)
+//   const [previewUrl, setPreviewUrl] = useState(uploadedData.imageUrl);
+
+//   // Raw file selected by the user
+//   const [selectedFile, setSelectedFile] = useState(null);
+//   const [uploading, setUploading]     = useState(false);
+
+//   const createAboutUs = useAboutUsStore((s) => s.addAboutUs);
+//   const updateAboutUs = useAboutUsStore((s) => s.updateAboutUs);
+
+//   // Populate form fields in edit mode
+//   useEffect(() => {
+//     if (isEdit) {
+//       setValue("title",       existing.title);
+//       setValue("subtitle",    existing.subtitle);
+//       setValue("description", existing.description);
+//     }
+//   }, [isEdit, existing, setValue]);
+
+//   // When a new file is picked
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+
+//     setSelectedFile(file);
+//     setPreviewUrl(URL.createObjectURL(file));
+//     // Clear out the old uploadedData so user must re-upload
+//     setUploadedData({ imageUrl: "", imageId: null });
+//   };
+
+//   // Does the actual upload
+//   const uploadImage = async () => {
+//     if (!selectedFile) return null;
+//     setUploading(true);
+//     const formData = new FormData();
+//     formData.append("file", selectedFile);
+
+//     try {
+//       const resp = await axiosInstance.post(
+//         "/image-entities/upload?quality=80&fallbackToJpeg=true",
+//         formData,
+//         { headers: { "Content-Type": "multipart/form-data" } }
+//       );
+//       // assume resp.data.image = { imageUrl, imageId }
+//       const img = resp.data.image;
+//       // commit both the preview and the upload info
+//       setUploadedData(img);
+//       setPreviewUrl(img.imageUrl);
+//       setSelectedFile(null);
+//       return img;
+//     } catch (err) {
+//       console.error("Image upload failed:", err);
+//       alert("Image upload failed. Please try again.");
+//       return null;
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   // Final submit: ensure any un‐uploaded file is uploaded first
+//   const onSubmit = async (data) => {
+//     try {
+//       if (selectedFile && !uploadedData.imageUrl) {
+//         const img = await uploadImage();
+//         if (!img) return; // abort if upload failed
+//       }
+
+//       const payload = {
+//         title:       data.title,
+//         subtitle:    data.subtitle,
+//         description: data.description,
+//         imageUrl:    uploadedData.imageUrl,
+//         imageId:     uploadedData.imageId,
+//       };
+
+//       if (isEdit) {
+//         await updateAboutUs(existing.aboutUsId, payload);
+//       } else {
+//         await createAboutUs(payload);
+//       }
+
+//       navigate("/about-us/listing");
+//     } catch (err) {
+//       console.error("Submit failed:", err);
+//       alert("Failed to save. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+//       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+//         {isEdit ? "Edit" : "Add"} About Us
+//       </h2>
+//       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+//         {/* Title */}
+//         <div>
+//           <label className="block mb-1">Title</label>
+//           <input
+//             {...register("title", { required: true })}
+//             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+//           />
+//         </div>
+
+//         {/* Subtitle */}
+//         <div>
+//           <label className="block mb-1">Subtitle</label>
+//           <input
+//             {...register("subtitle")}
+//             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+//           />
+//         </div>
+
+//         {/* Description */}
+//         <div>
+//           <label className="block mb-1">Description</label>
+//           <textarea
+//             {...register("description")}
+//             rows={4}
+//             className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+//           />
+//         </div>
+
+//         {/* File chooser */}
+//         <div>
+//           <label className="block mb-1">Image</label>
+//           <input type="file" accept="image/*" onChange={handleFileChange} />
+//         </div>
+
+//         {/* Preview */}
+//         {previewUrl && (
+//           <div className="mt-3">
+//             <img
+//               src={previewUrl}
+//               alt="Preview"
+//               className="h-32 w-32 object-cover rounded-md border"
+//             />
+//           </div>
+//         )}
+
+//         {/* Upload button */}
+//         {selectedFile && !uploading && !uploadedData.imageUrl && (
+//           <button
+//             type="button"
+//             onClick={uploadImage}
+//             className="mt-2 bg-blue-600 text-white py-1 px-4 rounded hover:bg-blue-700"
+//           >
+//             Upload Image
+//           </button>
+//         )}
+//         {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
+
+//         {/* Submit */}
+//         <button
+//           type="submit"
+//           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+//         >
+//           {isEdit ? "Update About Us" : "Create About Us"}
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+
+import React, { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import axiosInstance from "../../utils/axiosInstance";
+import useAboutUsStore from "../../Context/AboutUsContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FiEdit2, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+
+export default function AddAboutUs() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    subtitle: '',
-    description: '',
-    image1: null,
-    image2: null,
-    image3: null,
+  const location = useLocation();
+  const isEdit = !!location.state?.about;
+  const existing = location.state?.about || {};
+  const fileInputRef = useRef(null);
+
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+    defaultValues: {
+      title: existing.title || "",
+      subtitle: existing.subtitle || "",
+      description: existing.description || "",
+    },
   });
 
-  const [errors, setErrors] = useState({});
-  const [previews, setPreviews] = useState({
-    image1: null,
-    image2: null,
-    image3: null,
+  const [uploadedData, setUploadedData] = useState({
+    imageUrl: existing.imageUrl || "",
+    imageId: existing.imageId || null,
   });
-  const [fileKey, setFileKey] = useState(0);
 
-  // Refs for FileUpload components to access clear() method
-  const fileUploadRefs = {
-    image1: useRef(null),
-    image2: useRef(null),
-    image3: useRef(null),
-  };
+  const [previewUrl, setPreviewUrl] = useState(uploadedData.imageUrl);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [isHoveringImage, setIsHoveringImage] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: '' });
-  };
+  const { createAboutUs, updateAboutUs } = useAboutUsStore();
 
-  const handleFileChange = (e, name) => {
-    const file = e.files[0];
-
-    // Validation for file type and size
-    if (file) {
-      const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
-        setErrors({ ...errors, [name]: 'Invalid file type. Allowed types: .png, .jpeg, .webp' });
-        fileUploadRefs[name].current.clear(); // Clear input on error
-        return;
-      }
-      if (file.size > 1024 * 1024) {
-        setErrors({ ...errors, [name]: 'File size exceeds 1 MB' });
-        fileUploadRefs[name].current.clear(); // Clear input on error
-        return;
-      }
-
-      // Set file and preview
-      setFormData({ ...formData, [name]: file });
-      setPreviews({ ...previews, [name]: URL.createObjectURL(file) });
-      setErrors({ ...errors, [name]: '' });
+  useEffect(() => {
+    if (isEdit) {
+      setValue("title", existing.title);
+      setValue("subtitle", existing.subtitle);
+      setValue("description", existing.description);
     }
-    setFileKey(!fileKey)
+  }, [isEdit, existing, setValue]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setUploadedData({ imageUrl: "", imageId: null });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.title) newErrors.title = 'Title is required';
-    if (!formData.subtitle) newErrors.subtitle = 'Subtitle is required';
-    if (!formData.description) newErrors.description = 'Description is required';
-    if (!formData.image1) newErrors.image1 = 'First image is required';
-    if (!formData.image2) newErrors.image2 = 'Second image is required';
-    if (!formData.image3) newErrors.image3 = 'Third image is required';
-    setErrors(newErrors);
+  const uploadImage = async () => {
+    if (!selectedFile) return null;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
 
-    return Object.keys(newErrors).length === 0;
+    try {
+      const resp = await axiosInstance.post(
+        "/image-entities/upload?quality=80&fallbackToJpeg=true",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      const img = resp.data.image;
+      setUploadedData(img);
+      setPreviewUrl(img.imageUrl);
+      setSelectedFile(null);
+      return img;
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      alert("Image upload failed. Please try again.");
+      return null;
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  const handleRemoveImage = () => {
+    setPreviewUrl("");
+    setSelectedFile(null);
+    setUploadedData({ imageUrl: "", imageId: null });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('subtitle', formData.subtitle);
-    formDataToSend.append('description', formData.description);
-    if (formData.image1) formDataToSend.append('image1', formData.image1);
-    if (formData.image2) formDataToSend.append('image2', formData.image2);
-    if (formData.image3) formDataToSend.append('image3', formData.image3);
+  const handleEditImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
+  const onSubmit = async (data) => {
+    try {
+      if (selectedFile && !uploadedData.imageUrl) {
+        const img = await uploadImage();
+        if (!img) return;
+      }
 
-    navigate('/rental-list');
+      const payload = {
+        title: data.title,
+        subtitle: data.subtitle,
+        description: data.description,
+        imageUrl: uploadedData.imageUrl,
+        imageId: uploadedData.imageId,
+      };
+
+      if (isEdit) {
+        await updateAboutUs(existing.aboutUsId, payload);
+      } else {
+        await createAboutUs(payload);
+      }
+
+      navigate("/about-us/listing");
+    } catch (err) {
+      console.error("Submit failed:", err);
+      alert("Failed to save. Please try again.");
+    }
   };
 
   return (
-    <div className="w-full">
-      <h3 className="heading mb-6 dark:text-gray-300">Add About Us Detail</h3>
-
-      <div className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-          About Us Information
-        </h2>
-
-        {/* Title Field */}
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2">Title</label>
-          <InputText
-            className="md:w-[70%] w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="Title"
+    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+        {isEdit ? "Edit" : "Add"} About Us
+      </h2>
+      
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Title */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            {...register("title", { required: "Title is required" })}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.title ? "border-red-500" : "border-gray-300"
+            }`}
           />
-          {errors.title && <span className="text-red-500 text-sm">{errors.title}</span>}
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
+          )}
         </div>
 
-        {/* Subtitle Field */}
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2">Subtitle</label>
-          <InputText
-            className="md:w-[70%] w-full  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
-            name="subtitle"
-            value={formData.subtitle}
-            onChange={handleChange}
-            placeholder="Subtitle"
+        {/* Subtitle */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Subtitle
+          </label>
+          <input
+            {...register("subtitle")}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
-          {errors.subtitle && <span className="text-red-500 text-sm">{errors.subtitle}</span>}
         </div>
 
-        {/* Description Field */}
-        <div className="mb-4 flex flex-col md:flex-row justify-between md:items-center">
-          <label className="text-gray-600 dark:text-gray-300 mb-2">Description</label>
-          <InputText
-            className="md:w-[70%] w-full  p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Description"
+        {/* Description */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Description
+          </label>
+          <textarea
+            {...register("description")}
+            rows={5}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
-          {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
         </div>
-      </div>
 
-
-      <div className="border border-gray-300 dark:border-gray-700 p-6 rounded-lg shadow bg-white dark:bg-gray-800 mb-6">
-        <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Images</h4>
-
-        <p className="text-yellow-500 dark:text-gray-400 opacity-80 text-sm mb-4">
-          **Image should be below 1 MB and should have dimensions of 500 × 600 and type of .png / .jpeg / .webp**
-        </p>
-
-        {['image1', 'image2', 'image3'].map((name, index) => (
-          <div key={name} className="mb-4 flex flex-col md:flex-row justify-between items-center w-full gap-4">
-
-            <div className="flex   justify-between items-center md:w-[80%] w-full">
-              <label className="text-gray-600 dark:text-gray-300 mb-2">
-                Image {index + 1}
-              </label>
-
-              <FileUpload
-                ref={fileUploadRefs[name]}
-                mode="basic"
-                chooseOptions={{ className: 'bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 dark:border-gray-300' }}
-                name={name}
-                accept="image/*"
-                auto
-                customUpload
-                key={fileKey} 
-                chooseLabel={formData[name] ? formData[name].name : 'Choose'}
-                className=" dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md px-3 py-2 "
-                onSelect={(e) => handleFileChange(e, name)}
+        {/* Image Upload */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Image
+          </label>
+          
+          <div className="flex items-center gap-4">
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <FiUpload className="w-8 h-8 mb-3 text-gray-400" />
+                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="font-semibold">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  PNG, JPG, JPEG (Max 5MB)
+                </p>
+              </div>
+              <input 
+                ref={fileInputRef}
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                className="hidden" 
               />
-            </div>
-
-            {previews[name] && (
-              <img src={previews[name]} alt="" className="w-24 h-24 rounded-lg shadow ml-4 border border-gray-300 dark:border-gray-600" />
-            )}
-
-            {errors[name] && <span className="text-red-500 text-sm">{errors[name]}</span>}
+            </label>
           </div>
-        ))}
-      </div>
+        </div>
 
+        {/* Preview and Image Actions */}
+        {(previewUrl || uploadedData.imageUrl) && (
+          <div className="relative mt-4">
+            <div 
+              className="relative inline-block"
+              onMouseEnter={() => setIsHoveringImage(true)}
+              onMouseLeave={() => setIsHoveringImage(false)}
+            >
+              <img
+                src={previewUrl || uploadedData.imageUrl}
+                alt="Preview"
+                className="h-48 w-full object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              />
+              
+              {(isHoveringImage || uploading) && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center gap-4">
+                  <button
+                    type="button"
+                    onClick={handleEditImage}
+                    className="p-2 bg-white text-gray-800 rounded-full hover:bg-gray-200 transition"
+                    title="Change image"
+                  >
+                    <FiEdit2 className="w-5 h-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="p-2 bg-white text-red-500 rounded-full hover:bg-red-100 transition"
+                    title="Remove image"
+                  >
+                    <FiTrash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {uploading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                <div className="text-white">Uploading...</div>
+              </div>
+            )}
+          </div>
+        )}
 
-      <div className="flex justify-center mt-6">
-  <Button 
-    label="Submit" 
-    className="px-4 py-2 rounded-lg bg-primary border-2 border-secondary text-secondary dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-300 "
-    onClick={handleSubmit} 
-  />
-</div>
+        {/* Upload button for selected but not uploaded files */}
+        {selectedFile && !uploading && !uploadedData.imageUrl && (
+          <button
+            type="button"
+            onClick={uploadImage}
+            className="flex items-center justify-center gap-2 mt-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+          >
+            <FiUpload className="w-5 h-5" />
+            Upload Image
+          </button>
+        )}
 
+        {/* Submit Button */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-600 transition shadow-md"
+          >
+            {isEdit ? "Update About Us" : "Create About Us"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
-
