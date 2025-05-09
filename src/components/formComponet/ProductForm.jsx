@@ -14,6 +14,8 @@ import KeyFeaturesFields from './KeyFeaturesFields';
 import TagsAndKeywords from './TagsAndKeywords';
 import ImageUploader from './ImageUploader';
 import SpecificationFields2 from './SpecificationFields2';
+import ServiceSelector from './ServiceSelecter';
+
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const ProductForm = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [isImageUpload, setIsImageUpload] = useState(false);
+  const [isEditing , setIsEditing] = useState(false)
   const navigate = useNavigate()
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
@@ -142,9 +145,11 @@ const ProductForm = () => {
           keyFeatures: [''],
           specifications: [{ name: '', value: '' }],
           images: [],
+          ourServiceIds:[],
           tagandkeywords: ['']
         });
         setPageLoading(false);
+        setIsEditing(false)
       } else if (id) {
 
         setPageLoading(true);
@@ -184,10 +189,14 @@ const ProductForm = () => {
             keyFeatures: res.keyFeatures || [''],
             specifications: res.specifications || [{ name: '', value: '' }],
             images: res.images || [],
+            // ourServiceIds: res.ourServiceIds || [],
+            ourServiceIds: res.ourServices?.map(s => s.ourServiceId) || [],
+
             tagandkeywords: res.tagNKeywords || ['']
           });
         }
         setPageLoading(false);
+        setIsEditing(true)
       }
     };
 
@@ -339,6 +348,7 @@ console.log(payload,'payload final')
       manufacturer: data.basicInfo.manufacturer || '',
       brandId: +(data?.brand?.brandId || 0),
       imageIds: data.images?.map((item)=>item.imageId),
+      ourServiceIds: data.ourServiceIds,
       specifications,
       modelNo: data.basicInfo.modelNo || '',
       supplierName: data.basicInfo.supplierName || '',
@@ -378,6 +388,24 @@ console.log(payload,'payload final')
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 text-gray-700 dark:text-gray-300">
             <ProductBasicInfo control={control} errors={errors} />
             <CategoryBrandSelection control={control} errors={errors} singleProduct={singleProduct} setValue={setValue} />
+            {/* <ServiceSelector
+              initialSelected={singleProduct?.ourServiceIds || []}
+             
+            /> */}
+            <ServiceSelector
+  initialSelected={singleProduct?.ourServices || watch('ourServiceIds') || []}
+  onSave={(selectedIds) => {
+    // This only updates the form state with the selected service IDs
+    // It doesn't trigger a product save/update
+    console.log('Selected service IDs:', selectedIds);
+    setValue('ourServiceIds', selectedIds);
+  }}
+  onCancel={() => {
+    // Optional: Handle cancel action if needed
+    console.log('Service selection cancelled');
+  }}
+/>
+
             <PricingOptions control={control} watch={watch} setValue={setValue} singleProduct={singleProduct} />
             <SpecificationFields2 control={control} watch={watch} setValue={setValue} />
             <InventorySection control={control} />
@@ -385,6 +413,7 @@ console.log(payload,'payload final')
             <TagsAndKeywords control={control} watch={watch} setValue={setValue} />
             <ImageUploader
               control={control}
+              isEditing={isEditing}
               setValue={setValue}
               watch={watch}
               singleProduct={singleProduct}

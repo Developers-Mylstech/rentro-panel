@@ -17,6 +17,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
 import "../../index.css"
 import { useLocation, useParams } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
 
 
 
@@ -1769,6 +1770,7 @@ const KeyFeaturesFields = ({ features = [], onChange, formSubmitted }) => {
 
 const ImageUploader = ({ images, onChange, singleProduct, setIsImageSelected, setIsImageUplaod }) => {
     const { uploadFiles, isLoading, deleteImage } = useImageUploadStore();
+    const {deleteProductImage} = useProductStore()
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
     const [imagesNeedUpload, setImagesNeedUpload] = useState(false);
@@ -1837,12 +1839,20 @@ const ImageUploader = ({ images, onChange, singleProduct, setIsImageSelected, se
 
     const handleDeleteImage = async (index) => {
         try {
-            const newImages = [...images];
-            newImages.splice(index, 1);
-            onChange(newImages);
+            // const newImages = [...images];
+            // newImages.splice(index, 1);
+            // onChange(newImages);
 
-            await deleteImage(singleProduct.productId);
-            showToast('success', 'Success', 'Image deleted successfully');
+            // await deleteProductImage(singleProduct.productId, index.imageId);
+             if (singleProduct?.productId && img.imageId) {
+                            // await deleteProductImage(singleProduct.productId, img.imageId);
+                            console.log("hitting")
+                            await axiosInstance.delete(`/products/${singleProduct.productId}/images/${img.imageId}`);
+                            console.log("Image deleted successfully");
+            
+                            showToast('success', 'Success', 'Image deleted successfully');
+                        }
+            // showToast('success', 'Success', 'Image deleted successfully');
 
         } catch (error) {
             showToast('error', 'Error', 'Failed to delete image');

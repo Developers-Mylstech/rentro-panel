@@ -1,0 +1,150 @@
+import React, { useState, useEffect } from 'react';
+import { MultiSelect } from 'primereact/multiselect';
+import axiosInstance from '../../utils/axiosInstance';
+import { Button } from 'primereact/button';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) => {
+  const [services, setServices] = useState([]);
+  const [selectedServiceObjects, setSelectedServiceObjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await axiosInstance.get('/our-services');
+        const fetchedServices = response.data;
+        setServices(fetchedServices);
+
+        // Process initialSelected which could be:
+        // 1. Array of IDs: [1, 2, 3]
+        // 2. Array of objects with ourServiceId: [{ourServiceId: 1}, {ourServiceId: 2}]
+        // 3. Single ID: 1
+        // 4. Single object: {ourServiceId: 1}
+        
+        if (initialSelected) {
+          let initialIds = [];
+          
+          if (Array.isArray(initialSelected)) {
+            // Handle array of IDs or objects
+            initialIds = initialSelected.map(item => 
+              typeof item === 'object' ? item.ourServiceId : item
+            );
+          } else if (typeof initialSelected === 'object') {
+            // Handle single object
+            initialIds = [initialSelected.ourServiceId];
+          } else {
+            // Handle single ID
+            initialIds = [initialSelected];
+          }
+          
+          // Find matching service objects
+          const matchedServices = fetchedServices.filter(service => 
+            initialIds.some(id => 
+              id && service.ourServiceId && id.toString() === service.ourServiceId.toString()
+            )
+          );
+          
+          console.log('Initial IDs:', initialIds);
+          console.log('Matched services:', matchedServices);
+          
+          setSelectedServiceObjects(matchedServices);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        setFetchError('Failed to load services. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, [initialSelected]);
+
+  const handleSave = () => {
+    // Just extract the IDs and pass them to the parent component
+    const selectedIds = selectedServiceObjects.map(service => service.ourServiceId);
+    console.log('Saving selected service IDs:', selectedIds);
+    
+    // Call the onSave callback with the selected IDs
+    // This will update the form state in the parent component
+    // without triggering a product save/update
+    onSave(selectedIds);
+  };
+
+  // Handle selection change directly
+  const handleSelectionChange = (e) => {
+    console.log('Selected services:', e.value);
+    setSelectedServiceObjects(e.value);
+    
+    // Optionally, you can also update the parent component in real-time
+    // without requiring the user to click the Save/Update button
+    // const selectedIds = e.value.map(service => service.ourServiceId);
+    // onSave(selectedIds);
+  };
+
+  if (loading) {
+    return <ProgressSpinner />;
+  }
+
+  if (fetchError) {
+    return (
+      <div className="p-4 text-red-500">
+        {fetchError}
+        <Button
+          label="Retry"
+          icon="pi pi-refresh"
+          className="p-button-text ml-2"
+          onClick={() => window.location.reload()}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="card p-4">
+      <h3 className="text-xl mb-4">
+        {selectedServiceObjects.length > 0 ? 'Edit Selected Services' : 'Select Services'}
+      </h3>
+
+      <div className="mb-4">
+        <MultiSelect
+          value={selectedServiceObjects}
+          options={services}
+          onChange={handleSelectionChange}
+          optionLabel="title"
+          filter
+          placeholder="Search services..."
+          className="w-full p-2 border text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+          display="chip"
+          selectedItemsLabel="{0} services selected"
+          maxSelectedLabels={5}
+          showSelectAll={services.length > 5}
+        />
+      </div>
+
+      <div className="flex justify-between items-center">
+        <div className="text-sm text-gray-500">
+          {selectedServiceObjects.length} service(s) selected
+        </div>
+        <div className="flex gap-2">
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+           className='p-2 rounded-md bg-secondary text-white'
+            onClick={onCancel}
+          />
+          <Button
+            label={selectedServiceObjects.length > 0 ? 'Update' : 'Save'}
+            icon="pi pi-check "
+            onClick={handleSave}
+            className='p-2 rounded-md bg-secondary text-white'
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ServiceSelector;

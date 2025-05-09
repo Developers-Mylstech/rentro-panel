@@ -71,7 +71,30 @@ const useImageUploadStore = create((set, get) => ({
             set({ error: error.message, isDeleting: false });
             throw error;
         }
+
+        
     },
+      deleteProductImage: async (productId,imageId)=> {
+        try {
+          set({ loading: true, error: null });
+    
+          const response = await axiosInstance.delete(`/products/${productId}/images/${imageId}`);
+          const updatedFiles = currentFiles.filter(file => {
+            return file?.imageId && file.imageId !== imageId;
+        });
+      
+            set({ uploadedFiles: updatedFiles, isDeleting: false });
+            // Ensure you're matching the correct key (e.g., productId)
+    
+    
+          return { success: true }; // ✅ return something so you can check success
+        } catch (error) {
+          set({ error: error.message });
+          return { success: false, error: error.message }; // ✅ also return failure info
+        } finally {
+          set({ loading: false });
+        }
+      },
 
     reset: () => set({ uploadedFiles: [], error: null, isLoading: false }),
 }));

@@ -1,170 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '../../utils/axiosInstance';
-import { Dialog } from 'primereact/dialog';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useBannerStore from '../../Context/BannerContext';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
+import { Tooltip } from 'primereact/tooltip';
+import { Skeleton } from 'primereact/skeleton';
+import { classNames } from 'primereact/utils';
 
 export default function BannerList() {
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
-  const [editForm, setEditForm] = useState({
-    bannerId: null,
-    title: '',
-    imageUrl: ''
-  });
+  const { loading, banners, fetchBanners, deleteBanner } = useBannerStore();
+  const navigate = useNavigate();
 
-  // Fetch banners from API
   useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await axiosInstance.get('/banners');
-        setBanners(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching banners:', error);
-        setLoading(false);
-      }
-    };
     fetchBanners();
   }, []);
 
+  const handleEditBanner = (banner) => {
+    navigate('/banner/add', { state: { banner } });
+  };
+
   const handleDelete = async (id) => {
     try {
-      await axiosInstance.delete(`/banners/${id}`);
-      setBanners(banners.filter(banner => banner.bannerId !== id));
+      await deleteBanner(id);
+      fetchBanners();
     } catch (error) {
       console.error('Error deleting banner:', error);
     }
   };
 
-  const handleEdit = (banner) => {
-    setEditForm({
-      bannerId: banner.bannerId,
-      title: banner.title,
-      imageUrl: banner.imageUrl
-    });
-    setVisible(true);
-  };
-
-  const handleChange = (e) => {
-    setEditForm({
-      ...editForm,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSave = async () => {
-    try {
-      await axiosInstance.put(`/banners/${editForm.bannerId}`, editForm);
-      setBanners(banners.map(banner =>
-        banner.bannerId === editForm.bannerId ? { ...banner, ...editForm } : banner
-      ));
-      setVisible(false);
-    } catch (error) {
-      console.error('Error updating banner:', error);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="p-6 dark:bg-gray-800">
+        <div className="flex flex-col gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="p-4 border rounded-lg dark:border-gray-700 dark:bg-gray-700">
+              <div className="flex items-center gap-4">
+                <Skeleton width="80px" height="80px" className="rounded-lg dark:bg-gray-600" />
+                <Skeleton width="30%" height="1.5rem" className="dark:bg-gray-600" />
+                <div className="ml-auto flex gap-2">
+                  <Skeleton width="2.5rem" height="2.5rem" shape="circle" className="dark:bg-gray-600" />
+                  <Skeleton width="2.5rem" height="2.5rem" shape="circle" className="dark:bg-gray-600" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Banner Management</h2>
-
-      <div className="bg-white shadow-md rounded-lg min-w-[800px] overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {banners.map(banner => (
-              <tr key={banner.bannerId}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <img src={banner.imageUrl} alt={banner.title} className='w-20 h-20 object-cover' />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{banner.title}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="border grid grid-cols-2 p-[2px] rounded gap-1">
-                    <button
-                      onClick={() => handleEdit(banner)}
-                      className="w-full h-full text-black hover:text-blue-500 flex justify-center items-center bg-gray-100 rounded px-3 py-1"
-                      title="Edit"
-                    >
-                      <i className="pi pi-pencil"></i>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(banner.bannerId)}
-                      className="w-full h-full text-red-500 rounded px-3 py-1"
-                      title="Delete"
-                    >
-                      <i className="pi pi-trash"></i>
-                    </button>
-
-                  </div>
-                  
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="p-6 max-w-6xl mx-auto dark:bg-gray-800 min-h-screen">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-light text-gray-800 dark:text-gray-200">Banner Management</h2>
+        <Button
+          label="Add New Banner"
+          icon="pi pi-plus"
+          className="p-button-sm mt-4 p-2 rounded-md text-white bg-secondary"
+          onClick={() => navigate('/banner/add')}
+        />
       </div>
 
-
-      <Dialog
-        header="Edit Banner"
-        visible={visible}
-        style={{ width: '50vw' }}
-        onHide={() => setVisible(false)}
-      >
-        <div className="p-fluid">
-          <div className="p-field mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-            <InputText
-              id="title"
-              name="title"
-              value={editForm.title}
-              onChange={handleChange}
-              className="w-full"
-            />
-          </div>
-          <div className="p-field mb-4">
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-            <InputText
-              id="imageUrl"
-              name="imageUrl"
-              value={editForm.imageUrl}
-              onChange={handleChange}
-              className="w-full"
-            />
-          </div>
-          <div className="flex justify-end gap-2 mt-4">
+      <div className="bg-white rounded-xl shadow-sm border dark:bg-gray-700 dark:border-gray-600">
+        {banners.length === 0 ? (
+          <div className="p-8 text-center text-gray-500 dark:text-gray-300">
+            <i className="pi pi-image text-4xl mb-2" />
+            <p className="text-lg">No banners found</p>
             <Button
-              label="Cancel"
-              icon="pi pi-times"
-              className="p-button-text"
-              onClick={() => setVisible(false)}
-            />
-            <Button
-              label="Save"
-              icon="pi pi-check"
-              onClick={handleSave}
+              label="Create First Banner"
+              icon="pi pi-plus"
+              className="p-button-text mt-4 p-2 rounded-md text-white bg-secondary"
+              onClick={() => navigate('/banner/add')}
             />
           </div>
-        </div>
-      </Dialog>
+        ) : (
+          <div className="divide-y dark:divide-gray-600">
+            {banners.map((banner) => (
+              <div key={banner.bannerId} className="p-4 hover:bg-gray-50 transition-colors dark:hover:bg-gray-600">
+                <div className="flex items-center">
+                  <img
+                    src={banner.imageUrl}
+                    alt={banner.title}
+                    className="w-24 h-24 object-cover rounded-lg shadow-xs border dark:border-gray-600"
+                  />
+                  <div className="ml-6 flex-1">
+                    <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200">{banner.title}</h3>
+                  </div>
+                  <div className="flex gap-2">
+                    <Tooltip target=".edit-btn" position="top" />
+                    <Button
+                      icon="pi pi-pencil"
+                      className="p-button-rounded p-button-text edit-btn dark:text-gray-200 dark:hover:bg-gray-500"
+                      data-pr-tooltip="Edit"
+                      onClick={() => handleEditBanner(banner)}
+                    />
+                    <Tooltip target=".delete-btn" position="top" />
+                    <Button
+                      icon="pi pi-trash"
+                      className="p-button-rounded p-button-text p-button-danger delete-btn dark:hover:bg-gray-500"
+                      data-pr-tooltip="Delete"
+                      onClick={() => handleDelete(banner.bannerId)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
