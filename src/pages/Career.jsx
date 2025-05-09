@@ -455,7 +455,7 @@ const Career = () => {
                   </div>
                   <div className="bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-center py-2 rounded-lg">
                     {job?.candidates}{" "}
-                    {job?.candidates === 1 ? "Applicant " : "Applicants"}
+                    {job?.totalApplicants > 1 ? job?.totalApplicants+ " Applicants" : job?.totalApplicants+ " Applicant" }
                   </div>
                 </div>
               </div>
@@ -548,7 +548,7 @@ const Career = () => {
                       currentApplicants.map((candidate) => (
                         <tr key={candidate?.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {candidate?.id}
+                            {candidate?.jobCode}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {candidate?.name}
