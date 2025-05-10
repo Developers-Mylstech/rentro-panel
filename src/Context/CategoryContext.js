@@ -70,9 +70,13 @@ const useCategoryStore = create((set, get) => ({
         subCategories: state.subCategories.filter(cat => cat._id !== id),
       }));
       return res;
-    } catch (error) {
-      console.error("Failed to delete category:", error);
-    }
+    }catch (error) {
+            if(error?.response?.data?.message){
+                alert(error?.response?.data?.message);
+            }else{
+                alert("Failed to delete brand");
+            }
+        }
   },
 
   handleEditCategory: async (id, updatedCategory) => {

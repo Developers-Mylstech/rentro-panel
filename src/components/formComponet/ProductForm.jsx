@@ -248,14 +248,14 @@ console.log(payload,'payload final')
       if (id) {
         console.log(payload,'preparePayload')
         response = await updateProduct(id, payload);
-        // if (response?.status == 200) {
+        // if (response?.status == 200 || response?.status == 201) {
         //   navigate('/products')
         // }
         showToast('success', 'Success', 'Product updated successfully!');
       } else {
 
         response = await createProduct(payload);
-        showToast('success', 'Success', 'Product created successfully!');
+    showToast('success', 'Success', 'Product created successfully!');
         // if (response?.status == 200 || response?.status == 201) {
         //   reset({
         //     ...data,
@@ -269,8 +269,8 @@ console.log(payload,'payload final')
         //     window.location.reload();
         //   }, 500);
         // }
-
-
+        
+        
       }
       setLoading(false);
     } catch (error) {
@@ -278,6 +278,8 @@ console.log(payload,'payload final')
       showToast('error', 'Error', 'Failed to create product. Please try again.');
       console.error('Error creating product:', error);
     }
+    
+    // navigate('/products')
   };
 
   const preparePayload = (data) => {

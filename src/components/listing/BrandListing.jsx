@@ -269,10 +269,10 @@ export default function BrandListing({ brands }) {
   const handleDelete = async (id) => {
     setLoading(true);
     try {
-      await removeBrand(id);
+       const res =await removeBrand(id);
       await getAllBrands();
     } catch (error) {
-      console.error("Error deleting brand:", error);
+      alert( error);
     } finally {
       setLoading(false);
     }

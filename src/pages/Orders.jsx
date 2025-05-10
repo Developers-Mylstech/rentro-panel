@@ -39,7 +39,7 @@ export default function Orders() {
   }, [fetchOrders]);
 
   return (
-    <div className='h-full dark:bg-gray-900'>
+    <div className='h-full min-h-screen dark:bg-gray-900'>
 
       
       

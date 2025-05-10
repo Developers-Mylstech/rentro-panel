@@ -381,7 +381,7 @@ export default function ServiceList() {
   const imageTemplate = (rowData) => (
     <div className="flex items-center">
       <img
-        src={rowData.imageUrl[0] || 'https://via.placeholder.com/80'}
+        src={rowData.imageUrl || 'https://via.placeholder.com/80'}
         alt={rowData.title}
         className="w-12 h-12 object-cover rounded-lg shadow-sm hover:scale-105 transition-transform duration-200"
       />
@@ -391,7 +391,7 @@ export default function ServiceList() {
   const titleTemplate = (rowData) => (
     <div className="flex flex-col gap-1">
       <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-        {rowData.title}
+        {rowData?.title}
       </span>
       <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
         {stripHtmlTags(rowData.shortDescription)}
@@ -401,8 +401,8 @@ export default function ServiceList() {
 
   const statusTemplate = (rowData) => (
     <Tag
-      value={rowData.status || 'Active'}
-      severity={rowData.status === 'Inactive' ? 'danger' : 'success'}
+      value={rowData?.status || 'Active'}
+      severity={rowData?.status === 'Inactive' ? 'danger' : 'success'}
       rounded
       className="text-xs"
     />
@@ -487,7 +487,7 @@ export default function ServiceList() {
             Service Management
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {services.length} services available
+            {services?.length} services available
           </p>
         </div>
 
@@ -573,13 +573,13 @@ export default function ServiceList() {
           >
             <div className="relative group">
               <img
-                src={service.imageUrl[0] || 'https://via.placeholder.com/300'}
+                src={service.imageUrl || 'https://via.placeholder.com/300'}
                 alt={service.title}
                 className="w-full h-40 object-cover group-hover:opacity-90 transition-opacity duration-300"
               />
               <Tag
-                value={service.status || 'Active'}
-                severity={service.status === 'Inactive' ? 'danger' : 'success'}
+                value={service?.status || 'Active'}
+                severity={service?.status === 'Inactive' ? 'danger' : 'success'}
                 rounded
                 className="absolute top-2 right-2 text-xs"
               />
@@ -588,17 +588,17 @@ export default function ServiceList() {
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 line-clamp-1">
-                  {service.title}
+                  {service?.title}
                 </h3>
                 <Badge 
-                  value={`#${service.ourServiceId}`} 
+                  value={`#${service?.ourServiceId}`} 
                   severity="info" 
                   className="text-xs flex justify-center items-center"
                 />
               </div>
               
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
-                {stripHtmlTags(service.shortDescription)}
+                {stripHtmlTags(service?.shortDescription)}
               </p>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
@@ -614,7 +614,7 @@ export default function ServiceList() {
                 <Button
                   icon="pi pi-trash"
                   className="p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"
-                  onClick={() => handleDelete(service.ourServiceId)}
+                  onClick={() => handleDelete(service?.ourServiceId)}
                   severity="secondary"
                   text
                   raised

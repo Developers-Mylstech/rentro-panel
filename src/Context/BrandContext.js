@@ -59,14 +59,19 @@ const useBrandStore = create((set) => ({
     },
 
     removeBrand: async (id) => {
+    
         try {
-            await axiosInstance.delete(`/brands/${id}`);
+           await axiosInstance.delete(`/brands/${id}`);
             set((state) => ({
                 brands: state.brands.filter(brand => brand.id !== id)
             }));
             alert('Brand deleted successfully');
         } catch (error) {
-            alert("Deletion failed due to backend issue");
+            if(error?.response?.data?.message){
+                alert(error?.response?.data?.message);
+            }else{
+                alert("Failed to delete brand");
+            }
         }
     },
 

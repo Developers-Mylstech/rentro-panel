@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/renroLogo.png"
 
 function CustomSidebar({ isDarkMode }) {
   const location = useLocation();
@@ -43,9 +44,8 @@ function CustomSidebar({ isDarkMode }) {
 
   const websiteMenus = [
     { name: "banner", icon: "pi pi-image" },
-    { name: "rent", icon: "pi pi-money-bill" },
-    { name: "sale", icon: "pi pi-gift" },
-    { name: "service", icon: "pi pi-cog" },
+   
+    { name: "service", icon: "pi pi-box" },
     { name: "about", icon: "pi pi-info-circle" },
     { name: "career", icon: "pi pi-briefcase" },
   ];
@@ -84,12 +84,10 @@ function CustomSidebar({ isDarkMode }) {
           className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700"
           style={{ transition: "border-color 0.3s ease" }}
         >
-          {/* <img
-            src="https://demo.rentro.ae/assets/renroLogo-p3-PWqCh.png"
-            alt="Logo"
-            className="w-24 h-auto"
-          /> */}
-          <h6 className="text-center w-full font-bold text-md animate-bounce text-secondary">Rent Ro</h6>
+          <div className="w-full flex justify-center items-center">
+            <img src={logo} alt="Logo" className="w-24 h-auto" />
+          </div>
+          {/* <h6 className="text-center w-full font-bold text-md animate-bounce text-secondary">Rent Ro</h6> */}
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-xl lg:hidden"

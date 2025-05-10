@@ -509,7 +509,7 @@ export default function AddAboutUs() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className="mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
         {isEdit ? "Edit" : "Add"} About Us
       </h2>
@@ -639,10 +639,10 @@ export default function AddAboutUs() {
         )}
 
         {/* Submit Button */}
-        <div className="pt-4">
+        <div className="pt-4 flex justify-center items-center">
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-600 transition shadow-md"
+            className="p-4 bg-secondary text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-600 transition shadow-md"
           >
             {isEdit ? "Update About Us" : "Create About Us"}
           </button>

@@ -62,26 +62,18 @@ const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) 
     fetchServices();
   }, [initialSelected]);
 
-  const handleSave = () => {
-    // Just extract the IDs and pass them to the parent component
-    const selectedIds = selectedServiceObjects.map(service => service.ourServiceId);
-    console.log('Saving selected service IDs:', selectedIds);
-    
-    // Call the onSave callback with the selected IDs
-    // This will update the form state in the parent component
-    // without triggering a product save/update
-    onSave(selectedIds);
-  };
-
-  // Handle selection change directly
+  // Handle selection change and immediately save
   const handleSelectionChange = (e) => {
-    console.log('Selected services:', e.value);
-    setSelectedServiceObjects(e.value);
+    const selectedServices = e.value;
+    console.log('Selected services:', selectedServices);
     
-    // Optionally, you can also update the parent component in real-time
-    // without requiring the user to click the Save/Update button
-    // const selectedIds = e.value.map(service => service.ourServiceId);
-    // onSave(selectedIds);
+    // Update local state
+    setSelectedServiceObjects(selectedServices);
+    
+    // Immediately save to parent component
+    const selectedIds = selectedServices.map(service => service.ourServiceId);
+    console.log('Auto-saving selected service IDs:', selectedIds);
+    onSave(selectedIds);
   };
 
   if (loading) {
@@ -105,7 +97,7 @@ const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) 
   return (
     <div className="card p-4">
       <h3 className="text-xl mb-4">
-        {selectedServiceObjects.length > 0 ? 'Edit Selected Services' : 'Select Services'}
+        {selectedServiceObjects.length > 0 ? 'Selected Services' : 'Select Services'}
       </h3>
 
       <div className="mb-4">
@@ -128,20 +120,7 @@ const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) 
         <div className="text-sm text-gray-500">
           {selectedServiceObjects.length} service(s) selected
         </div>
-        <div className="flex gap-2">
-          <Button
-            label="Cancel"
-            icon="pi pi-times"
-           className='p-2 rounded-md bg-secondary text-white'
-            onClick={onCancel}
-          />
-          <Button
-            label={selectedServiceObjects.length > 0 ? 'Update' : 'Save'}
-            icon="pi pi-check "
-            onClick={handleSave}
-            className='p-2 rounded-md bg-secondary text-white'
-          />
-        </div>
+        
       </div>
     </div>
   );
