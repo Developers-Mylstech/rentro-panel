@@ -53,7 +53,6 @@ const PricingOptions = ({ control, watch, setValue, singleProduct, formState, is
       return;
     }
 
-    // In edit mode, allow other options to be toggled regardless of Request Quotation
     if (isEditMode) {
       setSelectedOptions(prev => {
         if (prev.includes(option)) {
