@@ -95,8 +95,8 @@ const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) 
   }
 
   return (
-    <div className="card p-4">
-      <h3 className="text-xl mb-4">
+    <div className="card ">
+      <h3 className="text-lg font-semibold mb-4 text-secondary w-full p-4 px-8 bg-blue-50">
         {selectedServiceObjects.length > 0 ? 'Selected Services' : 'Select Services'}
       </h3>
 
@@ -108,7 +108,7 @@ const ServiceSelector = ({ onSave, onCancel = () => {}, initialSelected = [] }) 
           optionLabel="title"
           filter
           placeholder="Search services..."
-          className="w-full p-2 border text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+          className="w-full border text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
           display="chip"
           selectedItemsLabel="{0} services selected"
           maxSelectedLabels={5}

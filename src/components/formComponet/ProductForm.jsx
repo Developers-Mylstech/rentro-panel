@@ -16,6 +16,70 @@ import ImageUploader from './ImageUploader';
 import SpecificationFields2 from './SpecificationFields2';
 import ServiceSelector from './ServiceSelecter';
 
+const defaultFormValues = {
+  basicInfo: {
+    name: '',
+    shortDescription: '',
+    longDescription: '',
+    manufacturer: '',
+    supplierName: '',
+    supplierCode: '',
+    modelNo: '',
+  },
+  category: {
+    main: null,
+    sub: null
+  },
+  brand: null,
+  pricing: {
+    sell: {
+      actualPrice: 0,
+      discountValue: 0,
+      discountUnit: '',
+      discountedPrice: 0,
+      isVatIncluded: false,
+      benefits: [],
+      warrantPeriod: 0,
+      vat: 0
+    },
+    rent: {
+      monthlyPrice: 0,
+      discountValue: 0,
+      discountUnit: '',
+      discountedPrice: 0,
+      isVatIncluded: false,
+      benefits: []
+    },
+    services: {
+      ots: {
+        price: '',
+        benefits: []
+      },
+      mmc: {
+        price: '',
+        benefits: []
+      },
+      amcBasic: {
+        price: '',
+        benefits: []
+      },
+      amcGold: {
+        price: '',
+        benefits: []
+      }
+    }
+  },
+  inventory: {
+    sku: '',
+    quantity: 1,
+    stockStatus: 'IN_STOCK'
+  },
+  keyFeatures: [''],
+  specifications: [{ name: '', value: '' }],
+  images: [],
+  ourServiceIds: [],
+  tagandkeywords: ['']
+};
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -26,177 +90,69 @@ const ProductForm = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [isImageUpload, setIsImageUpload] = useState(false);
-  const [isEditing , setIsEditing] = useState(false)
-  const navigate = useNavigate()
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
+  const navigate = useNavigate();
+  
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
-    defaultValues: {
-      basicInfo: {
-        name: '',
-        shortDescription: '',
-        longDescription: '',
-        manufacturer: '',
-        supplierName: '',
-        supplierCode: '',
-        modelNo: '',
-      },
-      category: {
-        main: null,
-        sub: null
-      },
-      brand: null,
-      pricing: {
-        sell: {
-          price: '',
-          discountPrice: '',
-          discountUnit: '',
-          discountValue: '',
-          benefits: [''],
-          vat: 0,
-          warrantPeriod: 1
-        },
-        rent: {
-          monthlyPrice: '',
-          discount: '',
-          discountedPrice: '',
-          benefits: [''],
-          vatIncluded: true,
-        },
-        services: {
-          ots: { price: '', benefits: [''] },
-          mmc: { price: '', benefits: [''] },
-          amcBasic: { price: '', benefits: [''] },
-          amcGold: { price: '', benefits: [''] }
-        }
-      },
-      inventory: {
-        sku: '',
-        quantity: 1,
-        stockStatus: 'IN_STOCK'
-      },
-      keyFeatures: [''],
-      specifications: [{ name: '', value: '' }],
-      images: [],
-      tagandkeywords: ['']
-    }
+    defaultValues: defaultFormValues
   });
 
   useEffect(() => {
     const fetchProduct = async () => {
       if (location.pathname === '/products/add') {
-
-        reset({
-          basicInfo: {
-            name: '',
-            shortDescription: '',
-            longDescription: '',
-            manufacturer: '',
-            supplierName: '',
-            supplierCode: '',
-            modelNo: '',
-          },
-          category: {
-            main: null,
-            sub: null
-          },
-          brand: null,
-          pricing: {
-            sell: {
-              actualPrice: 0,
-              discountValue: 0,
-              discountUnit: '',
-              discountedPrice: 0,
-              isVatIncluded: false,
-              benefits: [],
-              warrantPeriod: 0,
-              vat: 0
-            },
-            rent: {
-              monthlyPrice: 0,
-              discountValue: 0,
-              discountUnit: '',
-              discountedPrice: 0,
-              isVatIncluded: false,
-              benefits: []
-            },
-            services: {
-              ots: {
-                price: '',
-                benefits: []
-              },
-              mmc: {
-                price: '',
-                benefits: []
-              },
-              amcBasic: {
-                price: '',
-                benefits: []
-              },
-              amcGold: {
-                price: '',
-                benefits: []
-              }
-            }
-          },
-          inventory: {
-            sku: '',
-            quantity: 1,
-            stockStatus: 'IN_STOCK'
-          },
-          keyFeatures: [''],
-          specifications: [{ name: '', value: '' }],
-          images: [],
-          ourServiceIds:[],
-          tagandkeywords: ['']
-        });
+        reset(defaultFormValues);
         setPageLoading(false);
-        setIsEditing(false)
+        setIsEditing(false);
       } else if (id) {
-
         setPageLoading(true);
-        const res = await getProductsById(id);
-
-        if (res?.name) {
-          reset({
-            basicInfo: {
-              name: res.name || '',
-              shortDescription: res.description || '',
-              longDescription: res.longDescription || '',
-              manufacturer: res.manufacturer || '',
-              supplierName: res.supplierName || '',
-              supplierCode: res.supplierCode || '',
-              modelNo: res.modelNo || '',
-            },
-            category: {
-              main: res.category?.name || null,
-              sub: res.category?.sub || null
-            },
-            brand: res.brand || null,
-            pricing: {
-              sell: res.pricing?.sell || null,
-              rent: res.pricing?.rent || null,
-              services: {
-                ots: res.pricing?.services?.ots || null,
-                mmc: res.pricing?.services?.mmc || null,
-                amcBasic: res.pricing?.services?.amcBasic || null,
-                amcGold: res.pricing?.services?.amcGold || null
-              }
-            },
-            inventory: {
-              sku: res.inventory?.sku || '',
-              quantity: res.inventory?.quantity || 1,
-              stockStatus: res.inventory?.stockStatus || 'IN_STOCK'
-            },
-            keyFeatures: res.keyFeatures || [''],
-            specifications: res.specifications || [{ name: '', value: '' }],
-            images: res.images || [],
-            // ourServiceIds: res.ourServiceIds || [],
-            ourServiceIds: res.ourServices?.map(s => s.ourServiceId) || [],
-
-            tagandkeywords: res.tagNKeywords || ['']
-          });
+        try {
+          const res = await getProductsById(id);
+          if (res?.name) {
+            reset({
+              basicInfo: {
+                name: res.name || '',
+                shortDescription: res.description || '',
+                longDescription: res.longDescription || '',
+                manufacturer: res.manufacturer || '',
+                supplierName: res.supplierName || '',
+                supplierCode: res.supplierCode || '',
+                modelNo: res.modelNo || '',
+              },
+              category: {
+                main: res.category?.name || null,
+                sub: res.category?.sub || null
+              },
+              brand: res.brand || null,
+              pricing: {
+                sell: res.pricing?.sell || null,
+                rent: res.pricing?.rent || null,
+                services: {
+                  ots: res.pricing?.services?.ots || null,
+                  mmc: res.pricing?.services?.mmc || null,
+                  amcBasic: res.pricing?.services?.amcBasic || null,
+                  amcGold: res.pricing?.services?.amcGold || null
+                }
+              },
+              inventory: {
+                sku: res.inventory?.sku || '',
+                quantity: res.inventory?.quantity || 1,
+                stockStatus: res.inventory?.stockStatus || 'IN_STOCK'
+              },
+              keyFeatures: res.keyFeatures || [''],
+              specifications: res.specifications || [{ name: '', value: '' }],
+              images: res.images || [],
+              ourServiceIds: res.ourServices?.map(s => s.ourServiceId) || [],
+              tagandkeywords: res.tagNKeywords || ['']
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching product:", error);
+          showToast('error', 'Error', 'Failed to load product data');
+        } finally {
+          setPageLoading(false);
+          setIsEditing(true);
         }
-        setPageLoading(false);
-        setIsEditing(true)
       }
     };
 
@@ -204,15 +160,26 @@ const ProductForm = () => {
   }, [location.pathname, id, reset, getProductsById]);
 
   const showToast = (severity, summary, detail) => {
-    toast.current.show({
-      severity: severity,
-      summary: summary,
-      detail: detail,
-      life: 3000
-    });
+    if (toast.current) {
+      toast.current.show({
+        severity: severity,
+        summary: summary,
+        detail: detail,
+        life: 3000
+      });
+    }
+  };
+
+  const resetForm = () => {
+    reset(defaultFormValues);
+    setIsImageSelected(false);
+    setIsImageUpload(false);
   };
 
   const onSubmit = async (data) => {
+    // Prevent multiple submissions
+    if (isSubmitting) return;
+    
     console.log(data);
 
     if (data?.images?.length === 0 && !isImageSelected) {
@@ -223,7 +190,6 @@ const ProductForm = () => {
       showToast('warn', 'Warning', 'Please Upload Image first.');
       return;
     }
-
 
     if (!data?.category?.main) {
       showToast('warn', 'Warning', 'Please select a Category.');
@@ -242,53 +208,39 @@ const ProductForm = () => {
 
     try {
       setLoading(true);
+      setIsSubmitting(true);
       const payload = preparePayload(data);
-console.log(payload,'payload final')
+      console.log(payload, 'payload final');
+      
       let response;
       if (id) {
-        console.log(payload,'preparePayload')
+        console.log(payload, 'preparePayload for update');
         response = await updateProduct(id, payload);
-        // if (response?.status == 200 || response?.status == 201) {
-        //   navigate('/products')
-        // }
         showToast('success', 'Success', 'Product updated successfully!');
+        
+        // Optional: Navigate back to products list
+        // navigate('/products');
       } else {
-
+        console.log(payload, 'preparePayload for create');
         response = await createProduct(payload);
-    showToast('success', 'Success', 'Product created successfully!');
-        // if (response?.status == 200 || response?.status == 201) {
-        //   reset({
-        //     ...data,
-        //     category: {
-        //       ...data.category,
-        //       main: null,
-        //       sub: null
-        //     }
-        //   });
-        //   setTimeout(() => {
-        //     window.location.reload();
-        //   }, 500);
-        // }
+        showToast('success', 'Success', 'Product created successfully!');
         
-        
+        // Reset form after successful creation
+        resetForm();
       }
-      setLoading(false);
+      
+      console.log('API Response:', response);
     } catch (error) {
+      showToast('error', 'Error', 'Failed to save product. Please try again.');
+      console.error('Error saving product:', error);
+    } finally {
       setLoading(false);
-      showToast('error', 'Error', 'Failed to create product. Please try again.');
-      console.error('Error creating product:', error);
+      setIsSubmitting(false);
     }
-    
-    // navigate('/products')
   };
 
   const preparePayload = (data) => {
-  console.log(data,'preparePayload');
-    // const imageUrls = Array.isArray(data.images)
-    //   ? data.images
-    //     .map(img => typeof img === 'string' ? img : img?.url?.fileUrl || '')
-    //     .filter(url => url)
-    //   : [];
+    console.log(data, 'preparePayload');
 
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
@@ -349,7 +301,7 @@ console.log(payload,'payload final')
       longDescription: data.basicInfo.longDescription || '',
       manufacturer: data.basicInfo.manufacturer || '',
       brandId: +(data?.brand?.brandId || 0),
-      imageIds: data.images?.map((item)=>item.imageId),
+      imageIds: data.images?.map((item) => item.imageId),
       ourServiceIds: data.ourServiceIds,
       specifications,
       modelNo: data.basicInfo.modelNo || '',
@@ -423,11 +375,18 @@ console.log(payload,'payload final')
               setIsImageUpload={setIsImageUpload}
             />
 
-            <div className="flex justify-end pt-4 border-t dark:border-gray-600">
+            <div className="flex justify-between pt-4 border-t dark:border-gray-600">
+              <button
+                type="button"
+                onClick={resetForm}
+                className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+              >
+                Reset Form
+              </button>
               <button
                 type="submit"
                 className="px-6 py-2 bg-secondary text-white rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                disabled={loading}
+                disabled={loading || isSubmitting}
               >
                 {loading ? <FaSpinner className='animate-spin' /> : id ? 'Update Product' : 'Add New Product'}
               </button>
