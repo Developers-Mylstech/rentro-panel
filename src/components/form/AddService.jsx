@@ -648,23 +648,33 @@ export default function AddService() {
   };
 
   const handleSubmit = async () => {
-    try {
-      if (isEditMode) {
-        await updateService(serviceId, formData);
-      } else {
-        await addService(formData);
-      }
-      navigate(-1);
-    } catch (error) {
-      console.error('Failed to save service:', error);
+  try {
+    if (isEditMode) {
+      await updateService(serviceId, formData);
+    } else {
+      await addService(formData);
+      
+      // Show success alert only when a new service is added
       toast.current.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to save service',
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Service added successfully',
         life: 3000
       });
     }
-  };
+
+    navigate(-1);
+  } catch (error) {
+    console.error('Failed to save service:', error);
+    toast.current.show({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to save service',
+      life: 3000
+    });
+  }
+};
+
 
   return (
     <div className="p-6 mx-auto">

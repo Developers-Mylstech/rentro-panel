@@ -289,6 +289,7 @@ export default function ClientListing({ clients }) {
   };
 
   const editClient = (client) => {
+    console.log(client,"client");
     navigate("/clients/add", { state: { client } });
   };
 
@@ -403,9 +404,6 @@ export default function ClientListing({ clients }) {
                   className="h-10 w-10 rounded-full object-cover"
                   src={client?.imageUrl || "/default-client.png"}
                   alt={client?.name}
-                  onError={(e) => {
-                    e.target.src = "/default-client.png";
-                  }}
                 />
                 <div>
                   <h3 className="font-medium text-gray-800 dark:text-gray-100">{client?.name}</h3>

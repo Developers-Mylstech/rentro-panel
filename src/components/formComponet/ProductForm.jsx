@@ -15,6 +15,7 @@ import TagsAndKeywords from './TagsAndKeywords';
 import ImageUploader from './ImageUploader';
 import SpecificationFields2 from './SpecificationFields2';
 import ServiceSelector from './ServiceSelecter';
+import { FaHeartPulse } from 'react-icons/fa6';
 
 const defaultFormValues = {
   basicInfo: {
@@ -66,7 +67,8 @@ const defaultFormValues = {
       amcGold: {
         price: '',
         benefits: []
-      }
+      },
+      isAvailableForRequestQuotation: false
     }
   },
   inventory: {
@@ -93,7 +95,7 @@ const ProductForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
   const navigate = useNavigate();
-  
+
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: defaultFormValues
   });
@@ -131,7 +133,8 @@ const ProductForm = () => {
                   ots: res.pricing?.services?.ots || null,
                   mmc: res.pricing?.services?.mmc || null,
                   amcBasic: res.pricing?.services?.amcBasic || null,
-                  amcGold: res.pricing?.services?.amcGold || null
+                  amcGold: res.pricing?.services?.amcGold || null,
+                  isAvailableForRequestQuotation: res.pricing?.services?.isAvailableForRequestQuotation || false
                 }
               },
               inventory: {
@@ -177,9 +180,8 @@ const ProductForm = () => {
   };
 
   const onSubmit = async (data) => {
-    // Prevent multiple submissions
     if (isSubmitting) return;
-    
+
     console.log(data);
 
     if (data?.images?.length === 0 && !isImageSelected) {
@@ -210,25 +212,22 @@ const ProductForm = () => {
       setLoading(true);
       setIsSubmitting(true);
       const payload = preparePayload(data);
-      console.log(payload, 'payload final');
-      
+
+
       let response;
       if (id) {
-        console.log(payload, 'preparePayload for update');
         response = await updateProduct(id, payload);
         showToast('success', 'Success', 'Product updated successfully!');
-        
-        // Optional: Navigate back to products list
-        // navigate('/products');
+
+        // navigate('/products'); 
       } else {
-        console.log(payload, 'preparePayload for create');
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');
-        
-        // Reset form after successful creation
+
         resetForm();
+        setValue('category.main', '');
       }
-      
+
       console.log('API Response:', response);
     } catch (error) {
       showToast('error', 'Error', 'Failed to save product. Please try again.');
@@ -259,40 +258,45 @@ const ProductForm = () => {
       };
     };
 
-    const productFor = {
-      service: {
+    let productFor = {};
+
+    if (!data.pricing?.isAvailableForRequestQuotation) {
+      productFor.service = {
         ots: getServicePayload(data.pricing?.services?.ots),
         mmc: getServicePayload(data.pricing?.services?.mmc),
         amcBasic: getServicePayload(data.pricing?.services?.amcBasic),
         amcGold: getServicePayload(data.pricing?.services?.amcGold)
+      };
+
+      if (data.pricing?.sell?.actualPrice) {
+        productFor.sell = {
+          actualPrice: data.pricing.sell.actualPrice,
+          discountValue: data.pricing.sell.discountValue || 0,
+          discountUnit: data.pricing.sell.discountUnit || 'PERCENTAGE',
+          discountPrice: data.pricing.sell.discountedPrice || 0,
+          isVatIncluded: data.pricing.sell.isVatIncluded || false,
+          benefits: Array.isArray(data.pricing.sell.benefits)
+            ? data.pricing.sell.benefits.filter(b => b)
+            : [],
+          warrantPeriod: +(data.pricing.sell.warrantPeriod || 0)
+        };
       }
-    };
 
-    if (data.pricing?.sell?.actualPrice) {
-      productFor.sell = {
-        actualPrice: data.pricing.sell.actualPrice,
-        discountValue: data.pricing.sell.discountValue || 0,
-        discountUnit: data.pricing.sell.discountUnit || 'PERCENTAGE',
-        discountPrice: data.pricing.sell.discountedPrice || 0,
-        isVatIncluded: data.pricing.sell.isVatIncluded || false,
-        benefits: Array.isArray(data.pricing.sell.benefits)
-          ? data.pricing.sell.benefits.filter(b => b)
-          : [],
-        warrantPeriod: +(data.pricing.sell.warrantPeriod || 0)
-      };
-    }
-
-    if (data.pricing?.rent?.monthlyPrice) {
-      productFor.rent = {
-        monthlyPrice: data.pricing.rent.monthlyPrice,
-        discountPrice: data.pricing.rent.discountedPrice || 0,
-        discountValue: data.pricing.rent.discountValue || 0,
-        discountUnit: data.pricing.rent.discountUnit || 'PERCENTAGE',
-        isVatIncluded: data.pricing.rent.isVatIncluded || false,
-        benefits: Array.isArray(data.pricing.rent.benefits)
-          ? data.pricing.rent.benefits.filter(b => b)
-          : [],
-      };
+      // Add rent data if available
+      if (data.pricing?.rent?.monthlyPrice) {
+        productFor.rent = {
+          monthlyPrice: data.pricing.rent.monthlyPrice,
+          discountPrice: data.pricing.rent.discountedPrice || 0,
+          discountValue: data.pricing.rent.discountValue || 0,
+          discountUnit: data.pricing.rent.discountUnit || 'PERCENTAGE',
+          isVatIncluded: data.pricing.rent.isVatIncluded || false,
+          benefits: Array.isArray(data.pricing.rent.benefits)
+            ? data.pricing.rent.benefits.filter(b => b)
+            : [],
+        };
+      }
+    } else {
+      productFor.isAvailableForRequestQuotation = true;
     }
 
     return {
@@ -347,18 +351,18 @@ const ProductForm = () => {
              
             /> */}
             <ServiceSelector
-  initialSelected={singleProduct?.ourServices || watch('ourServiceIds') || []}
-  onSave={(selectedIds) => {
-    // This only updates the form state with the selected service IDs
-    // It doesn't trigger a product save/update
-    console.log('Selected service IDs:', selectedIds);
-    setValue('ourServiceIds', selectedIds);
-  }}
-  onCancel={() => {
-    // Optional: Handle cancel action if needed
-    console.log('Service selection cancelled');
-  }}
-/>
+              initialSelected={singleProduct?.ourServices || watch('ourServiceIds') || []}
+              onSave={(selectedIds) => {
+                // This only updates the form state with the selected service IDs
+                // It doesn't trigger a product save/update
+                console.log('Selected service IDs:', selectedIds);
+                setValue('ourServiceIds', selectedIds);
+              }}
+              onCancel={() => {
+                // Optional: Handle cancel action if needed
+                console.log('Service selection cancelled');
+              }}
+            />
 
             <PricingOptions control={control} watch={watch} setValue={setValue} singleProduct={singleProduct} />
             <SpecificationFields2 control={control} watch={watch} setValue={setValue} />

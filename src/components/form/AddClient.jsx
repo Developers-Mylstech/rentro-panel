@@ -312,7 +312,7 @@ export default function AddClientWithImageUploader() {
         setUploadedUrl(imageUrl);
       }
     } else {
-      // Reset to default if not in edit mode
+    
       reset({ name: "" });
       setIsEditMode(false);
       setCurrentClientId(null);
@@ -340,7 +340,7 @@ export default function AddClientWithImageUploader() {
     }
 
     const formData = new FormData();
-    formData.append("file", selectedFile); // Note: using "file" instead of "files"
+    formData.append("file", selectedFile);
 
     try {
       setUploading(true);
@@ -356,7 +356,7 @@ export default function AddClientWithImageUploader() {
         }
       );
 
-      // Assuming the response contains the URL directly
+
       setUploadedUrl(response.data.fileUrl || response.data.url);
       setPreviewUrl("");
       setMessage("Image uploaded successfully");
@@ -406,14 +406,14 @@ export default function AddClientWithImageUploader() {
     setMessage("");
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = async (imageId) => {
     setUploadedUrl("");
     setPreviewUrl("");
     setSelectedFile(null);
     setMessage("");
+    const res = await axiosInstance.delete(`/api/v1/image-entities/${imageId}`);
   };
 
-  // Determine which image to display (preview first, then uploaded)
   const displayImage = previewUrl || uploadedUrl;
   const nameValue = watch("name", "");
 
@@ -430,7 +430,6 @@ export default function AddClientWithImageUploader() {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Name Field */}
           <FloatLabel>
             <InputText
               id="name"
@@ -452,7 +451,7 @@ export default function AddClientWithImageUploader() {
             <p className="text-xs text-red-500">{errors.name.message}</p>
           )}
 
-          {/* Image Upload Section */}
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Client Photo
@@ -464,10 +463,7 @@ export default function AddClientWithImageUploader() {
                   src={displayImage}
                   alt={nameValue || "Client image"}
                   className="w-32 h-32 object-cover rounded-md border"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/150';
-                  }}
+                  
                 />
                 <button
                   type="button"
