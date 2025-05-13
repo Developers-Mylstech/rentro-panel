@@ -10,9 +10,9 @@ function Layout() {
     <div className="flex bg-white text-black dark:bg-gray-900 h-[100%] dark:text-gray-100">
     <Sidebar isDarkMode={isDarkMode} />
 
-      <div className="flex-1 lg:ml-[17%] overflow-hidden">
+      <div className="flex-1 lg:ml-[15%] overflow-hidden">
         <Header setIsDarkMode={setIsDarkMode} />
-        <div className=" p-2 pt-20   ">
+        <div className=" p-5 pt-20   ">
           <Outlet />
         </div>
        

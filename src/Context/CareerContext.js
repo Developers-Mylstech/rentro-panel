@@ -7,53 +7,76 @@ const useCareerStore = create((set, get) => ({
   jobApplicants: [],
   ploadedFiles: [], 
 
- 
-
   getAllCareer: async () => {
     try {
       const res = await axiosInstance.get('job-posts');
-     
       
-      set({ 
-       
-        careersPosts:res.data, 
-      });
-    } catch (error) {
-      console.error("Failed to fetch categories:", error);
-    }
-  },
-
-
-
-
-
-  createJobPost : async (job) =>{
-
-      try{
-
-        const res = await axiosInstance.post('/job-posts',job);
-
-        set((state) => ({
-          careersPosts: [...state.careersPosts, {  ...job }],
-        }));
-      }catch{
-        console.error("Failed to add jobpost:", error);
-      }
-  },
-
-  editJobPost : async (job,id) =>{
-
-    try{
-
-      const res = await axiosInstance.put(`/job-posts/${id}`,job);
-
-      set((state) => ({
-        careersPosts: [...state.careersPosts, {  ...job }],
+      // Ensure each job post has properly structured image data
+      const formattedPosts = res.data.map(post => ({
+        ...post,
+        // If the post has imageDetails, keep it; otherwise, create a compatible structure
+        imageDetails: post.imageDetails || (post.image ? {
+          imageId: post.imageId || null,
+          imageUrl: post.image
+        } : null)
       }));
-    }catch(error){
-      console.error("Failed to add jobpost:", error);
+      
+      set({ careersPosts: formattedPosts });
+    } catch (error) {
+      console.error("Failed to fetch job posts:", error);
     }
-},
+  },
+
+
+
+  createJobPost: async (job) => {
+    try {
+      const res = await axiosInstance.post('/job-posts', job);
+      
+      // Add the new job post to the state with proper image structure
+      set((state) => ({
+        careersPosts: [...state.careersPosts, {
+          ...res.data,
+          // Ensure image data is properly structured
+          imageDetails: job.imageId ? {
+            imageId: job.imageId,
+            imageUrl: res.data.image || ''
+          } : null
+        }],
+      }));
+      
+      return res.data;
+    } catch (error) {
+      console.error("Failed to add jobpost:", error);
+      throw error;
+    }
+  },
+
+  editJobPost: async (job, id) => {
+    try {
+      const res = await axiosInstance.put(`/job-posts/${id}`, job);
+      
+      // Update the job post in the state
+      set((state) => ({
+        careersPosts: state.careersPosts.map(post => 
+          post.jobPostId === id ? {
+            ...res.data,
+            // Ensure image data is properly structured
+            imageDetails: job.imageId ? {
+              imageId: job.imageId,
+              imageUrl: res.data.image || ''
+            } : null
+          } : post
+        ),
+      }));
+      
+      return res.data;
+    } catch (error) {
+      console.error("Failed to edit jobpost:", error);
+      throw error;
+    }
+  },
+
 
 
   getJobApplicants: async (id) => {
@@ -70,7 +93,6 @@ const useCareerStore = create((set, get) => ({
     }
   },
 
-  
 
 
   removeCareerPost: async (id) => {

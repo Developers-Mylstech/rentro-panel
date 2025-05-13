@@ -147,7 +147,7 @@
 //       </div>
 //     </div>
 //   );
-  
+
 //   if (error) return (
 //     <div className="flex justify-center items-center h-screen">
 //       <div className="text-red-500 bg-red-50 p-4 rounded-lg">Error: {error}</div>
@@ -248,7 +248,7 @@
 //               />
 //               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
 //             </div>
-            
+
 //             <div className="p-5">
 //               <div className="flex justify-between items-start mb-4">
 //                 <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 line-clamp-1">
@@ -256,7 +256,7 @@
 //                 </h3>
 //                 <Badge value={`ID: ${service.ourServiceId}`} severity="secondary" />
 //               </div>
-              
+
 //               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
 //                 {service.shortDescription}
 //               </p>
@@ -280,9 +280,9 @@
 //                   )}
 //                 </div>
 //               )}
-              
+
 //               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-gray-700">
-               
+
 //                 <Button
 //                   icon="pi pi-pencil"
 //                   className="p-2 rounded-full text-green-500 hover:bg-green-50 dark:hover:bg-green-900"
@@ -356,7 +356,7 @@ export default function ServiceList() {
   const actionBodyTemplate = (rowData) => (
     <div className="flex gap-2">
       <Tooltip target=".view-btn" position="top" content="View Details" />
-     
+
       <Tooltip target=".edit-btn" position="top" content="Edit Service" />
       <Button
         icon="pi pi-pencil"
@@ -381,9 +381,10 @@ export default function ServiceList() {
   const imageTemplate = (rowData) => (
     <div className="flex items-center">
       <img
-        src={rowData.imageUrl || 'https://via.placeholder.com/80'}
+        src={rowData.image?.imageUrl || 'https://via.placeholder.com/80'}
         alt={rowData.title}
         className="w-12 h-12 object-cover rounded-lg shadow-sm hover:scale-105 transition-transform duration-200"
+        
       />
     </div>
   );
@@ -471,7 +472,7 @@ export default function ServiceList() {
       </div>
     </div>
   );
-  
+
   if (error) return (
     <div className="flex justify-center items-center h-screen">
       <div className="text-red-500 bg-red-50 p-4 rounded-lg">Error: {error}</div>
@@ -491,7 +492,7 @@ export default function ServiceList() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <span className="p-input-icon-left w-full md:w-64 ">
             <i className="pi pi-search text-gray-400 pl-2" />
             <InputText
@@ -502,12 +503,13 @@ export default function ServiceList() {
             />
           </span>
 
-          <CustomButton
-            title="Add Service"
-            icon="pi pi-plus"
+          <button
             onClick={() => navigate('/service/add')}
-            className="px-4 py-2 rounded-lg shadow-sm"
-          />
+            className="bg-secondary justify-center hover:bg-blue-600 w-full md:w-fit text-white px-4 py-2 rounded-md flex items-center gap-2"
+          >
+            <i className="pi pi-plus"></i>
+            <span>Add Banner</span>
+          </button>
         </div>
       </div>
 
@@ -532,7 +534,7 @@ export default function ServiceList() {
           tableStyle={{ minWidth: '50rem' }}
         >
           <Column
-            field="imageUrl"
+            field="image.imageUrl"
             header=""
             body={imageTemplate}
             style={{ width: '80px' }}
@@ -573,9 +575,10 @@ export default function ServiceList() {
           >
             <div className="relative group">
               <img
-                src={service.imageUrl || 'https://via.placeholder.com/300'}
+                src={service.image?.imageUrl || 'https://via.placeholder.com/300'}
                 alt={service.title}
                 className="w-full h-40 object-cover group-hover:opacity-90 transition-opacity duration-300"
+                
               />
               <Tag
                 value={service?.status || 'Active'}
@@ -584,25 +587,25 @@ export default function ServiceList() {
                 className="absolute top-2 right-2 text-xs"
               />
             </div>
-            
+
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 line-clamp-1">
                   {service?.title}
                 </h3>
-                <Badge 
-                  value={`#${service?.ourServiceId}`} 
-                  severity="info" 
+                <Badge
+                  value={`#${service?.ourServiceId}`}
+                  severity="info"
                   className="text-xs flex justify-center items-center"
                 />
               </div>
-              
+
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
                 {stripHtmlTags(service?.shortDescription)}
               </p>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
-              
+
                 <Button
                   icon="pi pi-pencil"
                   className="p-2 rounded-full text-green-500 hover:bg-green-50 dark:hover:bg-green-900/30"

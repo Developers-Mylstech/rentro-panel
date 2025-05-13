@@ -74,7 +74,7 @@ export default function ProductListing() {
 
 
   return (
-    <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen p-4">
+    <div className="dark:bg-gray-900 dark:text-gray-100">
       <Toast ref={toast} position="top-right" />
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 ">

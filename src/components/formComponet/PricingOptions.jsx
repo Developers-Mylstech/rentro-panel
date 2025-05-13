@@ -150,12 +150,9 @@ const PricingOptions = ({ control, watch, setValue, singleProduct, formState, is
         <h2 className="md:text-lg text-base font-semibold text-secondary rounded-lg p-3 dark:text-gray-100">Pricing Options</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {optionsConfig.map((option) => {
           const isRequestQuotation = option.value === 'request_quotation';
-          
-          // Updated logic for disabling options
-          // Request Quotation is NEVER disabled
           const isDisabled = 
             isRequestQuotation ? false : // Never disable Request Quotation
             (!isEditMode && isAvailableForRequestQuotation); // Only disable other options in create mode when Request Quotation is enabled

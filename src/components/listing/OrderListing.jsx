@@ -275,7 +275,6 @@ export default function OrderManagement({ orders }) {
         </div>
       </div>
 
-      {/* Table Section */}
       <DataTable
         value={loading ? Array(5).fill({}) : filteredOrders}
         paginator

@@ -11,13 +11,19 @@ const useBrandStore = create((set) => ({
     addBrand: async (brand) => {
         try {
             const res = await axiosInstance.post('/brands', brand);
+
             set((state) => ({
                 brands: [...state.brands, res.data]
             }));
             alert('Brand added successfully');
-            return res.data;
+
+            return res;
         } catch (error) {
-            alert("Adding brand failed due to backend issue");
+            if (error == "AxiosError: Request failed with status code 409") {
+                alert("Brand already exists");
+            }else{
+                alert("Failed to add brand");
+            }
             throw error;
         }
     },
@@ -25,7 +31,7 @@ const useBrandStore = create((set) => ({
     getAllBrands: async () => {
         try {
             const res = await axiosInstance.get('/brands');
-           
+
             set({ brands: res?.data || [] });
         } catch (error) {
             alert("Fetching data  due to backend issue");
@@ -59,17 +65,17 @@ const useBrandStore = create((set) => ({
     },
 
     removeBrand: async (id) => {
-    
+
         try {
-           await axiosInstance.delete(`/brands/${id}`);
+            await axiosInstance.delete(`/brands/${id}`);
             set((state) => ({
                 brands: state.brands.filter(brand => brand.id !== id)
             }));
             alert('Brand deleted successfully');
         } catch (error) {
-            if(error?.response?.data?.message){
+            if (error?.response?.data?.message) {
                 alert(error?.response?.data?.message);
-            }else{
+            } else {
                 alert("Failed to delete brand");
             }
         }
@@ -92,9 +98,9 @@ const useBrandStore = create((set) => ({
     deleteImage: async (entityType, entityId) => {
         try {
             set({ loading: true, error: null });
-            
+
             const response = await axiosInstance.delete(`/images/delete/${entityType}/${entityId}`);
-            
+
             if (response.status === 200 || response.status === 204) {
                 // Update the brands state if needed
                 set((state) => ({
@@ -123,9 +129,9 @@ const useBrandStore = create((set) => ({
     deleteBrandImage: async (brandId, imageId) => {
         try {
             set({ loading: true, error: null });
-            
+
             const response = await axiosInstance.delete(`/images/delete/brand/${imageId}`);
-            
+
             if (response.status === 200 || response.status === 204) {
                 // Update the specific brand's images
                 set((state) => ({
@@ -143,8 +149,8 @@ const useBrandStore = create((set) => ({
             }
         } catch (error) {
             console.error('Delete brand image error:', error);
-            set({ 
-                error: error.response?.data?.message || error.message || 'Failed to delete image' 
+            set({
+                error: error.response?.data?.message || error.message || 'Failed to delete image'
             });
             return { success: false, message: 'Failed to delete image' };
         } finally {

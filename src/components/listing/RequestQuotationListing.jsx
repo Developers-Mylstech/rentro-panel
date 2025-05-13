@@ -16,6 +16,7 @@ export default function RequestQuotationListing() {
     message: '',
     isSuccess: true
   });
+
   useEffect(() => {
     fetchQuotations();
   }, []);
@@ -64,13 +65,13 @@ export default function RequestQuotationListing() {
       }
     };
 
-    const currentStatus = statusOptions.find(opt => opt.value === status);
+    const currentStatus = statusOptions?.find(opt => opt.value === status);
 
     return (
       <div className="relative">
         <Toast ref={toast} position="top-right" />
         <Menu
-          model={statusOptions.map(option => ({
+          model={statusOptions?.map(option => ({
             label: (
               <div className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${option.color}`}></span>
@@ -126,8 +127,8 @@ export default function RequestQuotationListing() {
     return (
       (quotation.name?.toLowerCase().includes(searchTerm)) ||
       (quotation.mobile?.includes(searchTerm)) ||
-      (quotation.companyName?.toLowerCase().includes(searchTerm)) ||
-      (quotation.location?.toLowerCase().includes(searchTerm))
+      (quotation.companyName?.toLowerCase().includes(searchTerm)) 
+      // (quotation.location?.toLowerCase().includes(searchTerm))
     );
   });
 
@@ -160,7 +161,7 @@ export default function RequestQuotationListing() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                {['ID', 'Image', 'Name', 'Mobile', 'Company', 'Location', 'Actions'].map((e, index) => <th key={index} scope="col" className="font-semibold px-6 py-3 text-left text-xs  text-gray-500 uppercase tracking-wider">
+                {['ID', 'Image', 'Name', 'Mobile', 'Company', 'Actions']?.map((e, index) => <th key={index} scope="col" className="font-semibold px-6 py-3 text-left text-xs  text-gray-500 uppercase tracking-wider">
                   {e}
                 </th>)}
               </tr>
@@ -184,7 +185,7 @@ export default function RequestQuotationListing() {
                   </td>
                 </tr>
               ) : (
-                filteredQuotations.map((quotation) => (
+                filteredQuotations?.map((quotation) => (
                   <tr
                     key={quotation.requestQuotationId}
                     className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
@@ -205,9 +206,9 @@ export default function RequestQuotationListing() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {quotation.companyName || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {quotation.location || 'N/A'}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {actionsTemplate(quotation)}
                     </td>
@@ -272,7 +273,7 @@ export default function RequestQuotationListing() {
 }
 
 const imageTemplate = (rowData) => {
-  if (!rowData.productImages || rowData.productImages.length === 0) {
+  if (!rowData?.productImages || rowData.productImages.length === 0) {
     return (
       <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center mx-auto">
         <FaFileImage className="text-gray-400 text-xl" />
@@ -283,7 +284,7 @@ const imageTemplate = (rowData) => {
   return (
     <div className="relative w-12 h-12 rounded-md overflow-hidden mx-auto group">
       <img
-        src={rowData.productImages[0]}
+        src={rowData?.productImages[0]}
         alt="Product"
         className="w-full h-full object-cover"
         onError={(e) => {
