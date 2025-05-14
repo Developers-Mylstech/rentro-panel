@@ -508,7 +508,7 @@ export default function ServiceList() {
             className="bg-secondary justify-center hover:bg-blue-600 w-full md:w-fit text-white px-4 py-2 rounded-md flex items-center gap-2"
           >
             <i className="pi pi-plus"></i>
-            <span>Add Banner</span>
+            <span>Add Service</span>
           </button>
         </div>
       </div>
