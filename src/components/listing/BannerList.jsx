@@ -93,14 +93,12 @@ export default function BannerList() {
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">{banner.title}</td>
                   <td className="px-6 py-4 text-center space-x-2">
-                    <Tooltip target=".edit-btn" position="top" />
                     <Button
                       icon="pi pi-pencil"
                       className="p-button-rounded p-button-text edit-btn dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                       data-pr-tooltip="Edit"
                       onClick={() => handleEditBanner(banner)}
                     />
-                    <Tooltip target=".delete-btn" position="top" />
                     <Button
                       icon="pi pi-trash"
                       className="p-button-rounded p-button-text p-button-danger delete-btn dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-700"

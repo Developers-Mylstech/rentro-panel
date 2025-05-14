@@ -282,30 +282,34 @@ export default function OrderManagement({ orders }) {
         rowsPerPageOptions={[5, 10, 25]}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
-        stripedRows
-        className={`p-datatable-sm border border-gray-200 rounded-lg ${loading ? 'opacity-75' : ''}`}
+        className={`border border-gray-200 rounded-lg shadow-sm ${loading ? 'opacity-75' : ''}`}
         emptyMessage={loading ? "Loading orders..." : "No orders found"}
         expandedRows={expandedRows}
         onRowToggle={(e) => setExpandedRows(e.data)}
         rowExpansionTemplate={rowExpansionTemplate}
         loading={loading}
+        responsiveLayout="stack"
+        breakpoint="960px"
+        size="small"
+        paginatorClassName="border-t border-gray-200 px-4 py-3 bg-gray-50 text-gray-600"
       >
-        {/* <Column expander style={{ width: '3em' }} body={loading ? loadingTemplate : null} /> */}
         <Column
           field="orderNumber"
           header="Order #"
           sortable
-          headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
           style={{ minWidth: '120px' }}
           body={loading ? loadingTemplate : (rowData) => (
-            <span className="font-bold text-blue-600">#{rowData.orderNumber}</span>
+            <span className="text-xs ">#{rowData.orderNumber}</span>
           )}
         />
         <Column
           field="createdAt"
           header="Date"
           body={loading ? loadingTemplate : (rowData) => dateTemplate(rowData.createdAt)}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
           sortable
           style={{ minWidth: '100px' }}
         />
@@ -314,14 +318,16 @@ export default function OrderManagement({ orders }) {
           header="Customer"
           sortable
           style={{ minWidth: '150px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100 font-medium"
           body={loading ? loadingTemplate : null}
         />
         <Column
           header="Items"
           body={itemsTemplate}
-          style={{ minWidth: '80px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          style={{ minWidth: '100px' }}
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
         />
         <Column
           header="Amount"
@@ -329,7 +335,8 @@ export default function OrderManagement({ orders }) {
           sortable
           sortField="totalAmount"
           style={{ minWidth: '120px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
         />
         <Column
           header="Payment"
@@ -337,7 +344,8 @@ export default function OrderManagement({ orders }) {
           sortable
           sortField="isPaid"
           style={{ minWidth: '120px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
         />
         <Column
           header="Status"
@@ -345,13 +353,15 @@ export default function OrderManagement({ orders }) {
           sortable
           sortField="status"
           style={{ minWidth: '140px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
         />
         <Column
           header="Actions"
           body={actionsTemplate}
           style={{ minWidth: '120px' }}
-           headerClassName="bg-gray-100 text-gray-600 font-medium px-4 py-3"
+          headerClassName="bg-gray-50 text-gray-600 font-medium px-4 py-3"
+          bodyClassName="px-4 py-3 border-b border-gray-100"
         />
       </DataTable>
 

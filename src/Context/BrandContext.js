@@ -4,9 +4,29 @@ import axios from 'axios';
 
 const useBrandStore = create((set) => ({
     brands: [],
+    brandNames: [], // New state to store brand names
     image: "",
     loading: false,
     error: null,
+
+    getBrandNames: async () => {
+        try {
+            set({ loading: true, error: null });
+            const res = await axiosInstance.get('/brands/names');
+            set({ 
+                brandNames: res?.data || [],
+                loading: false 
+            });
+            return res?.data || [];
+        } catch (error) {
+            console.error('Error fetching brand names:', error);
+            set({ 
+                error: error.message || 'Failed to fetch brand names',
+                loading: false 
+            });
+            return [];
+        }
+    },
 
     addBrand: async (brand) => {
         try {

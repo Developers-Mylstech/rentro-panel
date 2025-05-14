@@ -361,7 +361,7 @@ export default function CategoryList() {
           <Button
             label={deleting ? "Deleting..." : "Delete"}
             icon={deleting ? "pi pi-spinner pi-spin" : "pi pi-trash"}
-            className="p-button-danger bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+            className="p-button-danger bg-red-500 hover:bg-red-600 text-white px-3 py-1 dark:bg-red-600 dark:hover:bg-red-700"
             onClick={handleDelete}
             disabled={deleting}
           />

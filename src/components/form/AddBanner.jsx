@@ -108,6 +108,7 @@ const [uploadedImageId, setUploadedImageId] = useState(null);
         navigate(-1);
       } else {
         await addBanner(payload);
+        alert("Banner created successfully!");
         setMessage("Banner created successfully!");
         reset();
         setUploadedUrl("");

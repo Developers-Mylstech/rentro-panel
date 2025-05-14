@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { InputText } from "primereact/inputtext";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect, use } from "react";
+import { InputText} from "primereact/inputtext";
+import { Controller, useForm } from "react-hook-form";
 import useBrandStore from "../../Context/BrandContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FloatLabel } from "primereact/floatlabel";
 import axiosInstance from "../../utils/axiosInstance";
+import { AutoComplete } from 'primereact/autocomplete';
 
 export default function AddBrandWithImageUploader() {
-  const { addBrand, editBrand } = useBrandStore();
+  const { addBrand, editBrand, getBrandNames, brandNames } = useBrandStore();
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -17,11 +18,15 @@ export default function AddBrandWithImageUploader() {
   const [currentBrandId, setCurrentBrandId] = useState(null);
   const [uploadedImageId, setUploadedImageId] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [nameLoading, setNameLoading] = useState(false);
+  const [brandExists, setBrandExists] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [filteredBrands, setFilteredBrands] = useState([]);
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -33,6 +38,11 @@ export default function AddBrandWithImageUploader() {
     },
   });
 
+  useEffect(() => {
+    setNameLoading(true);
+    getBrandNames();
+    setNameLoading(false);
+  }, []);
 
   useEffect(() => {
     if (location.state?.brand) {
@@ -40,7 +50,7 @@ export default function AddBrandWithImageUploader() {
       setIsEditMode(true);
       setCurrentBrandId(brandId);
       setValue("name", name);
-     
+
       if (image?.imageUrl) {
         setUploadedImageUrl(image?.imageUrl);
         setUploadedImageId(image?.imageId);
@@ -56,11 +66,11 @@ export default function AddBrandWithImageUploader() {
       if (previewUrl && !previewUrl.includes('http')) {
         URL.revokeObjectURL(previewUrl);
       }
-      
+
       setSelectedFile(file);
       const preview = URL.createObjectURL(file);
       setPreviewUrl(preview);
-      
+
       // Reset uploaded image data since we have a new file
       setUploadedImageId(null);
       setUploadedImageUrl(null);
@@ -91,19 +101,19 @@ export default function AddBrandWithImageUploader() {
         }
       );
 
-   
+
       const imageId = response?.data?.image?.imageId;
       const imageUrl = response?.data?.image?.imageUrl || response?.data?.fileUrl;
 
       if (imageId && imageUrl) {
         setUploadedImageId(imageId);
         setUploadedImageUrl(imageUrl);
-        
+
         // Clean up the object URL since we now have the server URL
         if (previewUrl && !previewUrl.includes('http')) {
           URL.revokeObjectURL(previewUrl);
         }
-        
+
         setPreviewUrl(imageUrl);
         setSelectedFile(null);
         setMessage("Image uploaded successfully");
@@ -117,6 +127,28 @@ export default function AddBrandWithImageUploader() {
       setUploading(false);
     }
   };
+  console.log(brandNames, "brand names");
+
+  const nameValue = watch("name", "");
+
+  useEffect(() => {
+    if (nameValue && brandNames?.length > 0) {
+      const exists = brandNames.some(
+        brand => brand.toLowerCase() === nameValue.toLowerCase()
+      );
+      setBrandExists(exists && !isEditMode);
+      
+      // Show message immediately when brand exists
+      if (exists && !isEditMode) {
+        setMessage("This brand name already exists. Please choose a different name.");
+      } else if (message.includes("already exists")) {
+        // Clear the message if it was showing the "already exists" warning
+        setMessage("");
+      }
+    } else {
+      setBrandExists(false);
+    }
+  }, [nameValue, brandNames, isEditMode]);
 
   const onSubmit = async (data) => {
     if (!uploadedImageUrl && !isEditMode) {
@@ -136,22 +168,22 @@ export default function AddBrandWithImageUploader() {
         navigate(-1);
       } else {
         const res = await addBrand(payload);
-        
+
         setMessage("Brand created successfully!");
         reset();
-        
+
         // Clean up preview URL
         if (previewUrl && !previewUrl.includes('http')) {
           URL.revokeObjectURL(previewUrl);
         }
-        
+
         setPreviewUrl(null);
         setUploadedImageId(null);
         setUploadedImageUrl(null);
         setSelectedFile(null);
       }
     } catch (error) {
-      
+
       setMessage(
         `Failed to ${isEditMode ? "update" : "create"} brand. Please try again.`
       );
@@ -163,17 +195,17 @@ export default function AddBrandWithImageUploader() {
       if (currentBrandId) {
         await axiosInstance.delete(`/brands/${currentBrandId}/image`);
         setMessage("Image deleted from server");
-      }else{
+      } else {
         await axiosInstance.delete(`/image-entities/${uploadedImageId}`);
         setMessage("Image deleted from server");
       }
-      
+
       // Clean up object URL to prevent memory leaks
       if (previewUrl && !previewUrl.includes('http')) {
         URL.revokeObjectURL(previewUrl);
       }
-      
-   
+
+
       setPreviewUrl(null);
       setSelectedFile(null);
       setUploadedImageId(null);
@@ -184,7 +216,13 @@ export default function AddBrandWithImageUploader() {
     }
   };
 
-  const nameValue = watch("name", "");
+  const searchBrands = (event) => {
+    const query = event.query.toLowerCase();
+    const filtered = brandNames?.filter(brand => 
+      brand.toLowerCase().includes(query)
+    );
+    setFilteredBrands(filtered || []);
+  };
 
   return (
     <div className="h-screen flex items-center justify-center p-4 dark:bg-gray-900 dark:text-gray-100">
@@ -227,26 +265,36 @@ export default function AddBrandWithImageUploader() {
         <div className="p-6 space-y-6">
           {/* Brand Name */}
           <div className="space-y-2">
-            <FloatLabel>
-              <InputText
-                id="name"
-                value={nameValue}
-                className='w-full px-3 peer py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500'
-                {...register("name", {
-                  required: "Brand name is required",
-                  minLength: {
-                    value: 2,
-                    message: "Minimum 2 characters required",
-                  },
-                })}
-              />
-              <label
-                htmlFor="name"
-                className="block text-sm peer-focus:text-blue-500 font-medium text-gray-700 dark:text-gray-300 focus:text-blue-500"
-              >
-                Brand Name
-              </label>
-            </FloatLabel>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Brand Name
+            </label>
+            <Controller
+              name="name"
+              control={control}
+              rules={{
+                required: "Brand name is required",
+                minLength: {
+                  value: 2,
+                  message: "Minimum 2 characters required",
+                }
+              }}
+              render={({ field, fieldState }) => (
+                <AutoComplete
+                  id={field.name}
+                  value={field.value}
+                  suggestions={filteredBrands}
+                  completeMethod={searchBrands}
+                  onChange={(e) => field.onChange(e.value)}
+                  className={`w-full ${brandExists ? 'p-invalid' : ''}`}
+                  inputClassName="w-full px-3 py-2 border-b border-gray-300 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                />
+              )}
+            />
+            {brandExists && (
+              <p className="text-xs text-red-500 mt-1 animate-fade-in">
+                This brand name already exists
+              </p>
+            )}
             {errors.name && (
               <p className="text-xs text-red-500 mt-1 animate-fade-in">
                 {errors.name.message}
@@ -260,7 +308,7 @@ export default function AddBrandWithImageUploader() {
               <label className="block text-sm font-medium text-gray-700 uppercase tracking-wider mb-2 dark:text-gray-100">
                 Brand Logo
               </label>
-              
+
               {!previewUrl && (
                 <div className="flex items-center justify-center w-full">
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition dark:bg-gray-900 dark:text-gray-100">
@@ -329,7 +377,7 @@ export default function AddBrandWithImageUploader() {
                     </svg>
                   </button>
                 </div>
-                
+
                 {/* Only show upload button if we have a selected file but not an uploaded image */}
                 {selectedFile && !uploadedImageId && (
                   <button
@@ -407,7 +455,7 @@ export default function AddBrandWithImageUploader() {
                 />
               </svg>
               {isEditMode ? "Update Brand" : "Create Brand"}
-            </button> 
+            </button>
           </div>
 
           {/* Status Message */}

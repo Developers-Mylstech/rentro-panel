@@ -95,6 +95,19 @@ const ProductForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (location.pathname === '/products/add' && !pageLoading) {
+      const hasReloaded = sessionStorage.getItem('productFormReloaded');
+      
+      if (!hasReloaded) {
+        sessionStorage.setItem('productFormReloaded', 'true');
+        window.location.reload();
+      } else {
+        sessionStorage.removeItem('productFormReloaded');
+      }
+    }
+  }, [location.pathname, pageLoading]);
 
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: defaultFormValues
@@ -158,9 +171,8 @@ const ProductForm = () => {
         }
       }
     };
-
     fetchProduct();
-  }, [location.pathname, id, reset, getProductsById]);
+  }, [location, id, reset, getProductsById]);
 
   const showToast = (severity, summary, detail) => {
     if (toast.current) {
@@ -218,8 +230,8 @@ const ProductForm = () => {
       if (id) {
         response = await updateProduct(id, payload);
         showToast('success', 'Success', 'Product updated successfully!');
-
-        // navigate('/products'); 
+      
+        navigate('/products'); 
       } else {
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');

@@ -33,7 +33,7 @@ export default function AddClientWithImageUploader() {
   console.log(location.state?.client, "this is location state");
   useEffect(() => {
     if (location.state?.client) {
-      const { clientId, name, imageUrl } = location.state.client;
+      const { clientId, name, image } = location.state.client;
       setIsEditMode(true);
       setCurrentClientId(clientId);
 
@@ -43,8 +43,8 @@ export default function AddClientWithImageUploader() {
       });
 
       // Handle image URL
-      if (imageUrl) {
-        setUploadedUrl(imageUrl);
+      if (image?.imageUrl) {
+        setUploadedUrl(image?.imageUrl);
       }
     } else {
 

@@ -348,7 +348,7 @@ export default function ClientListing({ clients }) {
                     <td className="px-6 py-4">
                       <img
                         className="h-10 w-10 rounded-full object-cover"
-                        src={client?.imageUrl}
+                        src={client?.image?.imageUrl}
                         alt={client?.name}
                         
                       />
@@ -400,7 +400,7 @@ export default function ClientListing({ clients }) {
               <div className="flex items-center gap-3 mb-3">
                 <img
                   className="h-10 w-10 rounded-full object-cover"
-                  src={client?.imageUrl || "/default-client.png"}
+                  src={client?.image?.imageUrl || "/default-client.png"}
                   alt={client?.name}
                 />
                 <div>

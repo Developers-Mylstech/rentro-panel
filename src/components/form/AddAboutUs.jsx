@@ -23,7 +23,7 @@ export default function AddAboutUs() {
   });
 
   const [uploadedData, setUploadedData] = useState({
-    imageUrl: existing.imageUrl || "",
+    imageUrl: existing?.image?.imageUrl || "",
     imageId: existing.imageId || null,
   });
 

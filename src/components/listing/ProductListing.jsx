@@ -31,7 +31,7 @@ export default function ProductListing() {
 
   const tableData = products.map(product => ({
     id: product.productId,
-    image: product.imageUrls?.[0] || '',
+    image: product?.images[0]?.imageUrl || '',
     name: product.name,
     sku: product.inventory?.sku || 'N/A',
     category: product.category?.name || 'N/A',
