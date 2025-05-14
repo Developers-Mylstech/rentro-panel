@@ -510,6 +510,7 @@ export default function ServiceList() {
             <i className="pi pi-plus"></i>
             <span>Add Service</span>
           </button>
+
         </div>
       </div>
 
