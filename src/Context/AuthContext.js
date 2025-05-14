@@ -86,24 +86,24 @@ const useAuthStore = create((set, get) => ({
         }
     },
 
-    refreshAccessToken: async () => {
-        const { refreshToken } = get();
-        try {
-            const response = await axiosInstance.post("https://your-api.com/api/refresh-token", {
-                refreshToken,
-            });
+    // refreshAccessToken: async () => {
+    //     const { refreshToken } = get();
+    //     try {
+    //         const response = await axiosInstance.post("https://your-api.com/api/refresh-token", {
+    //             refreshToken,
+    //         });
 
-            const { accessToken } = response.data;
-            set({ accessToken });
-            return { success: true };
-        } catch (error) {
-            set({ user: null, accessToken: null, refreshToken: null });
-            return {
-                success: false,
-                error: error.response?.data?.message || "Token refresh failed",
-            };
-        }
-    },
+    //         const { accessToken } = response.data;
+    //         set({ accessToken });
+    //         return { success: true };
+    //     } catch (error) {
+    //         set({ user: null, accessToken: null, refreshToken: null });
+    //         return {
+    //             success: false,
+    //             error: error.response?.data?.message || "Token refresh failed",
+    //         };
+    //     }
+    // },
 }));
 
 export default useAuthStore;
