@@ -21,11 +21,11 @@ export default function LoginForm() {
             email: data.email,
             password: data.password,
         });
-    
+
         if (result.success) {
             navigate('/');
         } else {
-            alert(result.error); 
+            alert(result.error);
         }
     };
 
@@ -50,20 +50,20 @@ export default function LoginForm() {
                         </div>
 
                         <div className="flex flex-col relative">
-    <InputText
-        {...register('password', { required: 'Password is required' })}
-        placeholder="Password"
-        type={showPassword ? "text" : "password"}
-        className="w-full p-3 text-primary bg-transparent border rounded-lg placeholder:text-primary pr-10"
-    />
-    <i 
-        className={`pi ${showPassword ? 'pi-eye-slash' : 'pi-eye'} absolute right-3 top-3 cursor-pointer text-primary`}
-        onClick={togglePasswordVisibility}
-    />
-    {errors.password && (
-        <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-    )}
-</div>
+                            <InputText
+                                {...register('password', { required: 'Password is required' })}
+                                placeholder="Password"
+                                type={showPassword ? "text" : "password"}
+                                className="w-full p-3 text-primary bg-transparent border rounded-lg placeholder:text-primary pr-10"
+                            />
+                            <i
+                                className={`pi ${showPassword ? 'pi-eye-slash' : 'pi-eye'} absolute right-3 top-3 cursor-pointer text-blue-700`}
+                                onClick={togglePasswordVisibility}
+                            />
+                            {errors.password && (
+                                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex justify-between items-center my-5">

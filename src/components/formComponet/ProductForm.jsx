@@ -96,18 +96,7 @@ const ProductForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
   const navigate = useNavigate();
   
-  useEffect(() => {
-    if (location.pathname === '/products/add' && !pageLoading) {
-      const hasReloaded = sessionStorage.getItem('productFormReloaded');
-      
-      if (!hasReloaded) {
-        sessionStorage.setItem('productFormReloaded', 'true');
-        window.location.reload();
-      } else {
-        sessionStorage.removeItem('productFormReloaded');
-      }
-    }
-  }, [location.pathname, pageLoading]);
+  
 
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: defaultFormValues
@@ -172,7 +161,7 @@ const ProductForm = () => {
       }
     };
     fetchProduct();
-  }, [location, id, reset, getProductsById]);
+  }, [location, id, reset, getProductsById, pageLoading]);
 
   const showToast = (severity, summary, detail) => {
     if (toast.current) {
@@ -250,9 +239,9 @@ const ProductForm = () => {
     }
   };
 
-  const preparePayload = (data) => {
-    console.log(data, 'preparePayload');
 
+
+  const preparePayload = (data) => {
     const specifications = Array.isArray(data.specifications)
       ? data.specifications
         .filter(spec => spec?.name && spec?.value)
