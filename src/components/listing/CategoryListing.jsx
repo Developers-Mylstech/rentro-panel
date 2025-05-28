@@ -168,7 +168,7 @@ export default function CategoryList() {
     <div className="dark:text-gray-200 p-4 md:p-6 w-full h-full bg-white dark:bg-gray-900">
       <Toast ref={toast} position="top-right" />
 
-      {/* Header Section */}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -179,7 +179,7 @@ export default function CategoryList() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <IconField className="w-full md:w-64">
             <InputIcon className="pi pi-search text-gray-400 dark:text-gray-500" />
             <InputText
@@ -190,12 +190,13 @@ export default function CategoryList() {
             />
           </IconField>
 
-          <CustomButton
-            title="Add Category"
-            icon="pi pi-plus"
+          <button
             onClick={() => navigate("/categories/add")}
-            className="px-4 py-2 rounded-lg shadow-sm bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
-          />
+            className="px-4 py-2 gap-5 flex items-center justify-center w-full md:w-auto rounded-lg shadow-sm bg-secondary hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+          >
+            <i className="pi pi-plus"></i>
+            Add Category
+          </button>
         </div>
       </div>
 
@@ -360,7 +361,7 @@ export default function CategoryList() {
           <Button
             label={deleting ? "Deleting..." : "Delete"}
             icon={deleting ? "pi pi-spinner pi-spin" : "pi pi-trash"}
-            className="p-button-danger bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+            className="p-button-danger bg-red-500 hover:bg-red-600 text-white px-3 py-1 dark:bg-red-600 dark:hover:bg-red-700"
             onClick={handleDelete}
             disabled={deleting}
           />

@@ -27,44 +27,44 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
     }, []);
 
     useEffect(() => {
-        if (singleProduct && flatCategoryList.length > 0 && brands.length > 0) {
-            const mainCat = flatCategoryList.find(
-                cat => cat.categoryId === singleProduct?.category?.categoryId
-            );
+    if (singleProduct && flatCategoryList.length > 0 && brands.length > 0) {
+        const mainCat = flatCategoryList.find(
+            cat => cat.categoryId === singleProduct?.category?.categoryId
+        );
 
-            if (mainCat ) {
-                setSelectedCategory(mainCat.categoryId);
-          
-                setValue('category.main', mainCat.categoryId);
-            }else{
-                setValue('category.main', null);
-
-            }
-
-            if(singleProduct && location.pathname === '/products/add'){
-                setValue('category.main', '');
-            }
-
-            if (singleProduct?.subCategory?.categoryId && subCategories.length > 0) {
-                const subCat = subCategories.find(
-                    cat => cat.categoryId === singleProduct?.subCategory?.categoryId
-                );
-
-                if (subCat) {
-                    setSelectedSubCategory(subCat);
-                    setValue('category.sub', subCat.categoryId);
-                }
-            }
-
-            const brand = brands.find(
-                b => b.brandId === singleProduct.brand
-            );
-            if (brand) {
-                setSelectedBrand(brand);
-                setValue('brand', brand.brandId);
-            }
+        if (mainCat) {
+            setSelectedMainCategory(mainCat);
+            setSelectedCategory(mainCat.categoryId);
+            setValue('category.main', mainCat.categoryId);
+        } else {
+            setSelectedMainCategory(null);
+            setValue('category.main', null);
         }
-    }, [singleProduct, flatCategoryList, brands, reset, setValue]);
+
+        // Set subcategory if exists
+        if (singleProduct?.subCategory?.categoryId && subCategories.length > 0) {
+            const subCat = subCategories.find(
+                cat => cat.categoryId === singleProduct.subCategory.categoryId
+            );
+            setSelectedSubCategory(subCat);
+            setValue('category.sub', subCat?.categoryId || null);
+        }
+
+        // Set brand
+        const brand = brands.find(b => b.brandId === singleProduct.brand);
+        if (brand) {
+            setSelectedBrand(brand);
+            setValue('brand', brand.brandId);
+        }
+    } else if (location.pathname === '/products/add') {
+        setSelectedMainCategory(null);
+        setSelectedSubCategory(null);
+        setSelectedBrand(null);
+        setValue('category.main', null);
+        setValue('category.sub', null);
+        setValue('brand', null);
+    }
+}, [singleProduct, flatCategoryList, brands,]);
 
     const filteredCategories = flatCategoryList.filter(cat =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -119,21 +119,21 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
                                         setValue('category.sub', null);
                                     }}
                                     value={field.value}
-                                    valueTemplate={(option, props) => {
-                                        if (!option && selectedMainCategory) {
-                                            return (
-                                                <div className="flex items-center text-gray-800 dark:text-gray-100">
-                                                    <span>{selectedMainCategory.name}</span>
-                                                </div>
-                                            );
-                                        }
-                                        if (!option) return props.placeholder;
-                                        return (
-                                            <div className="flex items-center text-gray-800 dark:text-gray-100">
-                                                <span>{option.name}</span>
-                                            </div>
-                                        );
-                                    }}
+                                    // valueTemplate={(option, props) => {
+                                    //     if (!option && selectedMainCategory) {
+                                    //         return (
+                                    //             <div className="flex items-center text-gray-800 dark:text-gray-100">
+                                    //                 <span>{selectedMainCategory.name}</span>
+                                    //             </div>
+                                    //         );
+                                    //     }
+                                    //     if (!option) return props.placeholder;
+                                    //     return (
+                                    //         <div className="flex items-center text-gray-800 dark:text-gray-100">
+                                    //             <span>{option.name}</span>
+                                    //         </div>
+                                    //     );
+                                    // }}
                                     itemTemplate={(option) => {
                                         return (
                                             <div className="flex items-center text-gray-800 dark:text-gray-100">

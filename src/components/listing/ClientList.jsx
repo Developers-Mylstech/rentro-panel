@@ -289,6 +289,7 @@ export default function ClientListing({ clients }) {
   };
 
   const editClient = (client) => {
+    console.log(client,"client");
     navigate("/clients/add", { state: { client } });
   };
 
@@ -320,7 +321,6 @@ export default function ClientListing({ clients }) {
         </div>
       </div>
 
-      {/* Desktop Table */}
       <div className="hidden md:block min-h-screen">
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -348,7 +348,7 @@ export default function ClientListing({ clients }) {
                     <td className="px-6 py-4">
                       <img
                         className="h-10 w-10 rounded-full object-cover"
-                        src={client?.imageUrl}
+                        src={client?.image?.imageUrl}
                         alt={client?.name}
                         
                       />
@@ -390,7 +390,6 @@ export default function ClientListing({ clients }) {
         </div>
       </div>
 
-      {/* Mobile List */}
       <div className="md:hidden space-y-3">
         {filteredClients?.length > 0 ? (
           filteredClients?.map((client) => (
@@ -401,32 +400,28 @@ export default function ClientListing({ clients }) {
               <div className="flex items-center gap-3 mb-3">
                 <img
                   className="h-10 w-10 rounded-full object-cover"
-                  src={client?.imageUrl || "/default-client.png"}
+                  src={client?.image?.imageUrl || "/default-client.png"}
                   alt={client?.name}
-                  onError={(e) => {
-                    e.target.src = "/default-client.png";
-                  }}
                 />
                 <div>
                   <h3 className="font-medium text-gray-800 dark:text-gray-100">{client?.name}</h3>
                
                 </div>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="grid grid-cols-2 gap-3">
          
-                <div className="flex gap-2">
                   <Button
                     icon="pi pi-pencil"
-                    className="p-button-rounded p-button-text p-button-sm text-blue-500"
+                    className="border p-1 w-full  p-button-text p-button-sm text-blue-500"
                     onClick={() => editClient(client)}
                   />
                   <Button
                     icon="pi pi-trash"
-                    className="p-button-rounded p-button-text p-button-sm text-red-500"
+                    className=" p-1 flex justify-center items-center w-full border  p-button-text p-button-sm text-red-500"
                     onClick={() => confirmDelete(client?.clientId)}
-                    loading={loading}
+                    loading={loading}f
                   />
-                </div>
+                
               </div>
             </div>
           ))

@@ -25,6 +25,7 @@ import axiosInstance from "../utils/axiosInstance";
       set((state) => ({
         aboutUsList: [...state.aboutUsList, res.data],
       }));
+      return res;
     } catch (err) {
       console.error("Create failed:", err.message);
     }
@@ -38,6 +39,7 @@ import axiosInstance from "../utils/axiosInstance";
           item.aboutUsId === id ? res.data : item
         ),
       }));
+      return res;
     } catch (err) {
       console.error("Update failed:", err.message);
     }
@@ -45,12 +47,13 @@ import axiosInstance from "../utils/axiosInstance";
 
   deleteAboutUs: async (id) => {
     try {
-      await axiosInstance.delete(`/about-us/${id}`);
+      const res = await axiosInstance.delete(`/about-us/${id}`);
       set((state) => ({
         aboutUsList: state.aboutUsList.filter(
           (item) => item.aboutUsId !== id
         ),
       }));
+      return res;
     } catch (err) {
       console.error("Delete failed:", err.message);
     }

@@ -3,11 +3,11 @@ import { Controller } from 'react-hook-form';
 
 const InventorySection = ({ control }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 transition-colors duration-200 shadow-sm">
+    <div className="bg-white dark:bg-gray-800  border-gray-200 dark:border-gray-700 rounded-lg transition-colors duration-200 shadow-sm">
+        <h3 className="text-lg font-semibold mb-4 text-secondary w-full p-4 px-8 bg-blue-50">
+        Inventory Management
+      </h3>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg">
-          Inventory Management
-        </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

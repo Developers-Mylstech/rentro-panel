@@ -35,9 +35,13 @@ export default function AboutUsListing() {
     </div>
   );
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
 
-    deleteAboutUs(id)
+   const  res = await deleteAboutUs(id)
+   console.log(res,'res')
+   if(res.status == 200 || res.status == 201 || res.status == 204){
+    alert("About Us deleted successfully!");
+   }
 
   }
 
@@ -53,7 +57,6 @@ export default function AboutUsListing() {
         onClick={() => handleEdit(rowData)}
       />
       
-      <Tooltip target=".delete-btn" content="Delete" position="top" />
       <Button
         icon={<FiTrash2 className="text-red-500" />}
         className="p-button-text delete-btn"
@@ -88,7 +91,7 @@ export default function AboutUsListing() {
   );
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="p-4">
       <div className="card shadow-sm rounded-xl border dark:border-gray-700">
         <DataTable
           value={filteredData}

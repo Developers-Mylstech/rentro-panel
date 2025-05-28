@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../Context/AuthContext';
 
+
 export default function LoginForm() {
     const navigate = useNavigate();
-    const { login,accessToken,loginError } = useAuthStore();
+    const { login, accessToken, loginError } = useAuthStore();
+    const [showPassword, setShowPassword] = useState(false);
     const {
         register,
         handleSubmit,
@@ -19,12 +21,16 @@ export default function LoginForm() {
             email: data.email,
             password: data.password,
         });
-    
+
         if (result.success) {
             navigate('/');
         } else {
-            alert(result.error); 
+            alert(result.error);
         }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -43,12 +49,16 @@ export default function LoginForm() {
                             )}
                         </div>
 
-                        <div className="flex flex-col">
+                        <div className="flex flex-col relative">
                             <InputText
                                 {...register('password', { required: 'Password is required' })}
                                 placeholder="Password"
-                                type="password"
-                                className="w-full p-3 text-primary bg-transparent border rounded-lg placeholder:text-primary"
+                                type={showPassword ? "text" : "password"}
+                                className="w-full p-3 text-primary bg-transparent border rounded-lg placeholder:text-primary pr-10"
+                            />
+                            <i
+                                className={`pi ${showPassword ? 'pi-eye-slash' : 'pi-eye'} absolute right-3 top-3 cursor-pointer text-blue-700`}
+                                onClick={togglePasswordVisibility}
                             />
                             {errors.password && (
                                 <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
