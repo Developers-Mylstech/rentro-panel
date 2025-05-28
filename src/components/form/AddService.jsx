@@ -477,7 +477,7 @@ export default function AddService() {
     shortDescription: "",
     detailedHeading: "",
     detailedDescription: "",
-    imageUrl: "", 
+    ImageId: "", 
     features: [
       {
         title: "",
@@ -564,7 +564,7 @@ export default function AddService() {
         }
       );
 
-      const imageUrl = response.data?.fileUrl;
+      const imageUrl = response.data?.image?.imageId;
 
       if (imageUrl) {
         setFormData(prev => ({
