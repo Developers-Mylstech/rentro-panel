@@ -12,7 +12,7 @@ function Layout() {
 
       <div className="flex-1 lg:ml-[15%] overflow-hidden">
         <Header setIsDarkMode={setIsDarkMode} />
-        <div className=" p-5 pt-20   ">
+        <div className=" p-5 pt-20 ml-4  ">
           <Outlet />
         </div>
        

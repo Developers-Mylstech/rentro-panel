@@ -98,7 +98,7 @@ const useProductStore = create((set) => ({
 
       const response = await axiosInstance.delete(`/products/${productId}/images/${imageId}`);
   
-        set({ uploadedFiles: updatedFiles, isDeleting: false });
+        // set({ uploadedFiles: updatedFiles, isDeleting: false });
         // Ensure you're matching the correct key (e.g., productId)
 
 

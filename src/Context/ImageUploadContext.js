@@ -66,7 +66,7 @@ const useImageUploadStore = create((set, get) => ({
 
             set({ uploadedFiles: updatedFiles, isDeleting: false });
 
-            return true;
+            return ;
         } catch (error) {
             set({ error: error.message, isDeleting: false });
             throw error;

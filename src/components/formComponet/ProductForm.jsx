@@ -109,7 +109,6 @@ const ProductForm = () => {
         setPageLoading(false);
         setIsEditing(false);
       } else if (id) {
-        setPageLoading(true);
         try {
           const res = await getProductsById(id);
           if (res?.name) {
@@ -161,7 +160,7 @@ const ProductForm = () => {
       }
     };
     fetchProduct();
-  }, [location, id, reset, getProductsById, pageLoading]);
+  }, [getProductsById]);
 
   const showToast = (severity, summary, detail) => {
     if (toast.current) {

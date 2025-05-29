@@ -418,6 +418,7 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
       <div className="flex gap-3">
         <button
           onClick={handleUpload}
+          type='button'
           disabled={isLoading || selectedFiles.length === 0}
           className={`flex items-center px-4 py-2 rounded-md text-white transition ${selectedFiles.length === 0 || isLoading
               ? 'bg-gray-400 cursor-not-allowed'
@@ -429,6 +430,7 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
 
         <button
           onClick={resetImage}
+          type='button'
           disabled={isLoading || selectedFiles.length === 0}
           className={`flex items-center px-4 py-2 rounded-md ${selectedFiles.length === 0 || isLoading
               ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -471,6 +473,7 @@ const ImageUploader = ({ control, setValue, singleProduct, setIsImageSelected, s
                 <button
                   onClick={() => handleDeleteImage(singleProduct?.productId, img)}
                   disabled={isDeleting}
+                  type='button'
                   className="absolute top-2 right-2 p-1 bg-white rounded-full shadow hover:bg-gray-100 transition opacity-0 group-hover:opacity-100"
                 >
                   <FiX className="h-4 w-4 text-red-500" />
