@@ -78,27 +78,28 @@ export default function AddAboutUs() {
     }
   };
 
-  const handleRemoveImage = async () => {
-    try {
-      if (isEdit && existing.aboutUsId) {
-        await axiosInstance.delete(`/about-us/${existing.aboutUsId}/image`);
-        alert("Image deleted from server.");
-      }else{
-        await axiosInstance.delete(`/image-entities/${uploadedData.imageId}`);
-        alert("Image deleted from server.");
-      }
+const handleRemoveImage = async () => {
+  // Remove image from state first
+  setSelectedFile(null);
+  setPreviewUrl("");
+  setUploadedData({ imageUrl: "", imageId: null });
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
 
-      setPreviewUrl("");
-      setSelectedFile(null);
-      setUploadedData({ imageUrl: "", imageId: null });
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("Failed to delete image:", error);
-      alert("Failed to delete image from server.");
+  try {
+    if (isEdit && existing.aboutUsId) {
+      await axiosInstance.delete(`/about-us/${existing.aboutUsId}/image`);
+      alert("Image deleted from server.");
+    } else {
+      await axiosInstance.delete(`/image-entities/${uploadedData.imageId}`);
+      alert("Image deleted from server.");
     }
-  };
+  } catch (error) {
+    console.error("Failed to delete image:", error);
+    alert("Failed to delete image from server.");
+  }
+};
 
 
   const handleEditImage = () => {

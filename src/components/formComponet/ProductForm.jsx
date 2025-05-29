@@ -93,7 +93,7 @@ const ProductForm = () => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [isImageUpload, setIsImageUpload] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate();
 
 
@@ -103,13 +103,16 @@ const ProductForm = () => {
   });
 
   useEffect(() => {
+
     setPageLoading(true)
     const fetchProduct = async () => {
       if (location.pathname === '/products/add') {
 
         reset(defaultFormValues);
+    
         setPageLoading(false);
         setIsEditing(false);
+        reset();
       } else if (id) {
         try {
           const res = await getProductsById(id);
@@ -182,6 +185,7 @@ const ProductForm = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log('data', data);
     if (isSubmitting) return;
 
     console.log(data);
@@ -232,10 +236,10 @@ const ProductForm = () => {
         showToast('success', 'Success', 'Product created successfully!');
         resetForm();
         setValue('category.main', '');
-        if (response.status === 200 || response.status === 201) {
+        // if (response.status === 200 || response.status === 201) {
 
-          window.location.reload();
-        }
+        //   window.location.reload();
+        // }
 
 
       }
