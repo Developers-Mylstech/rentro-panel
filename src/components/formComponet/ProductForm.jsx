@@ -95,16 +95,18 @@ const ProductForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Flag to prevent multiple submissions
   const navigate = useNavigate();
-  
-  
+
+
 
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: defaultFormValues
   });
 
   useEffect(() => {
+    setPageLoading(true)
     const fetchProduct = async () => {
       if (location.pathname === '/products/add') {
+
         reset(defaultFormValues);
         setPageLoading(false);
         setIsEditing(false);
@@ -218,14 +220,24 @@ const ProductForm = () => {
       if (id) {
         response = await updateProduct(id, payload);
         showToast('success', 'Success', 'Product updated successfully!');
-      
-        navigate('/products'); 
+
+        
+        navigate('/products');
+        if (response.status === 200 || response.status === 201) {
+          window.location.reload();
+        }
+
       } else {
         response = await createProduct(payload);
         showToast('success', 'Success', 'Product created successfully!');
-
         resetForm();
         setValue('category.main', '');
+        if (response.status === 200 || response.status === 201) {
+
+          window.location.reload();
+        }
+
+
       }
 
       console.log('API Response:', response);
@@ -327,6 +339,12 @@ const ProductForm = () => {
         : []
     };
   };
+
+  if (pageLoading) {
+    return <div className='flex justify-center items-center h-96'>
+      <FaSpinner className='animate-spin' />
+    </div>
+  }
 
 
   return (

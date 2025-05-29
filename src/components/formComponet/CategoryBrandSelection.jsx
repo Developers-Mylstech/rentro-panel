@@ -31,7 +31,7 @@ const CategoryBrandSelection = ({ control, errors, singleProduct, reset, setValu
         const mainCat = flatCategoryList.find(
             cat => cat.categoryId === singleProduct?.category?.categoryId
         );
-
+console.log(mainCat, "main cat")
         if (mainCat) {
             setSelectedMainCategory(mainCat);
             setSelectedCategory(mainCat.categoryId);

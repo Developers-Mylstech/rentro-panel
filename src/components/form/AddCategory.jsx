@@ -174,13 +174,16 @@ export default function AddCategory() {
         </div>
     
         <div className="flex justify-end gap-4 pt-4">
-          <button
+          {isEditMode && (
+            <button
             type="button"
             onClick={handleCancel}
             className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
           >
             Cancel
           </button>
+          )}
+          
           <button
             type="submit"
             className="px-6 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors duration-200"
