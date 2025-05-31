@@ -102,6 +102,7 @@ export default function ProductListing() {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SNO</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SKU</th>
@@ -125,11 +126,14 @@ export default function ProductListing() {
                 </tr>
               ))
             ) : (
-              filteredProducts.map((product) => {
+              filteredProducts.map((product,index) => {
                 return (
                   <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {product.id}
+                      {index + 1}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap font-semibold text-xs">
+                      #PRO{product.id}05RF
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {product.image && (

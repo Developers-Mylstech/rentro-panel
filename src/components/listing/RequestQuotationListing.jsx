@@ -5,13 +5,24 @@ import { Toast } from "primereact/toast";
 import { useRequestQuotationStore } from "../../Context/RequestQoutation";
 import { Menu } from "primereact/menu";
 import AlertBox from "../widget/AlertBox";
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ProgressSpinner } from 'primereact/progressspinner';
 export default function RequestQuotationListing() {
   const { quotations, loading, fetchQuotations, updateQuotation } =
     useRequestQuotationStore();
   const [search, setSearch] = useState("");
 
   const toast = useRef(null);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending', // 'ascending' or 'descending'
+  });
+
   const [showAlert, setShowAlert] = useState(false);
+  const [activeTab, setActiveTab] = useState("ALL");
+  const [selectedQuotation, setSelectedQuotation] = useState([]);
+
   const [alertData, setAlertData] = useState({
     title: "",
     message: "",
@@ -21,8 +32,17 @@ export default function RequestQuotationListing() {
     fetchQuotations();
   }, []);
 
+
+  useEffect(() => {
+    if (quotations) {
+      setSelectedQuotation(quotations);
+    }
+  }, [quotations]);
+
+
   const StatusDropdown = ({ rowData }) => {
-    const [status, setStatus] = useState(rowData.status || "SENT_QUOTATION");
+
+    const [status, setStatus] = useState(rowData?.status || "SENT_QUOTATION");
     const [loading, setLoading] = useState(false);
     const toast = useRef(null);
     const menuRef = useRef(null);
@@ -33,14 +53,26 @@ export default function RequestQuotationListing() {
         label: "Sent Quotation",
         color: "bg-blue-400",
       },
-      { value: "NEGOTIATION", label: "Negotiation", color: "bg-purple-400" },
+      {
+        value: "NEGOTIATION",
+        label: "Negotiation",
+        color: "bg-purple-400"
+      },
       {
         value: "WAITING_FOR_APPROVAL",
         label: "Waiting Approval",
         color: "bg-yellow-400",
       },
-      { value: "CLOSE_WON", label: "Close Won", color: "bg-green-400" },
-      { value: " CLOSE_LOST", label: "Close Lost", color: "bg-red-400" },
+      {
+        value: "CLOSE_WON",
+        label: "Close Won",
+        color: "bg-green-400"
+      },
+      {
+        value: "CLOSE_LOST",
+        label: "Close Lost",
+        color: "bg-red-400"
+      },
     ];
 
     const handleStatusChange = async (newStatus) => {
@@ -72,6 +104,7 @@ export default function RequestQuotationListing() {
       }
     };
 
+
     const currentStatus = statusOptions.find((opt) => opt.value === status);
 
     return (
@@ -97,9 +130,8 @@ export default function RequestQuotationListing() {
           onClick={(e) => menuRef.current.toggle(e)}
           aria-controls="status_menu"
           aria-haspopup
-          className={`flex items-center gap-2 px-3 py-1 rounded-md border text-sm ${
-            loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-50"
-          }`}
+          className={`flex items-center gap-2 px-3 py-1 rounded-md border text-sm ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-50"
+            }`}
           disabled={loading}
         >
           {loading ? (
@@ -126,9 +158,8 @@ export default function RequestQuotationListing() {
           ) : (
             <>
               <span
-                className={`w-2 h-2 rounded-full animate-pulse ${
-                  currentStatus?.color || "bg-blue-400"
-                }`}
+                className={`w-2 h-2 rounded-full animate-pulse ${currentStatus?.color || "bg-blue-400"
+                  }`}
               ></span>
               <span>
                 {currentStatus?.label.slice(0, 10) || "Sent Quotation"}
@@ -154,6 +185,7 @@ export default function RequestQuotationListing() {
   };
 
   const actionsTemplate = (rowData) => {
+    console.log(rowData, 'rowData')
     return (
       <div className="flex">
         <StatusDropdown rowData={rowData} />
@@ -161,15 +193,26 @@ export default function RequestQuotationListing() {
     );
   };
 
-  const filteredQuotations = quotations?.filter((quotation) => {
-    const searchTerm = search.toLowerCase();
-    return (
-      quotation.name?.toLowerCase().includes(searchTerm) ||
-      quotation.mobile?.includes(searchTerm) ||
-      quotation.companyName?.toLowerCase().includes(searchTerm) ||
-      quotation.location?.toLowerCase().includes(searchTerm)
-    );
-  });
+
+
+  const handleActiveTab = (tab) => {
+    if (tab === "ALL") {
+      setSelectedQuotation(quotations);
+      setActiveTab("ALL");
+      return;
+    }
+    const filteredQuotations = quotations?.filter((quotation) => quotation.status === tab);
+    console.log(filteredQuotations, 'filteredQuotations')
+    setSelectedQuotation(filteredQuotations);
+    setActiveTab(tab);
+  };
+
+  const countByStatus = (status) => {
+    if (status === "ALL") return quotations?.length || 0;
+    return quotations?.filter(q => q.status === status)?.length || 0;
+  };
+
+  console.log(quotations, 'quotations', selectedQuotation, 'selectedQuotation');
 
   return (
     <div className="">
@@ -178,134 +221,150 @@ export default function RequestQuotationListing() {
       <h5 className="heading w-full dark:text-gray-100 mb-3">
         Request Quotation List
       </h5>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
-        <div className="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-all">
-          <div className="flex justify-between items-center mb-3">
-            <h6 className="text-gray-700 dark:text-white text-sm font-semibold">
-              Total Requests
-            </h6>
-            <span className="px-3 py-1 text-[10px] font-semibold uppercase bg-purple-100 text-purple-700 rounded-md">
-              All
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="md:text-2xl text-base font-bold text-purple-700 dark:text-white">
-              {quotations?.length}
-            </p>
-            <div className="text-right">
-              <p className="text-sm text-gray-500 dark:text-gray-300">
-                Requests
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 my-4">
+        {[
+          { label: "ALL", value: "ALL", color: "purple" },
+          { label: "Sent Quotation", value: "SENT_QUOTATION", color: "cyan" },
+          { label: "Negotiation", value: "NEGOTIATION", color: "pink" },
+          { label: "Waiting Approval", value: "WAITING_FOR_APPROVAL", color: "yellow" },
+          { label: "Close Won", value: "CLOSE_WON", color: "green" },
+          { label: "Close Lost", value: "CLOSE_LOST", color: "red" },
+        ].map((tab) => (
+          <div
+            key={tab}
+            onClick={() => handleActiveTab(tab?.value)}
+            className={`p-5 bg-white dark:bg-gray-800 border-2 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 
+    ${activeTab === tab?.value ? `border-${tab?.color}-400` : ""}`}
+          >
+            <div className="flex justify-between items-center mb-3">
+              <span className={`px-3 py-1 text-[10px] font-semibold uppercase rounded-md bg-${tab?.color}-100 dark:bg-${tab?.color}-900 dark:text-${tab?.color}-200} text-${tab?.color}-500 || ""}`}>
+                {tab?.label}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className={`md:text-2xl text-base font-bold text-${tab?.color}-400 dark:text-white`}>
+                {countByStatus(tab?.value)}
               </p>
+              <div className="text-right">
+                <p className="text-sm text-gray-500 dark:text-gray-300">
+                  Total Requests
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
+
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                {[
-                  "ID",
-                  "Image",
-                  "Name",
-                  "Mobile",
-                  "Company",
-                  "Location",
-                  "Actions",
-                ].map((e, index) => (
-                  <th
-                    key={index}
-                    scope="col"
-                    className="font-semibold px-6 py-3 text-left text-xs  text-gray-500 uppercase tracking-wider"
-                  >
-                    {e}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {loading ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-4 text-center">
-                    <div className="flex justify-center">
-                      <svg
-                        className="animate-spin h-5 w-5 text-blue-500"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                    </div>
-                  </td>
-                </tr>
-              ) : filteredQuotations.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="7"
-                    className="px-6 py-4 text-center text-gray-500"
-                  >
-                    No quotations found
-                  </td>
-                </tr>
-              ) : (
-                filteredQuotations.map((quotation) => (
-                  <tr
-                    key={quotation.requestQuotationId}
-                    className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
-                    // onClick={() => setSelectedQuotation(quotation)}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {quotation.requestQuotationId}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {imageTemplate(quotation)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {quotation.name || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {quotation.mobile || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {quotation.companyName || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 max-w-xs overflow-x-auto whitespace-nowrap text-sm text-gray-500">
-                      {quotation?.location
-                        ? `${quotation.location.street || ""}, ${
-                            quotation.location.city || ""
-                          }, ${quotation.location.state || ""}, ${
-                            quotation.location.country || ""
-                          }, ${quotation.location.pincode || ""}`
-                            .replace(/(,\s*)+/g, ", ")
-                            .replace(/^, |, $/g, "") || "N/A"
-                        : "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {actionsTemplate(quotation)}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
 
-        {filteredQuotations.length > 0 && (
+
+      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+        <DataTable
+          sortMode="multiple"
+          stripedRows
+          value={loading ? [] : (selectedQuotation.length === 0 ? quotations : selectedQuotation)}
+          emptyMessage={loading ? (
+            <div className="flex justify-center p-4">
+              <ProgressSpinner
+                style={{ width: '20px', height: '20px' }}
+                strokeWidth="4"
+                animationDuration=".5s"
+              />
+            </div>
+          ) : "No quotations found"}
+          className="p-datatable-sm"
+          responsiveLayout="scroll"
+        >
+          <Column
+            header="S.No."
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData, { rowIndex }) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-left">
+                {rowIndex + 1}
+              </div>
+            )}
+
+          />
+          <Column
+            field="requestQuotationId"
+            header="ID"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-left">
+                {rowData.requestQuotationCode}
+              </div>
+            )}
+            sortable
+          />
+          <Column
+            header="Image"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-left">
+                {imageTemplate(rowData)}
+              </div>
+            )}
+          />
+          <Column
+            field="name"
+            header="Name"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                {rowData.name || "N/A"}
+              </div>
+            )}
+            sortable
+          />
+          <Column
+            field="mobile"
+            header="Mobile"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                {rowData.mobile || "N/A"}
+              </div>
+            )}
+
+          />
+          <Column
+            field="companyName"
+            header="Company"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                {rowData.companyName || "N/A"}
+              </div>
+            )}
+          />
+          <Column
+            header="Location"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 max-w-xs overflow-x-auto whitespace-nowrap text-sm text-gray-500 text-left">
+                {rowData?.location
+                  ? `${rowData.location.street || ""}, ${rowData.location.city || ""
+                    }, ${rowData.location.state || ""}, ${rowData.location.country || ""
+                    }, ${rowData.location.pincode || ""}`
+                    .replace(/(,\s*)+/g, ", ")
+                    .replace(/^, |, $/g, "") || "N/A"
+                  : "N/A"}
+              </div>
+            )}
+
+          />
+          <Column
+            header="Actions"
+            headerClassName="text-xs uppercase text-gray-600 dark:text-gray-300 px-6 py-3 text-left"
+            body={(rowData) => (
+              <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                {actionsTemplate(rowData)}
+              </div>
+            )}
+          />
+        </DataTable>
+
+        {selectedQuotation.length > 0 && (
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
               <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -315,57 +374,7 @@ export default function RequestQuotationListing() {
                 Next
               </button>
             </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">10</span> of{" "}
-                  <span className="font-medium">
-                    {filteredQuotations.length}
-                  </span>{" "}
-                  results
-                </p>
-              </div>
-              <div>
-                <nav
-                  className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                  aria-label="Pagination"
-                >
-                  <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    <span className="sr-only">Previous</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    <span className="sr-only">Next</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </nav>
-              </div>
-            </div>
+
           </div>
         )}
       </div>
