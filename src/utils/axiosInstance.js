@@ -34,13 +34,12 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// Response interceptor
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+        if ((error.response?.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             const refreshToken = localStorage.getItem('refresh');
@@ -48,7 +47,7 @@ axiosInstance.interceptors.response.use(
                 try {
                     delete axiosInstance.defaults.headers.common['Authorization'];
 
-                    const response = await axios.post(`https://1f1ktbg1qncu.share.zrok.io/api/v1/auth/refresh-token`,
+                    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,
                         { refreshToken: refreshToken }, {
                         headers: {
                             'skip_zrok_interstitial': 'true',

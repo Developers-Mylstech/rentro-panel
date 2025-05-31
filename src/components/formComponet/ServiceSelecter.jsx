@@ -95,7 +95,7 @@ const ServiceSelector = ({ onSave, onCancel = () => { }, initialSelected = [] })
   return (
     <div className="card ">
       <h3 className="text-lg font-semibold mb-4 text-secondary w-full p-4 px-8 bg-blue-50">
-        {selectedServiceObjects.length > 0 ? 'Selected Services' : 'Select Services'}
+        {selectedServiceObjects?.length > 0 ? 'Selected Services' : 'Select Services'}
       </h3>
 
       <div className="mb-4">
