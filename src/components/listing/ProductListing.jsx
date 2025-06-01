@@ -39,7 +39,8 @@ export default function ProductListing() {
     category: product.category?.name || 'N/A',
     quantity: product.inventory?.quantity || 0,
     monthlyPrice: product.productFor?.rent?.monthlyPrice || 0,
-    yearlyPrice: product.productFor?.rent?.discountPrice || 0
+    yearlyPrice: product.productFor?.rent?.discountPrice || 0,
+    productCode: product?.productCode
   }));
 
   const filteredProducts = tableData.filter(product =>
@@ -111,10 +112,10 @@ export default function ProductListing() {
             value={loading ? [] : filteredProducts}
             stripedRows
             sortMode="multiple"
-            className="p-datatable-sm"
+            className="p-datatable-sm min-w-[1200px]"
             responsiveLayout="scroll"
             emptyMessage="No products found"
-            
+
           >
             <Column
               header="SNO"
@@ -123,10 +124,12 @@ export default function ProductListing() {
               sortable
             />
             <Column
-              field="id"
+              field="productCode"
               header="ID"
+              body={(product) => (
+                <span className="font-semibold text-xs">#{product.productCode}</span>
+              )}
               headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
-              body={(product) => `#PRO-${product?.id}-05`}
               bodyClassName="font-semibold text-xs"
               sortable
             />
