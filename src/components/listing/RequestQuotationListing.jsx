@@ -223,26 +223,26 @@ export default function RequestQuotationListing() {
       </h5>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 my-4">
         {[
-          { label: "ALL", value: "ALL", color: "purple" },
-          { label: "Sent Quotation", value: "SENT_QUOTATION", color: "cyan" },
-          { label: "Negotiation", value: "NEGOTIATION", color: "pink" },
-          { label: "Waiting Approval", value: "WAITING_FOR_APPROVAL", color: "yellow" },
-          { label: "Close Won", value: "CLOSE_WON", color: "green" },
-          { label: "Close Lost", value: "CLOSE_LOST", color: "red" },
+          { label: "ALL", value: "ALL", color: "text-purple-500",bgColor:'bg-purple-100' },
+          { label: "Sent Quotation", value: "SENT_QUOTATION", color: "text-cyan-500",bgColor:'bg-cyan-100' },
+          { label: "Negotiation", value: "NEGOTIATION", color: "text-pink-500",bgColor:'bg-pink-100' },
+          { label: "Waiting Approval", value: "WAITING_FOR_APPROVAL", color: "text-yellow-500",bgColor:'bg-yellow-100' },
+          { label: "Close Won", value: "CLOSE_WON", color: "text-green-500" ,bgColor:'bg-green-100'},
+          { label: "Close Lost", value: "CLOSE_LOST", color: "text-red-500",bgColor:'bg-red-100' },
         ].map((tab) => (
           <div
             key={tab}
             onClick={() => handleActiveTab(tab?.value)}
-            className={`p-5 bg-white dark:bg-gray-800 border-2 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 
-    ${activeTab === tab?.value ? `border-${tab?.color}-400` : ""}`}
+            className={` rounded-lg overflow-hidden bg-white dark:bg-gray-800 border shadow-sm hover:shadow-md transition-all duration-300 
+    ${activeTab === tab?.value ? `border-blue-400` : "border-gray-100 dark:border-gray-700"}`}
           >
-            <div className="flex justify-between items-center mb-3">
-              <span className={`px-3 py-1 text-[10px] font-semibold uppercase rounded-md bg-${tab?.color}-100 dark:bg-${tab?.color}-900 dark:text-${tab?.color}-200} text-${tab?.color}-500 || ""}`}>
+            <div className="flex  justify-between items-center mb-3">
+              <span className={`px-3 py-3 text-[10px] w-full ${tab?.color}  text-center font-semibold ${tab?.bgColor } uppercase bg-100 dark:bg-${tab?.color}-900 dark:text-${tab?.color}-200} text-${tab?.color}-500 || ""}`}>
                 {tab?.label}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <p className={`md:text-2xl text-base font-bold text-${tab?.color}-400 dark:text-white`}>
+            <div className="flex items-center justify-between px-4 py-2">
+              <p className={`md:text-2xl text-base font-bold ${tab?.color} dark:text-white`}>
                 {countByStatus(tab?.value)}
               </p>
               <div className="text-right">

@@ -5,6 +5,8 @@ import { Dialog } from "primereact/dialog";
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from "primereact/toast";
 import PdfUploader from "../widget/PdfUploader";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 export default function ProductListing() {
   const [search, setSearch] = useState('');
@@ -97,112 +99,122 @@ export default function ProductListing() {
         </div>
       </div>
 
-      {/* HTML Table */}
-      <div className="overflow-x-auto rounded-lg border dark:border-gray-700 shadow">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SNO</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SKU</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Monthly Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Yearly Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {loading ? (
-              [...Array(5)].map((_, i) => (
-                <tr key={i}>
-                  {[...Array(9)].map((_, j) => (
-                    <td key={j} className="px-6 py-4">
-                      <Skeleton width="100%" height="2rem" className="rounded" />
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              filteredProducts.map((product,index) => {
-                return (
-                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {index + 1}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-semibold text-xs">
-                      #PRO{product.id}05RF
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {product.image && (
-                        <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {product.sku}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      {product.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      {product.category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${product.quantity < 10 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'
-                        }`}>
-                        {product.quantity}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      AED {product.monthlyPrice.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      AED {product.yearlyPrice.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="border grid grid-cols-2 p-[2px] rounded gap-1">
-                        <button
-                          onClick={() => navigate(`/products/edit/${product.id}`)}
-                          className="w-full h-full text-black hover:text-blue-500 flex justify-center items-center bg-gray-100 rounded px-3 py-1"
-                          title="Edit"
-                        >
-                          <i className="pi pi-pencil"></i>
-                        </button>
-                        <button
-                          onClick={() => confirmDelete(product)}
-                          className="w-full h-full text-red-500 rounded px-3 py-1"
-                          title="Delete"
-                        >
-                          <i className="pi pi-trash"></i>
-                        </button>
-
-                      </div>
-                      {/* <div className="flex gap-10">
-                        <button
-                          onClick={() => navigate(`/products/edit/${product.id}`)}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                          title="Edit"
-                        >
-                          <i className="pi pi-pencil"></i>
-                        </button>
-                        <button
-                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                          title="Delete"
-                        >
-                        </button>
-                      </div> */}
-                    </td>
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-
-        </table>
-        {filteredProducts.length === 0 && !loading && <p className="text-center p-5 font-semibold uppercase w-full text-xs">No Product</p>}
-      </div>
+      {loading ? (
+        <div className="flex flex-col gap-4">
+          <Skeleton width="100%" height="40px" />
+          <Skeleton width="100%" height="40px" />
+          <Skeleton width="100%" height="40px" />
+          <Skeleton width="100%" height="40px" />
+          <Skeleton width="100%" height="40px" />
+        </div>) : (<div className="overflow-x-auto rounded-lg border dark:border-gray-700 shadow">
+          <DataTable
+            value={loading ? [] : filteredProducts}
+            stripedRows
+            sortMode="multiple"
+            className="p-datatable-sm"
+            responsiveLayout="scroll"
+            emptyMessage="No products found"
+            
+          >
+            <Column
+              header="SNO"
+              headerClassName="text-xs p-4 uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(data, options) => options.rowIndex + 1}
+              sortable
+            />
+            <Column
+              field="id"
+              header="ID"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => `#PRO-${product?.id}-05`}
+              bodyClassName="font-semibold text-xs"
+              sortable
+            />
+            <Column
+              header="Image"
+              headerClassName="text-xs  uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => (
+                <img
+                  src={product?.image}
+                  alt={product?.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+              )}
+            />
+            <Column
+              field="sku"
+              header="SKU"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              bodyClassName="text-sm font-medium text-gray-900 dark:text-white"
+            />
+            <Column
+              field="name"
+              header="Name"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              bodyClassName="text-sm text-gray-500 dark:text-gray-300"
+              sortable
+            />
+            <Column
+              field="category"
+              header="Category"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              bodyClassName="text-sm text-gray-500 dark:text-gray-300"
+              sortable
+            />
+            <Column
+              field="quantity"
+              header="Quantity"
+              sortable
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => (
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${product?.quantity < 10
+                  ? 'bg-orange-100 text-orange-800'
+                  : 'bg-green-100 text-green-800'
+                  }`}>
+                  {product.quantity}
+                </span>
+              )}
+            />
+            <Column
+              field="monthlyPrice"
+              header="Monthly Price"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => `AED ${product.monthlyPrice.toFixed(2)}`}
+              bodyClassName="text-sm text-gray-500 dark:text-gray-300"
+            />
+            <Column
+              field="yearlyPrice"
+              header="Yearly Price"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => `AED ${product.yearlyPrice.toFixed(2)}`}
+              bodyClassName="text-sm text-gray-500 dark:text-gray-300"
+            />
+            <Column
+              header="Actions"
+              headerClassName="text-xs uppercase text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800"
+              body={(product) => (
+                <div className="border grid grid-cols-2 p-[2px] rounded gap-1">
+                  <button
+                    onClick={() => navigate(`/products/edit/${product?.id}`)}
+                    className="w-full h-full text-black hover:text-blue-500 flex justify-center items-center bg-gray-100 rounded px-3 py-1"
+                    title="Edit"
+                  >
+                    <i className="pi pi-pencil"></i>
+                  </button>
+                  <button
+                    onClick={() => confirmDelete(product)}
+                    className="w-full h-full text-red-500 rounded px-3 py-1"
+                    title="Delete"
+                  >
+                    <i className="pi pi-trash"></i>
+                  </button>
+                </div>
+              )}
+            />
+          </DataTable>
+          {filteredProducts.length === 0 && !loading && <p className="text-center p-5 font-semibold uppercase w-full text-xs">No Product</p>}
+        </div>)
+      }
 
       <Dialog
         header="Confirmation"
